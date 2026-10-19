@@ -1,0 +1,228 @@
+       :root {
+            --primary: #3659d9;
+            --navy: #17233f;
+            --background: #f4f6fb;
+            --text-muted: #778198;
+            --border: #e8ecf4;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: var(--background);
+            color: var(--navy);
+        }
+
+        /* KONTEN UTAMA */
+        .main-content {
+            padding: 35px;
+            min-height: 100vh;
+        }
+
+        .page-header {
+            margin-bottom: 28px;
+        }
+
+        .page-subtitle {
+            color: var(--primary);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .page-title {
+            font-size: 27px;
+            font-weight: 700;
+            margin-top: 7px;
+        }
+
+        /* KARTU PROFIL */
+        .profile-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 45px 30px;
+            text-align: center;
+            box-shadow: 0 10px 35px rgba(23, 35, 63, 0.04);
+            margin-bottom: 25px;
+        }
+
+        .profile-photo-wrapper {
+            width: 175px;
+            height: 175px;
+            padding: 6px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3659d9, #a9baff);
+            margin: 0 auto 25px;
+            box-shadow: 0 10px 28px rgba(54, 89, 217, 0.17);
+        }
+
+        .profile-photo {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            border: 4px solid #ffffff;
+            border-radius: 50%;
+        }
+
+        .profile-name {
+            font-size: 29px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -0.7px;
+        }
+
+        .profile-role {
+            display: inline-block;
+            background: #edf1ff;
+            color: var(--primary);
+            border-radius: 30px;
+            padding: 8px 17px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .profile-description {
+            max-width: 610px;
+            margin: 0 auto;
+            color: var(--text-muted);
+            font-size: 13px;
+            line-height: 2;
+        }
+
+        .profile-divider {
+            width: 55px;
+            height: 3px;
+            background: var(--primary);
+            border: 0;
+            border-radius: 5px;
+            margin: 25px auto;
+        }
+
+        /* JUDUL BAGIAN */
+        .section-title {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        /* INFORMASI DIRI */
+        .info-card {
+            height: 100%;
+            padding: 23px;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            background: #ffffff;
+            transition: .25s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(23, 35, 63, 0.06);
+        }
+
+        .info-label {
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 500;
+            margin-bottom: 9px;
+        }
+
+        .info-value {
+            color: var(--navy);
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.8;
+            overflow-wrap: anywhere;
+        }
+
+        /* DESKRIPSI */
+        .description-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            padding: 27px;
+            height: 100%;
+        }
+
+        .description-card p {
+            color: var(--text-muted);
+            font-size: 13px;
+            line-height: 2;
+            margin-bottom: 0;
+        }
+
+        .skill-item {
+            display: inline-block;
+            background: #f0f3ff;
+            color: #3659d9;
+            border: 1px solid #e0e7ff;
+            padding: 9px 14px;
+            margin: 0 5px 9px 0;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            color: #929bb0;
+            font-size: 11px;
+            padding: 30px 0 5px;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 10px 17px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            color: var(--navy);
+            background: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: .2s;
+        }
+
+        .back-button:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+        }
+
+        @media (max-width: 767px) {
+            .main-content {
+                padding: 23px 15px;
+            }
+
+            .page-title {
+                font-size: 23px;
+            }
+
+            .profile-card {
+                padding: 35px 20px;
+            }
+
+            .profile-photo-wrapper {
+                width: 145px;
+                height: 145px;
+            }
+
+            .profile-name {
+                font-size: 23px;
+            }
+
+            .info-card,
+            .description-card {
+                padding: 20px;
+            }
+        }
