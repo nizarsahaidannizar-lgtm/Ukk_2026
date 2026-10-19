@@ -1,53 +1,81 @@
-<!--login.php-->
+<?php
+session_start();
+?>
 
 <!DOCTYPE html>
-<html>
-    <head>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-        <title>Login - Pelanggaran Siswa </title>
-    </head>
-    <body>
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-        <h1>Login Aplikasi Pelanggaran Siswa</h1>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Pelanggaran Siswa</title>
 
-        <?php
-        session_start();
-        if (isset($_SESSION['pesan_error'])){
-            echo '<p>'. $_SESSION['pesan_error'] . '</p>';
-            unset ($_SESSION['pesan_error']);
-        }
-        ?>
-        <!-- <form action="proses_login.php" method="POST">
-            <table>
-                <tr>
-                    <td>Email</td>
-                    <td>:</td>
-                    <td><input type="email" name="email" required></td>
-                </tr>
-                <tr>
-                    <td>Password</td>
-                    <td>:</td>
-                    <td><input type="password" name="password" required></td>
-                </tr>
-                <tr>
-                    <td colspan="3">
-                        <input type="submit" value="Login">
-                    </td>
-                </tr>
-            </table>
-</form> -->
-<form action="proses_login.php" method="POST">
-  <div class="form-group">
-    <label for="exampleInputEmail1">Email address</label>
-    <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+    <!-- Bootstrap 5 CSS & FontAwesome Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
 
-  <div class="form-group">
-    <label for="exampleInputPassword1">Password</label>
-    <input type="password" name="password"class="form-control" id="exampleInputPassword1" placeholder="Password">
-  </div>
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form>
-    </body>
+<body class="bg-dark d-flex align-items-center justify-content-center min-vh-100 p-3">
+
+    <!-- Container Utama Tema Abu-Abu -->
+    <div class="bg-secondary rounded-3 w-100 min-vh-100 d-flex flex-column justify-content-center align-items-center p-4">
+
+        <!-- Card Login -->
+        <div class="card border-0 shadow-lg rounded-4 p-4 text-center bg-white" style="max-width: 380px; width: 100%;">
+
+            <div class="card-body p-2">
+
+                <!-- Logo Ikon Timbangan -->
+                <div class="mb-4">
+                    <i class="fa-solid fa-scale-balanced display-3 text-dark"></i>
+                </div>
+
+                <!-- Pesan Error Session -->
+                <?php if (isset($_SESSION['pesan_error'])): ?>
+                    <div class="alert alert-danger text-center py-2 mb-3" style="font-size: 14px;" role="alert">
+                        <?= htmlspecialchars($_SESSION['pesan_error']) ?>
+                    </div>
+                    <?php unset($_SESSION['pesan_error']); ?>
+                <?php endif; ?>
+
+                <!-- Form Login -->
+                <form action="proses_login.php" method="POST">
+
+                    <div class="mb-3 text-start">
+                        <label for="email" class="form-label text-muted small fw-semibold mb-1 ms-1">Email</label>
+                        <input type="email"
+                               name="email"
+                               id="email"
+                               class="form-control bg-light border-0 rounded-3 py-2 px-3"
+                               placeholder="admin@gmail.com"
+                               required>
+                    </div>
+
+                    <div class="mb-4 text-start">
+                        <label for="password" class="form-label text-muted small fw-semibold mb-1 ms-1">Password</label>
+                        <input type="password"
+                               name="password"
+                               id="password"
+                               class="form-control bg-light border-0 rounded-3 py-2 px-3"
+                               placeholder="••••••••••••"
+                               required>
+                    </div>
+
+                    <button type="submit"
+                            name="login"
+                            class="btn btn-secondary w-100 rounded-3 py-2 fw-bold text-white shadow-sm">
+                        LOGIN
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
 </html>
