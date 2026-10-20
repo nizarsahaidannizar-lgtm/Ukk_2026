@@ -1,100 +1,144 @@
 <?php
 // tambah_siswa.php
 include 'includes/cek_session.php';
+include 'config/koneksi.php';
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="id">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tambah Siswa</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="layout/style.css">
 </head>
 
-<body>
+<body class="bg-light">
 
-    <h1>Tambah Siswa</h1>
+<div class="container-fluid">
+    <div class="row">
 
-    <form action="proses_tambah_siswa.php" method="POST">
+        <?php include 'layout/sidebar.php'; ?>
 
-        <table>
+        <!-- KONTEN UTAMA -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 p-4">
 
-            <tr>
-                <td>NIS</td>
-                <td>:</td>
-                <td>
-                    <input type="text" name="nis" required>
-                </td>
-            </tr>
+            <!-- HEADER HALAMAN -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h1 class="h2 m-0">Tambah Data Siswa</h1>
+            </div>
 
-            <tr>
-                <td>NISN</td>
-                <td>:</td>
-                <td>
-                    <input type="text" name="nisn" required>
-                </td>
-            </tr>
+            <!-- TOMBOL KEMBALI -->
+            <div class="mb-4">
+                <a href="kelola_siswa.php" class="btn btn-secondary fw-semibold">
+                    Kembali ke Kelola Siswa
+                </a>
+            </div>
 
-            <tr>
-                <td>Nama Siswa</td>
-                <td>:</td>
-                <td>
-                    <input type="text" name="nama" required>
-                </td>
-            </tr>
+            <!-- CARD FORM TAMBAH SISWA -->
+            <div class="card shadow-sm border-0 rounded-3 mb-5">
+                <div class="card-header bg-white py-3">
+                    <h5 class="card-title m-0 fw-bold">Form Input Siswa Baru</h5>
+                </div>
+                <div class="card-body p-4">
+                    
+                    <form action="proses_tambah_siswa.php" method="POST">
+                        <div class="row g-3">
+                            
+                            <!-- NIS -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">NIS</label>
+                                <input type="text" 
+                                       name="nis" 
+                                       class="form-control" 
+                                       placeholder="Masukkan NIS" 
+                                       required>
+                            </div>
 
-            <tr>
-                <td>Jenis Kelamin</td>
-                <td>:</td>
-                <td>
-                    <select name="jenis_kelamin" required>
-                        <option value="">-- Pilih --</option>
-                        <option value="L">Laki-laki</option>
-                        <option value="P">Perempuan</option>
-                    </select>
-                </td>
-            </tr>
+                            <!-- NISN -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">NISN</label>
+                                <input type="text" 
+                                       name="nisn" 
+                                       class="form-control" 
+                                       placeholder="Masukkan NISN" 
+                                       required>
+                            </div>
 
-            <tr>
-                <td>Tanggal Lahir</td>
-                <td>:</td>
-                <td>
-                    <input type="date" name="tanggal_lahir" required>
-                </td>
-            </tr>
+                            <!-- Nama Siswa -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Nama Siswa</label>
+                                <input type="text" 
+                                       name="nama" 
+                                       class="form-control" 
+                                       placeholder="Masukkan Nama Lengkap" 
+                                       required>
+                            </div>
 
-            <tr>
-                <td>Alamat</td>
-                <td>:</td>
-                <td>
-                    <textarea name="alamat" rows="4" cols="30" required></textarea>
-                </td>
-            </tr>
+                            <!-- Jenis Kelamin -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Jenis Kelamin</label>
+                                <select name="jenis_kelamin" class="form-select" required>
+                                    <option value="">-- Pilih Jenis Kelamin --</option>
+                                    <option value="L">Laki-laki</option>
+                                    <option value="P">Perempuan</option>
+                                </select>
+                            </div>
 
-            <tr>
-                <td>Status Aktif</td>
-                <td>:</td>
-                <td>
-                    <select name="status_aktif" required>
-                        <option value="1">Aktif</option>
-                        <option value="0">Tidak Aktif</option>
-                    </select>
-                </td>
-            </tr>
+                            <!-- Tanggal Lahir -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Tanggal Lahir</label>
+                                <input type="date" 
+                                       name="tanggal_lahir" 
+                                       class="form-control" 
+                                       required>
+                            </div>
 
-            <tr>
-                <td colspan="3">
-                    <input type="submit" value="Simpan">
-                </td>
-            </tr>
+                            <!-- Status Aktif -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Status Aktif</label>
+                                <select name="status_aktif" class="form-select" required>
+                                    <option value="1">Aktif</option>
+                                    <option value="0">Tidak Aktif</option>
+                                </select>
+                            </div>
 
-        </table>
+                            <!-- Alamat -->
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Alamat</label>
+                                <textarea name="alamat" 
+                                          class="form-control" 
+                                          rows="3" 
+                                          placeholder="Masukkan Alamat Lengkap" 
+                                          required></textarea>
+                            </div>
 
-    </form>
+                            <!-- Tombol Aksi -->
+                            <div class="col-12 mt-4">
+                                <button type="submit" class="btn btn-primary px-4 fw-semibold">
+                                    Simpan Data Siswa
+                                </button>
+                                <a href="kelola_siswa.php" class="btn btn-outline-secondary px-4 ms-2">
+                                    Batal
+                                </a>
+                            </div>
 
-    <p>
-        <a href="kelola_siswa.php">Kembali</a>
-    </p>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<!-- Bootstrap 5 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

@@ -7,10 +7,10 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Pelanggaran Siswa</title>
+    <title>Login - SIP</title>
 
     <!-- Bootstrap 5 CSS & FontAwesome Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -24,9 +24,14 @@ session_start();
 
             <div class="card-body p-2">
 
-                <!-- Logo Ikon Timbangan -->
+                <!-- Logo Sekolah & Judul Header SIP -->
                 <div class="mb-4">
-                    <i class="fa-solid fa-scale-balanced display-3 text-dark"></i>
+                    <!-- Icon Logo Sekolah -->
+                    <i class="fa-solid fa-school display-3 text-dark mb-2"></i>
+                    
+                    <!-- Judul SIP -->
+                    <h2 class="fw-bold text-dark m-0">SIP</h2>
+                    <p class="text-muted small">Sistem Informasi Pelanggaran</p>
                 </div>
 
                 <!-- Pesan Error Session -->
@@ -75,7 +80,7 @@ session_start();
     </div>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

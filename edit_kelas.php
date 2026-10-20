@@ -3,103 +3,142 @@
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
-$id = $_GET['id'];
+$id = (int) ($_GET['id'] ?? 0);
 
-$sql = "SELECT * FROM t_kelas WHERE id = '$id'";
-$hasil = mysqli_query($koneksi, $sql);
+// Gunakan Prepared Statement untuk keamanan SQL Injection
+$stmt = mysqli_prepare(
+    $koneksi,
+    "SELECT * FROM t_kelas WHERE id = ?"
+);
+mysqli_stmt_bind_param($stmt, "i", $id);
+mysqli_stmt_execute($stmt);
+
+$hasil = mysqli_stmt_get_result($stmt);
 $data = mysqli_fetch_assoc($hasil);
+mysqli_stmt_close($stmt);
+
+if (!$data) {
+    header("Location: kelola_kelas.php");
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="id">
 
 <head>
-    <title>Edit Kelas</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Kelas - SIP</title>
+
+    <!-- Bootstrap 5 CSS & FontAwesome Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="layout/style.css">
 </head>
 
-<body>
+<body class="bg-light">
 
-    <h1>Edit Kelas</h1>
+<div class="container-fluid">
+    <div class="row">
 
-    <form action="proses_edit_kelas.php" method="POST">
+        <?php include 'layout/sidebar.php'; ?>
 
-        <input type="hidden" name="id"
-               value="<?php echo $data['id']; ?>">
+        <!-- KONTEN UTAMA -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 p-4">
 
-        <table>
+            <!-- HEADER HALAMAN -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h1 class="h2 m-0">Edit Data Kelas</h1>
+            </div>
 
-            <tr>
-                <td>Nama Kelas</td>
-                <td>:</td>
-                <td>
-                    <input type="text" name="nama"
-                           value="<?php echo $data['nama']; ?>"
-                           required>
-                </td>
-            </tr>
+            <!-- TOMBOL KEMBALI -->
+            <div class="mb-4">
+                <a href="kelola_kelas.php" class="btn btn-secondary fw-semibold">
+                    Kembali ke Kelola Kelas
+                </a>
+            </div>
 
-            <tr>
-                <td>Tingkat</td>
-                <td>:</td>
-                <td>
-                    <input type="text" name="tingkat"
-                           value="<?php echo $data['tingkat']; ?>"
-                           required>
-                </td>
-            </tr>
+            <!-- CARD FORM EDIT KELAS -->
+            <div class="card shadow-sm border-0 rounded-3 mb-5">
+                <div class="card-header bg-white py-3">
+                    <h5 class="card-title m-0 fw-bold">Form Edit Kelas</h5>
+                </div>
+                <div class="card-body p-4">
+                    
+                    <form action="proses_edit_kelas.php" method="POST">
+                        <input type="hidden" name="id" value="<?= htmlspecialchars($data['id']); ?>">
 
-            <tr>
-                <td>Jurusan</td>
-                <td>:</td>
-                <td>
-                    <input type="text" name="jurusan"
-                           value="<?php echo $data['jurusan']; ?>"
-                           required>
-                </td>
-            </tr>
+                        <div class="row g-3">
+                            
+                            <!-- Nama Kelas -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Nama Kelas</label>
+                                <input type="text" 
+                                       name="nama" 
+                                       class="form-control" 
+                                       value="<?= htmlspecialchars($data['nama']); ?>" 
+                                       placeholder="Contoh: X RPL 1" 
+                                       required>
+                            </div>
 
-            <tr>
-                <td>Status Aktif</td>
-                <td>:</td>
-                <td>
-                    <select name="status_aktif" required>
+                            <!-- Tingkat -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Tingkat</label>
+                                <input type="text" 
+                                       name="tingkat" 
+                                       class="form-control" 
+                                       value="<?= htmlspecialchars($data['tingkat']); ?>" 
+                                       placeholder="Contoh: X, XI, XII" 
+                                       required>
+                            </div>
 
-                        <option value="1"
-                            <?php
-                            if ($data['status_aktif'] == 1) {
-                                echo 'selected';
-                            }
-                            ?>>
-                            Aktif
-                        </option>
+                            <!-- Jurusan -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Jurusan</label>
+                                <input type="text" 
+                                       name="jurusan" 
+                                       class="form-control" 
+                                       value="<?= htmlspecialchars($data['jurusan']); ?>" 
+                                       placeholder="Contoh: Rekayasa Perangkat Lunak" 
+                                       required>
+                            </div>
 
-                        <option value="0"
-                            <?php
-                            if ($data['status_aktif'] == 0) {
-                                echo 'selected';
-                            }
-                            ?>>
-                            Tidak Aktif
-                        </option>
+                            <!-- Status Aktif -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Status Aktif</label>
+                                <select name="status_aktif" class="form-select" required>
+                                    <option value="1" <?= ($data['status_aktif'] == 1) ? 'selected' : ''; ?>>
+                                        Aktif
+                                    </option>
+                                    <option value="0" <?= ($data['status_aktif'] == 0) ? 'selected' : ''; ?>>
+                                        Tidak Aktif
+                                    </option>
+                                </select>
+                            </div>
 
-                    </select>
-                </td>
-            </tr>
+                            <!-- Tombol Aksi -->
+                            <div class="col-12 mt-4">
+                                <button type="submit" class="btn btn-warning px-4 fw-semibold text-white">
+                                    Update Kelas
+                                </button>
+                                <a href="kelola_kelas.php" class="btn btn-outline-secondary px-4 ms-2">
+                                    Batal
+                                </a>
+                            </div>
 
-            <tr>
-                <td colspan="3">
-                    <input type="submit" value="Update">
-                </td>
-            </tr>
+                        </div>
+                    </form>
 
-        </table>
+                </div>
+            </div>
 
-    </form>
+        </main>
+    </div>
+</div>
 
-    <p>
-        <a href="kelola_kelas.php">Kembali ke Kelola Kelas</a>
-    </p>
+<!-- Bootstrap 5 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

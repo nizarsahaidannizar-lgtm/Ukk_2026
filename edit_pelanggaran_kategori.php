@@ -4,99 +4,127 @@
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
-$id = $_GET['id'];
+$id = (int) ($_GET['id'] ?? 0);
 
-$sql = "SELECT * FROM t_pelanggaran_kategori WHERE id = '$id'";
-$hasil = mysqli_query($koneksi, $sql);
+$stmt = mysqli_prepare(
+    $koneksi,
+    "SELECT * FROM t_pelanggaran_kategori WHERE id = ?"
+);
+mysqli_stmt_bind_param($stmt, "i", $id);
+mysqli_stmt_execute($stmt);
+
+$hasil = mysqli_stmt_get_result($stmt);
 $data = mysqli_fetch_assoc($hasil);
+mysqli_stmt_close($stmt);
 
 if (!$data) {
-    die("Data kategori pelanggaran tidak ditemukan.");
+    header("Location: kelola_pelanggaran_kategori.php");
+    exit();
 }
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="id">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Kategori Pelanggaran</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="layout/style.css">
 </head>
 
-<body>
+<body class="bg-light">
 
-    <h1>Edit Kategori Pelanggaran</h1>
+<div class="container-fluid">
+    <div class="row">
 
-    <form action="proses_edit_pelanggaran_kategori.php" method="POST">
+        <?php include 'layout/sidebar.php'; ?>
 
-        <input type="hidden" name="id"
-               value="<?php echo $data['id']; ?>">
+        <!-- KONTEN UTAMA -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 p-4">
 
-        <table>
+            <!-- HEADER HALAMAN -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h1 class="h2 m-0">Edit Kategori Pelanggaran</h1>
+            </div>
 
-            <tr>
-                <td>Nama Kategori</td>
-                <td>:</td>
-                <td>
-                    <input type="text" name="nama"
-                           value="<?php echo htmlspecialchars($data['nama']); ?>"
-                           required>
-                </td>
-            </tr>
+            <!-- TOMBOL KEMBALI -->
+            <div class="mb-4">
+                <a href="kelola_pelanggaran_kategori.php" class="btn btn-secondary fw-semibold">
+                    Kembali ke Kelola Kategori Pelanggaran
+                </a>
+            </div>
 
-            <tr>
-                <td>Deskripsi</td>
-                <td>:</td>
-                <td>
-                    <textarea name="deskripsi" rows="4" cols="30"><?php
-                        echo htmlspecialchars($data['deskripsi'] ?? '');
-                    ?></textarea>
-                </td>
-            </tr>
+            <!-- CARD FORM EDIT KATEGORI PELANGGARAN -->
+            <div class="card shadow-sm border-0 rounded-3 mb-5">
+                <div class="card-header bg-white py-3">
+                    <h5 class="card-title m-0 fw-bold">Form Edit Kategori Pelanggaran</h5>
+                </div>
+                <div class="card-body p-4">
+                    
+                    <form action="proses_edit_pelanggaran_kategori.php" method="POST">
+                        <input type="hidden" name="id" value="<?= htmlspecialchars($data['id']); ?>">
 
-            <tr>
-                <td>Status Aktif</td>
-                <td>:</td>
-                <td>
-                    <select name="status_aktif" required>
+                        <div class="row g-3">
+                            
+                            <!-- Nama Kategori -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Nama Kategori</label>
+                                <input type="text" 
+                                       name="nama" 
+                                       class="form-control" 
+                                       value="<?= htmlspecialchars($data['nama']); ?>" 
+                                       placeholder="Contoh: Pelanggaran Ringan" 
+                                       required>
+                            </div>
 
-                        <option value="1"
-                            <?php
-                            if ($data['status_aktif'] == 1) {
-                                echo 'selected';
-                            }
-                            ?>>
-                            Aktif
-                        </option>
+                            <!-- Status Aktif -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Status Aktif</label>
+                                <select name="status_aktif" class="form-select" required>
+                                    <option value="1" <?= ($data['status_aktif'] == 1) ? 'selected' : ''; ?>>
+                                        Aktif
+                                    </option>
+                                    <option value="0" <?= ($data['status_aktif'] == 0) ? 'selected' : ''; ?>>
+                                        Tidak Aktif
+                                    </option>
+                                </select>
+                            </div>
 
-                        <option value="0"
-                            <?php
-                            if ($data['status_aktif'] == 0) {
-                                echo 'selected';
-                            }
-                            ?>>
-                            Tidak Aktif
-                        </option>
+                            <!-- Deskripsi -->
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Deskripsi</label>
+                                <textarea name="deskripsi" 
+                                          class="form-control" 
+                                          rows="3" 
+                                          placeholder="Masukkan deskripsi kategori..."><?= htmlspecialchars($data['deskripsi'] ?? ''); ?></textarea>
+                            </div>
 
-                    </select>
-                </td>
-            </tr>
+                            <!-- Tombol Aksi -->
+                            <div class="col-12 mt-4">
+                                <button type="submit" class="btn btn-warning px-4 fw-semibold text-white">
+                                    Update Kategori Pelanggaran
+                                </button>
+                                <a href="kelola_pelanggaran_kategori.php" class="btn btn-outline-secondary px-4 ms-2">
+                                    Batal
+                                </a>
+                            </div>
 
-            <tr>
-                <td colspan="3">
-                    <input type="submit" value="Update">
-                </td>
-            </tr>
+                        </div>
+                    </form>
 
-        </table>
+                </div>
+            </div>
 
-    </form>
+        </main>
+    </div>
+</div>
 
-    <p>
-        <a href="kelola_pelanggaran_kategori.php">
-            Kembali ke Kelola Kategori Pelanggaran
-        </a>
-    </p>
+<!-- Bootstrap 5 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

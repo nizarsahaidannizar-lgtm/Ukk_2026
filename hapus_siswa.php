@@ -1,39 +1,44 @@
 <?php
 // hapus_siswa.php
-session_start();
-
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
-$id = $_GET['id'];
+if (isset($_GET['id'])) {
+    $id = (int) $_GET['id'];
 
-// Ambil nama siswa sebelum dihapus
-$cek = mysqli_query(
-    $koneksi,
-    "SELECT nama FROM t_siswa WHERE id = '$id'"
-);
+    // 1. Ambil nama siswa
+    $stmt_cek = mysqli_prepare($koneksi, "SELECT nama FROM t_siswa WHERE id = ?");
+    mysqli_stmt_bind_param($stmt_cek, "i", $id);
+    mysqli_stmt_execute($stmt_cek);
+    $res_cek = mysqli_stmt_get_result($stmt_cek);
 
-$data = mysqli_fetch_assoc($cek);
+    if ($data = mysqli_fetch_assoc($res_cek)) {
+        $nama_siswa = $data['nama'];
 
-// Hapus data siswa
-$sql = "DELETE FROM t_siswa WHERE id = '$id'";
+        // 2. Hapus dulu data di tabel penempatan kelas (t_kelas_siswa) jika ada
+        $stmt_relasi = mysqli_prepare($koneksi, "DELETE FROM t_kelas_siswa WHERE siswa_id = ?");
+        mysqli_stmt_bind_param($stmt_relasi, "i", $id);
+        mysqli_stmt_execute($stmt_relasi);
+        mysqli_stmt_close($stmt_relasi);
 
-if (mysqli_query($koneksi, $sql)) {
+        // 3. Hapus data utama siswa
+        $stmt_del = mysqli_prepare($koneksi, "DELETE FROM t_siswa WHERE id = ?");
+        mysqli_stmt_bind_param($stmt_del, "i", $id);
 
-    $id_user = $_SESSION['id_user'];
-    $waktu = date('Y-m-d H:i:s');
+        if (mysqli_stmt_execute($stmt_del)) {
+            $_SESSION['pesan_sukses'] = "Data siswa <strong>" . htmlspecialchars($nama_siswa) . "</strong> beserta riwayat kelasnya berhasil dihapus!";
+        } else {
+            $_SESSION['pesan_error'] = "Gagal menghapus data siswa!";
+        }
 
-    $aktivitas = "hapus siswa: " . $data['nama'];
+        mysqli_stmt_close($stmt_del);
+    } else {
+        $_SESSION['pesan_error'] = "Data siswa tidak ditemukan!";
+    }
 
-    // Simpan aktivitas ke tabel log
-    $log = "INSERT INTO tbl_log
-            (id_user, aktivitas, waktu)
-            VALUES
-            ('$id_user', '$aktivitas', '$waktu')";
-
-    mysqli_query($koneksi, $log);
+    mysqli_stmt_close($stmt_cek);
 }
 
 header('Location: kelola_siswa.php');
-exit;
+exit();
 ?>

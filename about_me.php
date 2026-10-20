@@ -2,11 +2,11 @@
 session_start();
 include "config/koneksi.php";
 
-$nama = "Raja Kadu";
+$nama = "Sahaidan Nizzar";
 $kelas = "XII RPL";
 $sekolah = "SMK Muhammadiyah Tasikmalaya";
 $jurusan = "Rekayasa Perangkat Lunak";
-$hobi = "Baca Buku";
+$hobi = "FootBall";
 ?>
 
 <!DOCTYPE html>
