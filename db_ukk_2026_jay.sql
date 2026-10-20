@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 28, 2026 at 07:58 AM
--- Server version: 10.4.27-MariaDB
--- PHP Version: 8.0.25
+-- Waktu pembuatan: 20 Okt 2026 pada 07.19
+-- Versi server: 10.4.32-MariaDB
+-- Versi PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `db_ukk_2026`
+-- Database: `db_ukk_2026_jay`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `t_guru`
+-- Struktur dari tabel `t_guru`
 --
 
 CREATE TABLE `t_guru` (
@@ -39,11 +39,10 @@ CREATE TABLE `t_guru` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `t_guru`
+-- Dumping data untuk tabel `t_guru`
 --
 
 INSERT INTO `t_guru` (`id`, `nip`, `nama`, `email`, `status_aktif`, `user_id`, `created_at`, `updated_at`) VALUES
-(1, '198001010001', 'Ahmad Hidayat', 'ahmad.hidayat@gmail.com', 1, 1, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
 (2, '198102020002', 'Budi Santoso', 'budi.santoso@gmail.com', 1, 2, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
 (3, '198203030003', 'Citra Lestari', 'citra.lestari@gmail.com', 1, 3, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
 (4, '198304040004', 'Dedi Kurniawan', 'dedi.kurniawan@gmail.com', 1, 4, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
@@ -68,7 +67,6 @@ INSERT INTO `t_guru` (`id`, `nip`, `nama`, `email`, `status_aktif`, `user_id`, `
 (23, '198223230023', 'Wahyu Ramadhan', 'wahyu.ramadhan@gmail.com', 1, 23, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
 (24, '198324240024', 'Yuni Astuti', 'yuni.astuti@gmail.com', 1, 24, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
 (25, '198425250025', 'Zainal Abidin', 'zainal.abidin@gmail.com', 1, 25, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
-(26, '198526260026', 'Agus Setiawan', 'agus.setiawan@gmail.com', 1, 26, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
 (27, '198627270027', 'Bella Anggraini', 'bella.anggraini@gmail.com', 1, 27, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
 (28, '198728280028', 'Cahyo Pratama', 'cahyo.pratama@gmail.com', 1, 28, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
 (29, '198829290029', 'Dian Puspita', 'dian.puspita@gmail.com', 1, 29, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
@@ -91,13 +89,12 @@ INSERT INTO `t_guru` (`id`, `nip`, `nama`, `email`, `status_aktif`, `user_id`, `
 (46, '198546460046', 'Vicky Ramadhan', 'vicky.ramadhan@gmail.com', 1, 46, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
 (47, '198647470047', 'Wulan Pertiwi', 'wulan.pertiwi@gmail.com', 1, 47, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
 (48, '198748480048', 'Yusuf Maulana', 'yusuf.maulana@gmail.com', 1, 48, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
-(49, '198849490049', 'Zahra Aulia', 'zahra.aulia@gmail.com', 1, 49, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
-(50, '198950500050', 'Andi Firmansyah', 'andi.firmansyah@gmail.com', 1, 50, '2026-07-01 01:00:00', '2026-07-01 01:00:00');
+(49, '198849490049', 'Zahra Aulia', 'zahra.aulia@gmail.com', 1, 49, '2026-07-01 01:00:00', '2026-07-01 01:00:00');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `t_kelas`
+-- Struktur dari tabel `t_kelas`
 --
 
 CREATE TABLE `t_kelas` (
@@ -111,11 +108,10 @@ CREATE TABLE `t_kelas` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `t_kelas`
+-- Dumping data untuk tabel `t_kelas`
 --
 
 INSERT INTO `t_kelas` (`id`, `nama`, `tingkat`, `jurusan`, `status_aktif`, `created_at`, `updated_at`) VALUES
-(1, 'BD', 'XI', 'BD', 1, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
 (2, 'TSM 1', 'XI', 'TSM', 1, '2026-07-02 01:00:00', '2026-07-02 01:00:00'),
 (3, 'TSM 2', 'XI', 'TSM', 1, '2026-07-03 01:00:00', '2026-07-03 01:00:00'),
 (4, 'TSM 3', 'XI', 'TSM', 1, '2026-07-04 01:00:00', '2026-07-04 01:00:00'),
@@ -129,7 +125,6 @@ INSERT INTO `t_kelas` (`id`, `nama`, `tingkat`, `jurusan`, `status_aktif`, `crea
 (12, 'TKR 2', 'XI', 'TKR', 1, '2026-07-12 01:00:00', '2026-07-12 01:00:00'),
 (13, 'TKR 3', 'XI', 'TKR', 1, '2026-07-13 01:00:00', '2026-07-13 01:00:00'),
 (14, 'TKR 4', 'XI', 'TKR', 1, '2026-07-14 01:00:00', '2026-07-14 01:00:00'),
-(15, 'BD', 'XI', 'BD', 1, '2026-07-15 01:00:00', '2026-07-15 01:00:00'),
 (16, 'TSM 1', 'XI', 'TSM', 1, '2026-07-16 01:00:00', '2026-07-16 01:00:00'),
 (17, 'TSM 2', 'XI', 'TSM', 1, '2026-07-17 01:00:00', '2026-07-17 01:00:00'),
 (18, 'TSM 3', 'XI', 'TSM', 1, '2026-07-18 01:00:00', '2026-07-18 01:00:00'),
@@ -143,7 +138,6 @@ INSERT INTO `t_kelas` (`id`, `nama`, `tingkat`, `jurusan`, `status_aktif`, `crea
 (26, 'TKR 2', 'XI', 'TKR', 1, '2026-07-26 01:00:00', '2026-07-26 01:00:00'),
 (27, 'TKR 3', 'XI', 'TKR', 1, '2026-07-27 01:00:00', '2026-07-27 01:00:00'),
 (28, 'TKR 4', 'XI', 'TKR', 1, '2026-07-28 01:00:00', '2026-07-28 01:00:00'),
-(29, 'BD', 'XI', 'BD', 1, '2026-07-29 01:00:00', '2026-07-29 01:00:00'),
 (30, 'TSM 1', 'XI', 'TSM', 1, '2026-07-30 01:00:00', '2026-07-30 01:00:00'),
 (31, 'TSM 2', 'XI', 'TSM', 1, '2026-07-31 01:00:00', '2026-07-31 01:00:00'),
 (32, 'TSM 3', 'XI', 'TSM', 1, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
@@ -157,7 +151,6 @@ INSERT INTO `t_kelas` (`id`, `nama`, `tingkat`, `jurusan`, `status_aktif`, `crea
 (40, 'TKR 2', 'XI', 'TKR', 1, '2026-07-09 01:00:00', '2026-07-09 01:00:00'),
 (41, 'TKR 3', 'XI', 'TKR', 1, '2026-07-10 01:00:00', '2026-07-10 01:00:00'),
 (42, 'TKR 4', 'XI', 'TKR', 1, '2026-07-11 01:00:00', '2026-07-11 01:00:00'),
-(43, 'BD', 'XI', 'BD', 1, '2026-07-12 01:00:00', '2026-07-12 01:00:00'),
 (44, 'TSM 1', 'XI', 'TSM', 1, '2026-07-13 01:00:00', '2026-07-13 01:00:00'),
 (45, 'TSM 2', 'XI', 'TSM', 1, '2026-07-14 01:00:00', '2026-07-14 01:00:00'),
 (46, 'TSM 3', 'XI', 'TSM', 1, '2026-07-15 01:00:00', '2026-07-15 01:00:00'),
@@ -219,7 +212,7 @@ INSERT INTO `t_kelas` (`id`, `nama`, `tingkat`, `jurusan`, `status_aktif`, `crea
 -- --------------------------------------------------------
 
 --
--- Table structure for table `t_kelas_siswa`
+-- Struktur dari tabel `t_kelas_siswa`
 --
 
 CREATE TABLE `t_kelas_siswa` (
@@ -235,12 +228,10 @@ CREATE TABLE `t_kelas_siswa` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `t_kelas_siswa`
+-- Dumping data untuk tabel `t_kelas_siswa`
 --
 
 INSERT INTO `t_kelas_siswa` (`id`, `siswa_id`, `tahun_ajaran_id`, `kelas_id`, `tanggal_mulai`, `tanggal_selesai`, `status_aktif`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 1, '2026-07-01', '0000-00-00', 1, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
-(2, 2, 1, 2, '2026-07-01', '0000-00-00', 1, '2026-07-02 01:00:00', '2026-07-02 01:00:00'),
 (3, 3, 1, 3, '2026-07-01', '0000-00-00', 1, '2026-07-03 01:00:00', '2026-07-03 01:00:00'),
 (4, 4, 1, 4, '2026-07-01', '0000-00-00', 1, '2026-07-04 01:00:00', '2026-07-04 01:00:00'),
 (5, 5, 1, 5, '2026-07-01', '0000-00-00', 1, '2026-07-05 01:00:00', '2026-07-05 01:00:00'),
@@ -253,7 +244,6 @@ INSERT INTO `t_kelas_siswa` (`id`, `siswa_id`, `tahun_ajaran_id`, `kelas_id`, `t
 (12, 12, 1, 12, '2026-07-01', '0000-00-00', 1, '2026-07-12 01:00:00', '2026-07-12 01:00:00'),
 (13, 13, 1, 13, '2026-07-01', '0000-00-00', 1, '2026-07-13 01:00:00', '2026-07-13 01:00:00'),
 (14, 14, 1, 14, '2026-07-01', '0000-00-00', 1, '2026-07-14 01:00:00', '2026-07-14 01:00:00'),
-(15, 15, 1, 1, '2026-07-01', '0000-00-00', 1, '2026-07-15 01:00:00', '2026-07-15 01:00:00'),
 (16, 16, 1, 2, '2026-07-01', '0000-00-00', 1, '2026-07-16 01:00:00', '2026-07-16 01:00:00'),
 (17, 17, 1, 3, '2026-07-01', '0000-00-00', 1, '2026-07-17 01:00:00', '2026-07-17 01:00:00'),
 (18, 18, 1, 4, '2026-07-01', '0000-00-00', 1, '2026-07-18 01:00:00', '2026-07-18 01:00:00'),
@@ -262,15 +252,9 @@ INSERT INTO `t_kelas_siswa` (`id`, `siswa_id`, `tahun_ajaran_id`, `kelas_id`, `t
 (21, 21, 1, 7, '2026-07-01', '0000-00-00', 1, '2026-07-21 01:00:00', '2026-07-21 01:00:00'),
 (22, 22, 1, 8, '2026-07-01', '0000-00-00', 1, '2026-07-22 01:00:00', '2026-07-22 01:00:00'),
 (23, 23, 1, 9, '2026-07-01', '0000-00-00', 1, '2026-07-23 01:00:00', '2026-07-23 01:00:00'),
-(24, 24, 1, 10, '2026-07-01', '0000-00-00', 1, '2026-07-24 01:00:00', '2026-07-24 01:00:00'),
-(25, 25, 1, 11, '2026-07-01', '0000-00-00', 1, '2026-07-25 01:00:00', '2026-07-25 01:00:00'),
-(26, 26, 1, 12, '2026-07-01', '0000-00-00', 1, '2026-07-26 01:00:00', '2026-07-26 01:00:00'),
 (27, 27, 1, 13, '2026-07-01', '0000-00-00', 1, '2026-07-27 01:00:00', '2026-07-27 01:00:00'),
 (28, 28, 1, 14, '2026-07-01', '0000-00-00', 1, '2026-07-28 01:00:00', '2026-07-28 01:00:00'),
-(29, 29, 1, 1, '2026-07-01', '0000-00-00', 1, '2026-07-29 01:00:00', '2026-07-29 01:00:00'),
 (30, 30, 1, 2, '2026-07-01', '0000-00-00', 1, '2026-07-30 01:00:00', '2026-07-30 01:00:00'),
-(31, 31, 1, 3, '2026-07-01', '0000-00-00', 1, '2026-07-31 01:00:00', '2026-07-31 01:00:00'),
-(32, 32, 1, 4, '2026-07-01', '0000-00-00', 1, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
 (33, 33, 1, 5, '2026-07-01', '0000-00-00', 1, '2026-07-02 01:00:00', '2026-07-02 01:00:00'),
 (34, 34, 1, 6, '2026-07-01', '0000-00-00', 1, '2026-07-03 01:00:00', '2026-07-03 01:00:00'),
 (35, 35, 1, 7, '2026-07-01', '0000-00-00', 1, '2026-07-04 01:00:00', '2026-07-04 01:00:00'),
@@ -281,7 +265,6 @@ INSERT INTO `t_kelas_siswa` (`id`, `siswa_id`, `tahun_ajaran_id`, `kelas_id`, `t
 (40, 40, 1, 12, '2026-07-01', '0000-00-00', 1, '2026-07-09 01:00:00', '2026-07-09 01:00:00'),
 (41, 41, 1, 13, '2026-07-01', '0000-00-00', 1, '2026-07-10 01:00:00', '2026-07-10 01:00:00'),
 (42, 42, 1, 14, '2026-07-01', '0000-00-00', 1, '2026-07-11 01:00:00', '2026-07-11 01:00:00'),
-(43, 43, 1, 1, '2026-07-01', '0000-00-00', 1, '2026-07-12 01:00:00', '2026-07-12 01:00:00'),
 (44, 44, 1, 2, '2026-07-01', '0000-00-00', 1, '2026-07-13 01:00:00', '2026-07-13 01:00:00'),
 (45, 45, 1, 3, '2026-07-01', '0000-00-00', 1, '2026-07-14 01:00:00', '2026-07-14 01:00:00'),
 (46, 46, 1, 4, '2026-07-01', '0000-00-00', 1, '2026-07-15 01:00:00', '2026-07-15 01:00:00'),
@@ -292,15 +275,9 @@ INSERT INTO `t_kelas_siswa` (`id`, `siswa_id`, `tahun_ajaran_id`, `kelas_id`, `t
 (51, 51, 1, 9, '2026-07-01', '0000-00-00', 1, '2026-07-20 01:00:00', '2026-07-20 01:00:00'),
 (52, 52, 1, 10, '2026-07-01', '0000-00-00', 1, '2026-07-21 01:00:00', '2026-07-21 01:00:00'),
 (53, 53, 1, 11, '2026-07-01', '0000-00-00', 1, '2026-07-22 01:00:00', '2026-07-22 01:00:00'),
-(54, 54, 1, 12, '2026-07-01', '0000-00-00', 1, '2026-07-23 01:00:00', '2026-07-23 01:00:00'),
-(55, 55, 1, 13, '2026-07-01', '0000-00-00', 1, '2026-07-24 01:00:00', '2026-07-24 01:00:00'),
-(56, 56, 1, 14, '2026-07-01', '0000-00-00', 1, '2026-07-25 01:00:00', '2026-07-25 01:00:00'),
-(57, 57, 1, 1, '2026-07-01', '0000-00-00', 1, '2026-07-26 01:00:00', '2026-07-26 01:00:00'),
 (58, 58, 1, 2, '2026-07-01', '0000-00-00', 1, '2026-07-27 01:00:00', '2026-07-27 01:00:00'),
 (59, 59, 1, 3, '2026-07-01', '0000-00-00', 1, '2026-07-28 01:00:00', '2026-07-28 01:00:00'),
 (60, 60, 1, 4, '2026-07-01', '0000-00-00', 1, '2026-07-29 01:00:00', '2026-07-29 01:00:00'),
-(61, 61, 1, 5, '2026-07-01', '0000-00-00', 1, '2026-07-30 01:00:00', '2026-07-30 01:00:00'),
-(62, 62, 1, 6, '2026-07-01', '0000-00-00', 1, '2026-07-31 01:00:00', '2026-07-31 01:00:00'),
 (63, 63, 1, 7, '2026-07-01', '0000-00-00', 1, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
 (64, 64, 1, 8, '2026-07-01', '0000-00-00', 1, '2026-07-02 01:00:00', '2026-07-02 01:00:00'),
 (65, 65, 1, 9, '2026-07-01', '0000-00-00', 1, '2026-07-03 01:00:00', '2026-07-03 01:00:00'),
@@ -309,7 +286,6 @@ INSERT INTO `t_kelas_siswa` (`id`, `siswa_id`, `tahun_ajaran_id`, `kelas_id`, `t
 (68, 68, 1, 12, '2026-07-01', '0000-00-00', 1, '2026-07-06 01:00:00', '2026-07-06 01:00:00'),
 (69, 69, 1, 13, '2026-07-01', '0000-00-00', 1, '2026-07-07 01:00:00', '2026-07-07 01:00:00'),
 (70, 70, 1, 14, '2026-07-01', '0000-00-00', 1, '2026-07-08 01:00:00', '2026-07-08 01:00:00'),
-(71, 71, 1, 1, '2026-07-01', '0000-00-00', 1, '2026-07-09 01:00:00', '2026-07-09 01:00:00'),
 (72, 72, 1, 2, '2026-07-01', '0000-00-00', 1, '2026-07-10 01:00:00', '2026-07-10 01:00:00'),
 (73, 73, 1, 3, '2026-07-01', '0000-00-00', 1, '2026-07-11 01:00:00', '2026-07-11 01:00:00'),
 (74, 74, 1, 4, '2026-07-01', '0000-00-00', 1, '2026-07-12 01:00:00', '2026-07-12 01:00:00'),
@@ -322,28 +298,22 @@ INSERT INTO `t_kelas_siswa` (`id`, `siswa_id`, `tahun_ajaran_id`, `kelas_id`, `t
 (81, 81, 1, 11, '2026-07-01', '0000-00-00', 1, '2026-07-19 01:00:00', '2026-07-19 01:00:00'),
 (82, 82, 1, 12, '2026-07-01', '0000-00-00', 1, '2026-07-20 01:00:00', '2026-07-20 01:00:00'),
 (83, 83, 1, 13, '2026-07-01', '0000-00-00', 1, '2026-07-21 01:00:00', '2026-07-21 01:00:00'),
-(84, 84, 1, 14, '2026-07-01', '0000-00-00', 1, '2026-07-22 01:00:00', '2026-07-22 01:00:00'),
-(85, 85, 1, 1, '2026-07-01', '0000-00-00', 1, '2026-07-23 01:00:00', '2026-07-23 01:00:00'),
-(86, 86, 1, 2, '2026-07-01', '0000-00-00', 1, '2026-07-24 01:00:00', '2026-07-24 01:00:00'),
 (87, 87, 1, 3, '2026-07-01', '0000-00-00', 1, '2026-07-25 01:00:00', '2026-07-25 01:00:00'),
 (88, 88, 1, 4, '2026-07-01', '0000-00-00', 1, '2026-07-26 01:00:00', '2026-07-26 01:00:00'),
 (89, 89, 1, 5, '2026-07-01', '0000-00-00', 1, '2026-07-27 01:00:00', '2026-07-27 01:00:00'),
 (90, 90, 1, 6, '2026-07-01', '0000-00-00', 1, '2026-07-28 01:00:00', '2026-07-28 01:00:00'),
-(91, 91, 1, 7, '2026-07-01', '0000-00-00', 1, '2026-07-29 01:00:00', '2026-07-29 01:00:00'),
-(92, 92, 1, 8, '2026-07-01', '0000-00-00', 1, '2026-07-30 01:00:00', '2026-07-30 01:00:00'),
 (93, 93, 1, 9, '2026-07-01', '0000-00-00', 1, '2026-07-31 01:00:00', '2026-07-31 01:00:00'),
 (94, 94, 1, 10, '2026-07-01', '0000-00-00', 1, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
 (95, 95, 1, 11, '2026-07-01', '0000-00-00', 1, '2026-07-02 01:00:00', '2026-07-02 01:00:00'),
 (96, 96, 1, 12, '2026-07-01', '0000-00-00', 1, '2026-07-03 01:00:00', '2026-07-03 01:00:00'),
 (97, 97, 1, 13, '2026-07-01', '0000-00-00', 1, '2026-07-04 01:00:00', '2026-07-04 01:00:00'),
 (98, 98, 1, 14, '2026-07-01', '0000-00-00', 1, '2026-07-05 01:00:00', '2026-07-05 01:00:00'),
-(99, 99, 1, 1, '2026-07-01', '0000-00-00', 1, '2026-07-06 01:00:00', '2026-07-06 01:00:00'),
 (100, 100, 1, 2, '2026-07-01', '0000-00-00', 1, '2026-07-07 01:00:00', '2026-07-07 01:00:00');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `t_pelanggaran`
+-- Struktur dari tabel `t_pelanggaran`
 --
 
 CREATE TABLE `t_pelanggaran` (
@@ -359,7 +329,7 @@ CREATE TABLE `t_pelanggaran` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `t_pelanggaran`
+-- Dumping data untuk tabel `t_pelanggaran`
 --
 
 INSERT INTO `t_pelanggaran` (`id`, `pelanggaran_kategori_id`, `kode`, `nama`, `poin`, `deskripsi`, `status_aktif`, `created_at`, `updated_at`) VALUES
@@ -371,7 +341,6 @@ INSERT INTO `t_pelanggaran` (`id`, `pelanggaran_kategori_id`, `kode`, `nama`, `p
 (6, 6, 'PG-006', 'Rambut tidak sesuai aturan #006', 7, 'Deskripsi pelanggaran nomor 6.', 1, '2026-07-06 01:00:00', '2026-07-06 01:00:00'),
 (7, 7, 'PG-007', 'Membawa barang terlarang #007', 8, 'Deskripsi pelanggaran nomor 7.', 1, '2026-07-07 01:00:00', '2026-07-07 01:00:00'),
 (8, 8, 'PG-008', 'Berkata tidak sopan #008', 9, 'Deskripsi pelanggaran nomor 8.', 1, '2026-07-08 01:00:00', '2026-07-08 01:00:00'),
-(9, 9, 'PG-009', 'Membuang sampah sembarangan #009', 10, 'Deskripsi pelanggaran nomor 9.', 1, '2026-07-09 01:00:00', '2026-07-09 01:00:00'),
 (10, 10, 'PG-010', 'Tidak mengikuti upacara #010', 1, 'Deskripsi pelanggaran nomor 10.', 1, '2026-07-10 01:00:00', '2026-07-10 01:00:00'),
 (11, 11, 'PG-011', 'Terlambat datang ke sekolah #011', 2, 'Deskripsi pelanggaran nomor 11.', 1, '2026-07-11 01:00:00', '2026-07-11 01:00:00'),
 (12, 12, 'PG-012', 'Tidak memakai atribut lengkap #012', 3, 'Deskripsi pelanggaran nomor 12.', 1, '2026-07-12 01:00:00', '2026-07-12 01:00:00'),
@@ -458,16 +427,14 @@ INSERT INTO `t_pelanggaran` (`id`, `pelanggaran_kategori_id`, `kode`, `nama`, `p
 (93, 93, 'PG-093', 'Tidak memakai seragam sesuai ketentuan #093', 4, 'Deskripsi pelanggaran nomor 93.', 1, '2026-07-31 01:00:00', '2026-07-31 01:00:00'),
 (94, 94, 'PG-094', 'Meninggalkan kelas tanpa izin #094', 5, 'Deskripsi pelanggaran nomor 94.', 1, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
 (95, 95, 'PG-095', 'Tidak mengerjakan tugas #095', 6, 'Deskripsi pelanggaran nomor 95.', 1, '2026-07-02 01:00:00', '2026-07-02 01:00:00'),
-(96, 96, 'PG-096', 'Rambut tidak sesuai aturan #096', 7, 'Deskripsi pelanggaran nomor 96.', 1, '2026-07-03 01:00:00', '2026-07-03 01:00:00'),
 (97, 97, 'PG-097', 'Membawa barang terlarang #097', 8, 'Deskripsi pelanggaran nomor 97.', 1, '2026-07-04 01:00:00', '2026-07-04 01:00:00'),
 (98, 98, 'PG-098', 'Berkata tidak sopan #098', 9, 'Deskripsi pelanggaran nomor 98.', 1, '2026-07-05 01:00:00', '2026-07-05 01:00:00'),
-(99, 99, 'PG-099', 'Membuang sampah sembarangan #099', 10, 'Deskripsi pelanggaran nomor 99.', 1, '2026-07-06 01:00:00', '2026-07-06 01:00:00'),
 (100, 100, 'PG-100', 'Tidak mengikuti upacara #100', 1, 'Deskripsi pelanggaran nomor 100.', 1, '2026-07-07 01:00:00', '2026-07-07 01:00:00');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `t_pelanggaran_kategori`
+-- Struktur dari tabel `t_pelanggaran_kategori`
 --
 
 CREATE TABLE `t_pelanggaran_kategori` (
@@ -480,7 +447,7 @@ CREATE TABLE `t_pelanggaran_kategori` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `t_pelanggaran_kategori`
+-- Dumping data untuk tabel `t_pelanggaran_kategori`
 --
 
 INSERT INTO `t_pelanggaran_kategori` (`id`, `nama`, `deskripsi`, `status_aktif`, `created_at`, `updated_at`) VALUES
@@ -492,7 +459,6 @@ INSERT INTO `t_pelanggaran_kategori` (`id`, `nama`, `deskripsi`, `status_aktif`,
 (6, 'Sikap 1', 'Kategori pelanggaran nomor 6', 1, '2026-07-06 01:00:00', '2026-07-06 01:00:00'),
 (7, 'Kebersihan 1', 'Kategori pelanggaran nomor 7', 1, '2026-07-07 01:00:00', '2026-07-07 01:00:00'),
 (8, 'Keamanan 1', 'Kategori pelanggaran nomor 8', 1, '2026-07-08 01:00:00', '2026-07-08 01:00:00'),
-(9, 'Akademik 1', 'Kategori pelanggaran nomor 9', 1, '2026-07-09 01:00:00', '2026-07-09 01:00:00'),
 (10, 'Lingkungan 1', 'Kategori pelanggaran nomor 10', 1, '2026-07-10 01:00:00', '2026-07-10 01:00:00'),
 (11, 'Kedisiplinan 2', 'Kategori pelanggaran nomor 11', 1, '2026-07-11 01:00:00', '2026-07-11 01:00:00'),
 (12, 'Kerapian 2', 'Kategori pelanggaran nomor 12', 1, '2026-07-12 01:00:00', '2026-07-12 01:00:00'),
@@ -579,16 +545,14 @@ INSERT INTO `t_pelanggaran_kategori` (`id`, `nama`, `deskripsi`, `status_aktif`,
 (93, 'Kehadiran 10', 'Kategori pelanggaran nomor 93', 1, '2026-07-31 01:00:00', '2026-07-31 01:00:00'),
 (94, 'Ketertiban 10', 'Kategori pelanggaran nomor 94', 1, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
 (95, 'Perlengkapan 10', 'Kategori pelanggaran nomor 95', 1, '2026-07-02 01:00:00', '2026-07-02 01:00:00'),
-(96, 'Sikap 10', 'Kategori pelanggaran nomor 96', 1, '2026-07-03 01:00:00', '2026-07-03 01:00:00'),
 (97, 'Kebersihan 10', 'Kategori pelanggaran nomor 97', 1, '2026-07-04 01:00:00', '2026-07-04 01:00:00'),
 (98, 'Keamanan 10', 'Kategori pelanggaran nomor 98', 1, '2026-07-05 01:00:00', '2026-07-05 01:00:00'),
-(99, 'Akademik 10', 'Kategori pelanggaran nomor 99', 1, '2026-07-06 01:00:00', '2026-07-06 01:00:00'),
 (100, 'Lingkungan 10', 'Kategori pelanggaran nomor 100', 1, '2026-07-07 01:00:00', '2026-07-07 01:00:00');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `t_pelanggaran_siswa`
+-- Struktur dari tabel `t_pelanggaran_siswa`
 --
 
 CREATE TABLE `t_pelanggaran_siswa` (
@@ -613,25 +577,21 @@ CREATE TABLE `t_pelanggaran_siswa` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `t_pelanggaran_siswa`
+-- Dumping data untuk tabel `t_pelanggaran_siswa`
 --
 
 INSERT INTO `t_pelanggaran_siswa` (`id`, `tahun_ajaran_id`, `siswa_id`, `nama_siswa`, `kelas_id`, `nama_kelas`, `pelanggaran_id`, `nama_pelanggaran`, `pelanggaran_kategori_id`, `guru_id`, `nama_guru`, `tanggal`, `keterangan`, `poin`, `tindakan`, `status`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 'Siswa 1', 1, 'BD', 1, 'Datang terlambat', 1, 1, 'Ahmad Hidayat', '2026-07-01', 'Pencatatan pelanggaran siswa', 5, 'Teguran lisan', 'tercatat', '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
-(2, 1, 2, 'Siswa 2', 2, 'TSM 1', 2, 'Tidak memakai atribut lengkap', 2, 2, 'Budi Santoso', '2026-07-02', 'Pencatatan pelanggaran siswa', 10, 'Pembinaan oleh wali kelas', 'tercatat', '2026-07-02 01:00:00', '2026-07-02 01:00:00'),
 (3, 1, 3, 'Siswa 3', 3, 'TSM 2', 3, 'Tidak mengerjakan tugas', 3, 3, 'Citra Lestari', '2026-07-03', 'Pencatatan pelanggaran siswa', 15, 'Pemanggilan siswa', 'tercatat', '2026-07-03 01:00:00', '2026-07-03 01:00:00'),
 (4, 1, 4, 'Siswa 4', 4, 'TSM 3', 4, 'Keluar kelas tanpa izin', 4, 4, 'Dedi Kurniawan', '2026-07-04', 'Pencatatan pelanggaran siswa', 5, 'Pembinaan', 'tercatat', '2026-07-04 01:00:00', '2026-07-04 01:00:00'),
 (5, 1, 5, 'Siswa 5', 5, 'RPL 1', 5, 'Tidak mengikuti upacara', 5, 5, 'Eka Wulandari', '2026-07-05', 'Pencatatan pelanggaran siswa', 15, 'Teguran lisan', 'tercatat', '2026-07-05 01:00:00', '2026-07-05 01:00:00'),
 (6, 1, 6, 'Siswa 6', 6, 'RPL 2', 6, 'Membawa barang terlarang', 6, 6, 'Fajar Nugraha', '2026-07-06', 'Pencatatan pelanggaran siswa', 20, 'Pembinaan oleh wali kelas', 'tercatat', '2026-07-06 01:00:00', '2026-07-06 01:00:00'),
 (7, 1, 7, 'Siswa 7', 7, 'TKJ 1', 7, 'Berbicara saat pembelajaran', 7, 7, 'Gina Permata', '2026-07-07', 'Pencatatan pelanggaran siswa', 5, 'Pemanggilan siswa', 'tercatat', '2026-07-07 01:00:00', '2026-07-07 01:00:00'),
 (8, 1, 8, 'Siswa 8', 8, 'TKJ 2', 8, 'Tidak menjaga kebersihan kelas', 8, 8, 'Hendra Wijaya', '2026-07-08', 'Pencatatan pelanggaran siswa', 5, 'Pembinaan', 'tercatat', '2026-07-08 01:00:00', '2026-07-08 01:00:00'),
-(9, 1, 9, 'Siswa 9', 9, 'TKJ 3', 9, 'Mengganggu kegiatan belajar', 9, 9, 'Indah Sari', '2026-07-09', 'Pencatatan pelanggaran siswa', 10, 'Teguran lisan', 'tercatat', '2026-07-09 01:00:00', '2026-07-09 01:00:00'),
 (10, 1, 10, 'Siswa 10', 10, 'TKJ 4', 10, 'Tidak mengikuti pembelajaran', 10, 10, 'Joko Susanto', '2026-07-10', 'Pencatatan pelanggaran siswa', 10, 'Pembinaan oleh wali kelas', 'tercatat', '2026-07-10 01:00:00', '2026-07-10 01:00:00'),
 (11, 1, 11, 'Siswa 11', 11, 'TKR 1', 11, 'Datang terlambat', 11, 11, 'Kartika Dewi', '2026-07-11', 'Pencatatan pelanggaran siswa', 5, 'Pemanggilan siswa', 'tercatat', '2026-07-11 01:00:00', '2026-07-11 01:00:00'),
 (12, 1, 12, 'Siswa 12', 12, 'TKR 2', 12, 'Tidak memakai atribut lengkap', 12, 12, 'Lukman Hakim', '2026-07-12', 'Pencatatan pelanggaran siswa', 10, 'Pembinaan', 'tercatat', '2026-07-12 01:00:00', '2026-07-12 01:00:00'),
 (13, 1, 13, 'Siswa 13', 13, 'TKR 3', 13, 'Tidak mengerjakan tugas', 13, 13, 'Maya Sari', '2026-07-13', 'Pencatatan pelanggaran siswa', 15, 'Teguran lisan', 'tercatat', '2026-07-13 01:00:00', '2026-07-13 01:00:00'),
 (14, 1, 14, 'Siswa 14', 14, 'TKR 4', 14, 'Keluar kelas tanpa izin', 14, 14, 'Nanda Saputra', '2026-07-14', 'Pencatatan pelanggaran siswa', 5, 'Pembinaan oleh wali kelas', 'tercatat', '2026-07-14 01:00:00', '2026-07-14 01:00:00'),
-(15, 1, 15, 'Siswa 15', 15, 'BD', 15, 'Tidak mengikuti upacara', 15, 15, 'Olivia Putri', '2026-07-15', 'Pencatatan pelanggaran siswa', 15, 'Pemanggilan siswa', 'tercatat', '2026-07-15 01:00:00', '2026-07-15 01:00:00'),
 (16, 1, 16, 'Siswa 16', 16, 'TSM 1', 16, 'Membawa barang terlarang', 16, 16, 'Pandu Setiawan', '2026-07-16', 'Pencatatan pelanggaran siswa', 20, 'Pembinaan', 'tercatat', '2026-07-16 01:00:00', '2026-07-16 01:00:00'),
 (17, 1, 17, 'Siswa 17', 17, 'TSM 2', 17, 'Berbicara saat pembelajaran', 17, 17, 'Qori Ananda', '2026-07-17', 'Pencatatan pelanggaran siswa', 5, 'Teguran lisan', 'tercatat', '2026-07-17 01:00:00', '2026-07-17 01:00:00'),
 (18, 1, 18, 'Siswa 18', 18, 'TSM 3', 18, 'Tidak menjaga kebersihan kelas', 18, 18, 'Rudi Hartono', '2026-07-18', 'Pencatatan pelanggaran siswa', 5, 'Pembinaan oleh wali kelas', 'tercatat', '2026-07-18 01:00:00', '2026-07-18 01:00:00'),
@@ -640,15 +600,9 @@ INSERT INTO `t_pelanggaran_siswa` (`id`, `tahun_ajaran_id`, `siswa_id`, `nama_si
 (21, 1, 21, 'Siswa 21', 21, 'TKJ 1', 21, 'Datang terlambat', 21, 21, 'Umi Kalsum', '2026-07-21', 'Pencatatan pelanggaran siswa', 5, 'Teguran lisan', 'tercatat', '2026-07-21 01:00:00', '2026-07-21 01:00:00'),
 (22, 1, 22, 'Siswa 22', 22, 'TKJ 2', 22, 'Tidak memakai atribut lengkap', 22, 22, 'Vina Maharani', '2026-07-22', 'Pencatatan pelanggaran siswa', 10, 'Pembinaan oleh wali kelas', 'tercatat', '2026-07-22 01:00:00', '2026-07-22 01:00:00'),
 (23, 1, 23, 'Siswa 23', 23, 'TKJ 3', 23, 'Tidak mengerjakan tugas', 23, 23, 'Wahyu Ramadhan', '2026-07-23', 'Pencatatan pelanggaran siswa', 15, 'Pemanggilan siswa', 'tercatat', '2026-07-23 01:00:00', '2026-07-23 01:00:00'),
-(24, 1, 24, 'Siswa 24', 24, 'TKJ 4', 24, 'Keluar kelas tanpa izin', 24, 24, 'Yuni Astuti', '2026-07-24', 'Pencatatan pelanggaran siswa', 5, 'Pembinaan', 'tercatat', '2026-07-24 01:00:00', '2026-07-24 01:00:00'),
-(25, 1, 25, 'Siswa 25', 25, 'TKR 1', 25, 'Tidak mengikuti upacara', 25, 25, 'Zainal Abidin', '2026-07-25', 'Pencatatan pelanggaran siswa', 15, 'Teguran lisan', 'tercatat', '2026-07-25 01:00:00', '2026-07-25 01:00:00'),
-(26, 1, 26, 'Siswa 26', 26, 'TKR 2', 26, 'Membawa barang terlarang', 26, 26, 'Agus Setiawan', '2026-07-26', 'Pencatatan pelanggaran siswa', 20, 'Pembinaan oleh wali kelas', 'tercatat', '2026-07-26 01:00:00', '2026-07-26 01:00:00'),
 (27, 1, 27, 'Siswa 27', 27, 'TKR 3', 27, 'Berbicara saat pembelajaran', 27, 27, 'Bella Anggraini', '2026-07-27', 'Pencatatan pelanggaran siswa', 5, 'Pemanggilan siswa', 'tercatat', '2026-07-27 01:00:00', '2026-07-27 01:00:00'),
 (28, 1, 28, 'Siswa 28', 28, 'TKR 4', 28, 'Tidak menjaga kebersihan kelas', 28, 28, 'Cahyo Pratama', '2026-07-28', 'Pencatatan pelanggaran siswa', 5, 'Pembinaan', 'tercatat', '2026-07-28 01:00:00', '2026-07-28 01:00:00'),
-(29, 1, 29, 'Siswa 29', 29, 'BD', 29, 'Mengganggu kegiatan belajar', 29, 29, 'Dian Puspita', '2026-07-29', 'Pencatatan pelanggaran siswa', 10, 'Teguran lisan', 'tercatat', '2026-07-29 01:00:00', '2026-07-29 01:00:00'),
 (30, 1, 30, 'Siswa 30', 30, 'TSM 1', 30, 'Tidak mengikuti pembelajaran', 30, 30, 'Eko Prasetyo', '2026-07-30', 'Pencatatan pelanggaran siswa', 10, 'Pembinaan oleh wali kelas', 'tercatat', '2026-07-30 01:00:00', '2026-07-30 01:00:00'),
-(31, 1, 31, 'Siswa 31', 31, 'TSM 2', 31, 'Datang terlambat', 31, 31, 'Fitria Ningsih', '2026-07-31', 'Pencatatan pelanggaran siswa', 5, 'Pemanggilan siswa', 'tercatat', '2026-07-31 01:00:00', '2026-07-31 01:00:00'),
-(32, 1, 32, 'Siswa 32', 32, 'TSM 3', 32, 'Tidak memakai atribut lengkap', 32, 32, 'Galih Firmansyah', '2026-07-01', 'Pencatatan pelanggaran siswa', 10, 'Pembinaan', 'tercatat', '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
 (33, 1, 33, 'Siswa 33', 33, 'RPL 1', 33, 'Tidak mengerjakan tugas', 33, 33, 'Hani Marlina', '2026-07-02', 'Pencatatan pelanggaran siswa', 15, 'Teguran lisan', 'tercatat', '2026-07-02 01:00:00', '2026-07-02 01:00:00'),
 (34, 1, 34, 'Siswa 34', 34, 'RPL 2', 34, 'Keluar kelas tanpa izin', 34, 34, 'Irwan Maulana', '2026-07-03', 'Pencatatan pelanggaran siswa', 5, 'Pembinaan oleh wali kelas', 'tercatat', '2026-07-03 01:00:00', '2026-07-03 01:00:00'),
 (35, 1, 35, 'Siswa 35', 35, 'TKJ 1', 35, 'Tidak mengikuti upacara', 35, 35, 'Jihan Safitri', '2026-07-04', 'Pencatatan pelanggaran siswa', 15, 'Pemanggilan siswa', 'tercatat', '2026-07-04 01:00:00', '2026-07-04 01:00:00'),
@@ -659,26 +613,18 @@ INSERT INTO `t_pelanggaran_siswa` (`id`, `tahun_ajaran_id`, `siswa_id`, `nama_si
 (40, 1, 40, 'Siswa 40', 40, 'TKR 2', 40, 'Tidak mengikuti pembelajaran', 40, 40, 'Oki Setiawan', '2026-07-09', 'Pencatatan pelanggaran siswa', 10, 'Pembinaan', 'tercatat', '2026-07-09 01:00:00', '2026-07-09 01:00:00'),
 (41, 1, 41, 'Siswa 41', 41, 'TKR 3', 41, 'Datang terlambat', 41, 41, 'Putri Amelia', '2026-07-10', 'Pencatatan pelanggaran siswa', 5, 'Teguran lisan', 'tercatat', '2026-07-10 01:00:00', '2026-07-10 01:00:00'),
 (42, 1, 42, 'Siswa 42', 42, 'TKR 4', 42, 'Tidak memakai atribut lengkap', 42, 42, 'Rian Kurnia', '2026-07-11', 'Pencatatan pelanggaran siswa', 10, 'Pembinaan oleh wali kelas', 'tercatat', '2026-07-11 01:00:00', '2026-07-11 01:00:00'),
-(43, 1, 43, 'Siswa 43', 43, 'BD', 43, 'Tidak mengerjakan tugas', 43, 43, 'Salsa Nabila', '2026-07-12', 'Pencatatan pelanggaran siswa', 15, 'Pemanggilan siswa', 'tercatat', '2026-07-12 01:00:00', '2026-07-12 01:00:00'),
 (44, 1, 44, 'Siswa 44', 44, 'TSM 1', 44, 'Keluar kelas tanpa izin', 44, 44, 'Teguh Prakoso', '2026-07-13', 'Pencatatan pelanggaran siswa', 5, 'Pembinaan', 'tercatat', '2026-07-13 01:00:00', '2026-07-13 01:00:00'),
 (45, 1, 45, 'Siswa 45', 45, 'TSM 2', 45, 'Tidak mengikuti upacara', 45, 45, 'Utami Sari', '2026-07-14', 'Pencatatan pelanggaran siswa', 15, 'Teguran lisan', 'tercatat', '2026-07-14 01:00:00', '2026-07-14 01:00:00'),
 (46, 1, 46, 'Siswa 46', 46, 'TSM 3', 46, 'Membawa barang terlarang', 46, 46, 'Vicky Ramadhan', '2026-07-15', 'Pencatatan pelanggaran siswa', 20, 'Pembinaan oleh wali kelas', 'tercatat', '2026-07-15 01:00:00', '2026-07-15 01:00:00'),
 (47, 1, 47, 'Siswa 47', 47, 'RPL 1', 47, 'Berbicara saat pembelajaran', 47, 47, 'Wulan Pertiwi', '2026-07-16', 'Pencatatan pelanggaran siswa', 5, 'Pemanggilan siswa', 'tercatat', '2026-07-16 01:00:00', '2026-07-16 01:00:00'),
 (48, 1, 48, 'Siswa 48', 48, 'RPL 2', 48, 'Tidak menjaga kebersihan kelas', 48, 48, 'Yusuf Maulana', '2026-07-17', 'Pencatatan pelanggaran siswa', 5, 'Pembinaan', 'tercatat', '2026-07-17 01:00:00', '2026-07-17 01:00:00'),
 (49, 1, 49, 'Siswa 49', 49, 'TKJ 1', 49, 'Mengganggu kegiatan belajar', 49, 49, 'Zahra Aulia', '2026-07-18', 'Pencatatan pelanggaran siswa', 10, 'Teguran lisan', 'tercatat', '2026-07-18 01:00:00', '2026-07-18 01:00:00'),
-(50, 1, 50, 'Siswa 50', 50, 'TKJ 2', 50, 'Tidak mengikuti pembelajaran', 50, 50, 'Andi Firmansyah', '2026-07-19', 'Pencatatan pelanggaran siswa', 10, 'Pembinaan oleh wali kelas', 'tercatat', '2026-07-19 01:00:00', '2026-07-19 01:00:00'),
-(51, 1, 51, 'Siswa 51', 51, 'TKJ 3', 51, 'Datang terlambat', 51, 1, 'Ahmad Hidayat', '2026-07-20', 'Pencatatan pelanggaran siswa', 5, 'Pemanggilan siswa', 'tercatat', '2026-07-20 01:00:00', '2026-07-20 01:00:00'),
 (52, 1, 52, 'Siswa 52', 52, 'TKJ 4', 52, 'Tidak memakai atribut lengkap', 52, 2, 'Budi Santoso', '2026-07-21', 'Pencatatan pelanggaran siswa', 10, 'Pembinaan', 'tercatat', '2026-07-21 01:00:00', '2026-07-21 01:00:00'),
 (53, 1, 53, 'Siswa 53', 53, 'TKR 1', 53, 'Tidak mengerjakan tugas', 53, 3, 'Citra Lestari', '2026-07-22', 'Pencatatan pelanggaran siswa', 15, 'Teguran lisan', 'tercatat', '2026-07-22 01:00:00', '2026-07-22 01:00:00'),
-(54, 1, 54, 'Siswa 54', 54, 'TKR 2', 54, 'Keluar kelas tanpa izin', 54, 4, 'Dedi Kurniawan', '2026-07-23', 'Pencatatan pelanggaran siswa', 5, 'Pembinaan oleh wali kelas', 'tercatat', '2026-07-23 01:00:00', '2026-07-23 01:00:00'),
-(55, 1, 55, 'Siswa 55', 55, 'TKR 3', 55, 'Tidak mengikuti upacara', 55, 5, 'Eka Wulandari', '2026-07-24', 'Pencatatan pelanggaran siswa', 15, 'Pemanggilan siswa', 'tercatat', '2026-07-24 01:00:00', '2026-07-24 01:00:00'),
-(56, 1, 56, 'Siswa 56', 56, 'TKR 4', 56, 'Membawa barang terlarang', 56, 6, 'Fajar Nugraha', '2026-07-25', 'Pencatatan pelanggaran siswa', 20, 'Pembinaan', 'tercatat', '2026-07-25 01:00:00', '2026-07-25 01:00:00'),
 (57, 1, 57, 'Siswa 57', 57, 'BD', 57, 'Berbicara saat pembelajaran', 57, 7, 'Gina Permata', '2026-07-26', 'Pencatatan pelanggaran siswa', 5, 'Teguran lisan', 'tercatat', '2026-07-26 01:00:00', '2026-07-26 01:00:00'),
 (58, 1, 58, 'Siswa 58', 58, 'TSM 1', 58, 'Tidak menjaga kebersihan kelas', 58, 8, 'Hendra Wijaya', '2026-07-27', 'Pencatatan pelanggaran siswa', 5, 'Pembinaan oleh wali kelas', 'tercatat', '2026-07-27 01:00:00', '2026-07-27 01:00:00'),
 (59, 1, 59, 'Siswa 59', 59, 'TSM 2', 59, 'Mengganggu kegiatan belajar', 59, 9, 'Indah Sari', '2026-07-28', 'Pencatatan pelanggaran siswa', 10, 'Pemanggilan siswa', 'tercatat', '2026-07-28 01:00:00', '2026-07-28 01:00:00'),
 (60, 1, 60, 'Siswa 60', 60, 'TSM 3', 60, 'Tidak mengikuti pembelajaran', 60, 10, 'Joko Susanto', '2026-07-29', 'Pencatatan pelanggaran siswa', 10, 'Pembinaan', 'tercatat', '2026-07-29 01:00:00', '2026-07-29 01:00:00'),
-(61, 1, 61, 'Siswa 61', 61, 'RPL 1', 61, 'Datang terlambat', 61, 11, 'Kartika Dewi', '2026-07-30', 'Pencatatan pelanggaran siswa', 5, 'Teguran lisan', 'tercatat', '2026-07-30 01:00:00', '2026-07-30 01:00:00'),
-(62, 1, 62, 'Siswa 62', 62, 'RPL 2', 62, 'Tidak memakai atribut lengkap', 62, 12, 'Lukman Hakim', '2026-07-31', 'Pencatatan pelanggaran siswa', 10, 'Pembinaan oleh wali kelas', 'tercatat', '2026-07-31 01:00:00', '2026-07-31 01:00:00'),
 (63, 1, 63, 'Siswa 63', 63, 'TKJ 1', 63, 'Tidak mengerjakan tugas', 63, 13, 'Maya Sari', '2026-07-01', 'Pencatatan pelanggaran siswa', 15, 'Pemanggilan siswa', 'tercatat', '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
 (64, 1, 64, 'Siswa 64', 64, 'TKJ 2', 64, 'Keluar kelas tanpa izin', 64, 14, 'Nanda Saputra', '2026-07-02', 'Pencatatan pelanggaran siswa', 5, 'Pembinaan', 'tercatat', '2026-07-02 01:00:00', '2026-07-02 01:00:00'),
 (65, 1, 65, 'Siswa 65', 65, 'TKJ 3', 65, 'Tidak mengikuti upacara', 65, 15, 'Olivia Putri', '2026-07-03', 'Pencatatan pelanggaran siswa', 15, 'Teguran lisan', 'tercatat', '2026-07-03 01:00:00', '2026-07-03 01:00:00'),
@@ -692,7 +638,6 @@ INSERT INTO `t_pelanggaran_siswa` (`id`, `tahun_ajaran_id`, `siswa_id`, `nama_si
 (73, 1, 73, 'Siswa 73', 73, 'TSM 2', 73, 'Tidak mengerjakan tugas', 73, 23, 'Wahyu Ramadhan', '2026-07-11', 'Pencatatan pelanggaran siswa', 15, 'Teguran lisan', 'tercatat', '2026-07-11 01:00:00', '2026-07-11 01:00:00'),
 (74, 1, 74, 'Siswa 74', 74, 'TSM 3', 74, 'Keluar kelas tanpa izin', 74, 24, 'Yuni Astuti', '2026-07-12', 'Pencatatan pelanggaran siswa', 5, 'Pembinaan oleh wali kelas', 'tercatat', '2026-07-12 01:00:00', '2026-07-12 01:00:00'),
 (75, 1, 75, 'Siswa 75', 75, 'RPL 1', 75, 'Tidak mengikuti upacara', 75, 25, 'Zainal Abidin', '2026-07-13', 'Pencatatan pelanggaran siswa', 15, 'Pemanggilan siswa', 'tercatat', '2026-07-13 01:00:00', '2026-07-13 01:00:00'),
-(76, 1, 76, 'Siswa 76', 76, 'RPL 2', 76, 'Membawa barang terlarang', 76, 26, 'Agus Setiawan', '2026-07-14', 'Pencatatan pelanggaran siswa', 20, 'Pembinaan', 'tercatat', '2026-07-14 01:00:00', '2026-07-14 01:00:00'),
 (77, 1, 77, 'Siswa 77', 77, 'TKJ 1', 77, 'Berbicara saat pembelajaran', 77, 27, 'Bella Anggraini', '2026-07-15', 'Pencatatan pelanggaran siswa', 5, 'Teguran lisan', 'tercatat', '2026-07-15 01:00:00', '2026-07-15 01:00:00'),
 (78, 1, 78, 'Siswa 78', 78, 'TKJ 2', 78, 'Tidak menjaga kebersihan kelas', 78, 28, 'Cahyo Pratama', '2026-07-16', 'Pencatatan pelanggaran siswa', 5, 'Pembinaan oleh wali kelas', 'tercatat', '2026-07-16 01:00:00', '2026-07-16 01:00:00'),
 (79, 1, 79, 'Siswa 79', 79, 'TKJ 3', 79, 'Mengganggu kegiatan belajar', 79, 29, 'Dian Puspita', '2026-07-17', 'Pencatatan pelanggaran siswa', 10, 'Pemanggilan siswa', 'tercatat', '2026-07-17 01:00:00', '2026-07-17 01:00:00'),
@@ -700,28 +645,20 @@ INSERT INTO `t_pelanggaran_siswa` (`id`, `tahun_ajaran_id`, `siswa_id`, `nama_si
 (81, 1, 81, 'Siswa 81', 81, 'TKR 1', 81, 'Datang terlambat', 81, 31, 'Fitria Ningsih', '2026-07-19', 'Pencatatan pelanggaran siswa', 5, 'Teguran lisan', 'tercatat', '2026-07-19 01:00:00', '2026-07-19 01:00:00'),
 (82, 1, 82, 'Siswa 82', 82, 'TKR 2', 82, 'Tidak memakai atribut lengkap', 82, 32, 'Galih Firmansyah', '2026-07-20', 'Pencatatan pelanggaran siswa', 10, 'Pembinaan oleh wali kelas', 'tercatat', '2026-07-20 01:00:00', '2026-07-20 01:00:00'),
 (83, 1, 83, 'Siswa 83', 83, 'TKR 3', 83, 'Tidak mengerjakan tugas', 83, 33, 'Hani Marlina', '2026-07-21', 'Pencatatan pelanggaran siswa', 15, 'Pemanggilan siswa', 'tercatat', '2026-07-21 01:00:00', '2026-07-21 01:00:00'),
-(84, 1, 84, 'Siswa 84', 84, 'TKR 4', 84, 'Keluar kelas tanpa izin', 84, 34, 'Irwan Maulana', '2026-07-22', 'Pencatatan pelanggaran siswa', 5, 'Pembinaan', 'tercatat', '2026-07-22 01:00:00', '2026-07-22 01:00:00'),
-(85, 1, 85, 'Siswa 85', 85, 'BD', 85, 'Tidak mengikuti upacara', 85, 35, 'Jihan Safitri', '2026-07-23', 'Pencatatan pelanggaran siswa', 15, 'Teguran lisan', 'tercatat', '2026-07-23 01:00:00', '2026-07-23 01:00:00'),
-(86, 1, 86, 'Siswa 86', 86, 'TSM 1', 86, 'Membawa barang terlarang', 86, 36, 'Kurniawan Dwi', '2026-07-24', 'Pencatatan pelanggaran siswa', 20, 'Pembinaan oleh wali kelas', 'tercatat', '2026-07-24 01:00:00', '2026-07-24 01:00:00'),
 (87, 1, 87, 'Siswa 87', 87, 'TSM 2', 87, 'Berbicara saat pembelajaran', 87, 37, 'Lilis Karlina', '2026-07-25', 'Pencatatan pelanggaran siswa', 5, 'Pemanggilan siswa', 'tercatat', '2026-07-25 01:00:00', '2026-07-25 01:00:00'),
 (88, 1, 88, 'Siswa 88', 88, 'TSM 3', 88, 'Tidak menjaga kebersihan kelas', 88, 38, 'Maman Suherman', '2026-07-26', 'Pencatatan pelanggaran siswa', 5, 'Pembinaan', 'tercatat', '2026-07-26 01:00:00', '2026-07-26 01:00:00'),
 (89, 1, 89, 'Siswa 89', 89, 'RPL 1', 89, 'Mengganggu kegiatan belajar', 89, 39, 'Nia Ramadhani', '2026-07-27', 'Pencatatan pelanggaran siswa', 10, 'Teguran lisan', 'tercatat', '2026-07-27 01:00:00', '2026-07-27 01:00:00'),
 (90, 1, 90, 'Siswa 90', 90, 'RPL 2', 90, 'Tidak mengikuti pembelajaran', 90, 40, 'Oki Setiawan', '2026-07-28', 'Pencatatan pelanggaran siswa', 10, 'Pembinaan oleh wali kelas', 'tercatat', '2026-07-28 01:00:00', '2026-07-28 01:00:00'),
-(91, 1, 91, 'Siswa 91', 91, 'TKJ 1', 91, 'Datang terlambat', 91, 41, 'Putri Amelia', '2026-07-29', 'Pencatatan pelanggaran siswa', 5, 'Pemanggilan siswa', 'tercatat', '2026-07-29 01:00:00', '2026-07-29 01:00:00'),
-(92, 1, 92, 'Siswa 92', 92, 'TKJ 2', 92, 'Tidak memakai atribut lengkap', 92, 42, 'Rian Kurnia', '2026-07-30', 'Pencatatan pelanggaran siswa', 10, 'Pembinaan', 'tercatat', '2026-07-30 01:00:00', '2026-07-30 01:00:00'),
 (93, 1, 93, 'Siswa 93', 93, 'TKJ 3', 93, 'Tidak mengerjakan tugas', 93, 43, 'Salsa Nabila', '2026-07-31', 'Pencatatan pelanggaran siswa', 15, 'Teguran lisan', 'tercatat', '2026-07-31 01:00:00', '2026-07-31 01:00:00'),
 (94, 1, 94, 'Siswa 94', 94, 'TKJ 4', 94, 'Keluar kelas tanpa izin', 94, 44, 'Teguh Prakoso', '2026-07-01', 'Pencatatan pelanggaran siswa', 5, 'Pembinaan oleh wali kelas', 'tercatat', '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
 (95, 1, 95, 'Siswa 95', 95, 'TKR 1', 95, 'Tidak mengikuti upacara', 95, 45, 'Utami Sari', '2026-07-02', 'Pencatatan pelanggaran siswa', 15, 'Pemanggilan siswa', 'tercatat', '2026-07-02 01:00:00', '2026-07-02 01:00:00'),
-(96, 1, 96, 'Siswa 96', 96, 'TKR 2', 96, 'Membawa barang terlarang', 96, 46, 'Vicky Ramadhan', '2026-07-03', 'Pencatatan pelanggaran siswa', 20, 'Pembinaan', 'tercatat', '2026-07-03 01:00:00', '2026-07-03 01:00:00'),
 (97, 1, 97, 'Siswa 97', 97, 'TKR 3', 97, 'Berbicara saat pembelajaran', 97, 47, 'Wulan Pertiwi', '2026-07-04', 'Pencatatan pelanggaran siswa', 5, 'Teguran lisan', 'tercatat', '2026-07-04 01:00:00', '2026-07-04 01:00:00'),
-(98, 1, 98, 'Siswa 98', 98, 'TKR 4', 98, 'Tidak menjaga kebersihan kelas', 98, 48, 'Yusuf Maulana', '2026-07-05', 'Pencatatan pelanggaran siswa', 5, 'Pembinaan oleh wali kelas', 'tercatat', '2026-07-05 01:00:00', '2026-07-05 01:00:00'),
-(99, 1, 99, 'Siswa 99', 99, 'BD', 99, 'Mengganggu kegiatan belajar', 99, 49, 'Zahra Aulia', '2026-07-06', 'Pencatatan pelanggaran siswa', 10, 'Pemanggilan siswa', 'tercatat', '2026-07-06 01:00:00', '2026-07-06 01:00:00'),
-(100, 1, 100, 'Siswa 100', 100, 'TSM 1', 100, 'Tidak mengikuti pembelajaran', 100, 50, 'Andi Firmansyah', '2026-07-07', 'Pencatatan pelanggaran siswa', 10, 'Pembinaan', 'tercatat', '2026-07-07 01:00:00', '2026-07-07 01:00:00');
+(98, 1, 98, 'Siswa 98', 98, 'TKR 4', 98, 'Tidak menjaga kebersihan kelas', 98, 48, 'Yusuf Maulana', '2026-07-05', 'Pencatatan pelanggaran siswa', 5, 'Pembinaan oleh wali kelas', 'tercatat', '2026-07-05 01:00:00', '2026-07-05 01:00:00');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `t_siswa`
+-- Struktur dari tabel `t_siswa`
 --
 
 CREATE TABLE `t_siswa` (
@@ -738,12 +675,10 @@ CREATE TABLE `t_siswa` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `t_siswa`
+-- Dumping data untuk tabel `t_siswa`
 --
 
 INSERT INTO `t_siswa` (`id`, `nis`, `nisn`, `nama`, `jenis_kelamin`, `tanggal_lahir`, `alamat`, `status_aktif`, `created_at`, `updated_at`) VALUES
-(1, '20260001', '0087654001', 'Ahmad Setiawan', 'L', '2009-01-02', 'Jl. Pendidikan No. 1, Tasikmalaya', 1, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
-(2, '20260002', '0087654002', 'Budi Wijaya', 'P', '2010-02-04', 'Jl. Pendidikan No. 2, Tasikmalaya', 1, '2026-07-02 01:00:00', '2026-07-02 01:00:00'),
 (3, '20260003', '0087654003', 'Citra Pratama', 'L', '2008-03-06', 'Jl. Pendidikan No. 3, Tasikmalaya', 1, '2026-07-03 01:00:00', '2026-07-03 01:00:00'),
 (4, '20260004', '0087654004', 'Dimas Kurniawan', 'P', '2009-04-08', 'Jl. Pendidikan No. 4, Tasikmalaya', 1, '2026-07-04 01:00:00', '2026-07-04 01:00:00'),
 (5, '20260005', '0087654005', 'Eka Pangestu', 'L', '2010-05-10', 'Jl. Pendidikan No. 5, Tasikmalaya', 1, '2026-07-05 01:00:00', '2026-07-05 01:00:00'),
@@ -765,15 +700,10 @@ INSERT INTO `t_siswa` (`id`, `nis`, `nisn`, `nama`, `jenis_kelamin`, `tanggal_la
 (21, '20260021', '0087654021', 'Wahyu Setiawan', 'L', '2008-09-15', 'Jl. Pendidikan No. 21, Tasikmalaya', 1, '2026-07-21 01:00:00', '2026-07-21 01:00:00'),
 (22, '20260022', '0087654022', 'Yuni Wijaya', 'P', '2009-10-17', 'Jl. Pendidikan No. 22, Tasikmalaya', 1, '2026-07-22 01:00:00', '2026-07-22 01:00:00'),
 (23, '20260023', '0087654023', 'Zaki Pratama', 'L', '2010-11-19', 'Jl. Pendidikan No. 23, Tasikmalaya', 1, '2026-07-23 01:00:00', '2026-07-23 01:00:00'),
-(24, '20260024', '0087654024', 'Alya Kurniawan', 'P', '2008-12-21', 'Jl. Pendidikan No. 24, Tasikmalaya', 1, '2026-07-24 01:00:00', '2026-07-24 01:00:00'),
-(25, '20260025', '0087654025', 'Bagas Pangestu', 'L', '2009-01-23', 'Jl. Pendidikan No. 25, Tasikmalaya', 1, '2026-07-25 01:00:00', '2026-07-25 01:00:00'),
-(26, '20260026', '0087654026', 'Cahya Saputra', 'P', '2010-02-25', 'Jl. Pendidikan No. 26, Tasikmalaya', 1, '2026-07-26 01:00:00', '2026-07-26 01:00:00'),
 (27, '20260027', '0087654027', 'Daffa Hidayat', 'L', '2008-03-27', 'Jl. Pendidikan No. 27, Tasikmalaya', 1, '2026-07-27 01:00:00', '2026-07-27 01:00:00'),
 (28, '20260028', '0087654028', 'Elsa Permatasari', 'P', '2009-04-02', 'Jl. Pendidikan No. 28, Tasikmalaya', 1, '2026-07-28 01:00:00', '2026-07-28 01:00:00'),
 (29, '20260029', '0087654029', 'Farhan Ramadhan', 'L', '2010-05-04', 'Jl. Pendidikan No. 29, Tasikmalaya', 1, '2026-07-29 01:00:00', '2026-07-29 01:00:00'),
 (30, '20260030', '0087654030', 'Gita Firmansyah', 'P', '2008-06-06', 'Jl. Pendidikan No. 30, Tasikmalaya', 1, '2026-07-30 01:00:00', '2026-07-30 01:00:00'),
-(31, '20260031', '0087654031', 'Ahmad Fauzan', 'L', '2009-07-08', 'Jl. Pendidikan No. 31, Tasikmalaya', 1, '2026-07-31 01:00:00', '2026-07-31 01:00:00'),
-(32, '20260032', '0087654032', 'Budi Maulana', 'P', '2010-08-10', 'Jl. Pendidikan No. 32, Tasikmalaya', 1, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
 (33, '20260033', '0087654033', 'Citra Lestari', 'L', '2008-09-12', 'Jl. Pendidikan No. 33, Tasikmalaya', 1, '2026-07-02 01:00:00', '2026-07-02 01:00:00'),
 (34, '20260034', '0087654034', 'Dimas Aditya', 'P', '2009-10-14', 'Jl. Pendidikan No. 34, Tasikmalaya', 1, '2026-07-03 01:00:00', '2026-07-03 01:00:00'),
 (35, '20260035', '0087654035', 'Eka Nugraha', 'L', '2010-11-16', 'Jl. Pendidikan No. 35, Tasikmalaya', 1, '2026-07-04 01:00:00', '2026-07-04 01:00:00'),
@@ -795,15 +725,10 @@ INSERT INTO `t_siswa` (`id`, `nis`, `nisn`, `nama`, `jenis_kelamin`, `tanggal_la
 (51, '20260051', '0087654051', 'Wahyu Fauzan', 'L', '2008-03-21', 'Jl. Pendidikan No. 51, Tasikmalaya', 1, '2026-07-20 01:00:00', '2026-07-20 01:00:00'),
 (52, '20260052', '0087654052', 'Yuni Maulana', 'P', '2009-04-23', 'Jl. Pendidikan No. 52, Tasikmalaya', 1, '2026-07-21 01:00:00', '2026-07-21 01:00:00'),
 (53, '20260053', '0087654053', 'Zaki Lestari', 'L', '2010-05-25', 'Jl. Pendidikan No. 53, Tasikmalaya', 1, '2026-07-22 01:00:00', '2026-07-22 01:00:00'),
-(54, '20260054', '0087654054', 'Alya Aditya', 'P', '2008-06-27', 'Jl. Pendidikan No. 54, Tasikmalaya', 1, '2026-07-23 01:00:00', '2026-07-23 01:00:00'),
-(55, '20260055', '0087654055', 'Bagas Nugraha', 'L', '2009-07-02', 'Jl. Pendidikan No. 55, Tasikmalaya', 1, '2026-07-24 01:00:00', '2026-07-24 01:00:00'),
-(56, '20260056', '0087654056', 'Cahya Sari', 'P', '2010-08-04', 'Jl. Pendidikan No. 56, Tasikmalaya', 1, '2026-07-25 01:00:00', '2026-07-25 01:00:00'),
 (57, '20260057', '0087654057', 'Daffa Rizky', 'L', '2008-09-06', 'Jl. Pendidikan No. 57, Tasikmalaya', 1, '2026-07-26 01:00:00', '2026-07-26 01:00:00'),
 (58, '20260058', '0087654058', 'Elsa Permana', 'P', '2009-10-08', 'Jl. Pendidikan No. 58, Tasikmalaya', 1, '2026-07-27 01:00:00', '2026-07-27 01:00:00'),
 (59, '20260059', '0087654059', 'Farhan Anggraini', 'L', '2010-11-10', 'Jl. Pendidikan No. 59, Tasikmalaya', 1, '2026-07-28 01:00:00', '2026-07-28 01:00:00'),
 (60, '20260060', '0087654060', 'Gita Nabila', 'P', '2008-12-12', 'Jl. Pendidikan No. 60, Tasikmalaya', 1, '2026-07-29 01:00:00', '2026-07-29 01:00:00'),
-(61, '20260061', '0087654061', 'Ahmad Setiawan', 'L', '2009-01-14', 'Jl. Pendidikan No. 61, Tasikmalaya', 1, '2026-07-30 01:00:00', '2026-07-30 01:00:00'),
-(62, '20260062', '0087654062', 'Budi Wijaya', 'P', '2010-02-16', 'Jl. Pendidikan No. 62, Tasikmalaya', 1, '2026-07-31 01:00:00', '2026-07-31 01:00:00'),
 (63, '20260063', '0087654063', 'Citra Pratama', 'L', '2008-03-18', 'Jl. Pendidikan No. 63, Tasikmalaya', 1, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
 (64, '20260064', '0087654064', 'Dimas Kurniawan', 'P', '2009-04-20', 'Jl. Pendidikan No. 64, Tasikmalaya', 1, '2026-07-02 01:00:00', '2026-07-02 01:00:00'),
 (65, '20260065', '0087654065', 'Eka Pangestu', 'L', '2010-05-22', 'Jl. Pendidikan No. 65, Tasikmalaya', 1, '2026-07-03 01:00:00', '2026-07-03 01:00:00'),
@@ -825,15 +750,10 @@ INSERT INTO `t_siswa` (`id`, `nis`, `nisn`, `nama`, `jenis_kelamin`, `tanggal_la
 (81, '20260081', '0087654081', 'Wahyu Setiawan', 'L', '2008-09-27', 'Jl. Pendidikan No. 81, Tasikmalaya', 1, '2026-07-19 01:00:00', '2026-07-19 01:00:00'),
 (82, '20260082', '0087654082', 'Yuni Wijaya', 'P', '2009-10-02', 'Jl. Pendidikan No. 82, Tasikmalaya', 1, '2026-07-20 01:00:00', '2026-07-20 01:00:00'),
 (83, '20260083', '0087654083', 'Zaki Pratama', 'L', '2010-11-04', 'Jl. Pendidikan No. 83, Tasikmalaya', 1, '2026-07-21 01:00:00', '2026-07-21 01:00:00'),
-(84, '20260084', '0087654084', 'Alya Kurniawan', 'P', '2008-12-06', 'Jl. Pendidikan No. 84, Tasikmalaya', 1, '2026-07-22 01:00:00', '2026-07-22 01:00:00'),
-(85, '20260085', '0087654085', 'Bagas Pangestu', 'L', '2009-01-08', 'Jl. Pendidikan No. 85, Tasikmalaya', 1, '2026-07-23 01:00:00', '2026-07-23 01:00:00'),
-(86, '20260086', '0087654086', 'Cahya Saputra', 'P', '2010-02-10', 'Jl. Pendidikan No. 86, Tasikmalaya', 1, '2026-07-24 01:00:00', '2026-07-24 01:00:00'),
 (87, '20260087', '0087654087', 'Daffa Hidayat', 'L', '2008-03-12', 'Jl. Pendidikan No. 87, Tasikmalaya', 1, '2026-07-25 01:00:00', '2026-07-25 01:00:00'),
 (88, '20260088', '0087654088', 'Elsa Permatasari', 'P', '2009-04-14', 'Jl. Pendidikan No. 88, Tasikmalaya', 1, '2026-07-26 01:00:00', '2026-07-26 01:00:00'),
 (89, '20260089', '0087654089', 'Farhan Ramadhan', 'L', '2010-05-16', 'Jl. Pendidikan No. 89, Tasikmalaya', 1, '2026-07-27 01:00:00', '2026-07-27 01:00:00'),
 (90, '20260090', '0087654090', 'Gita Firmansyah', 'P', '2008-06-18', 'Jl. Pendidikan No. 90, Tasikmalaya', 1, '2026-07-28 01:00:00', '2026-07-28 01:00:00'),
-(91, '20260091', '0087654091', 'Ahmad Fauzan', 'L', '2009-07-20', 'Jl. Pendidikan No. 91, Tasikmalaya', 1, '2026-07-29 01:00:00', '2026-07-29 01:00:00'),
-(92, '20260092', '0087654092', 'Budi Maulana', 'P', '2010-08-22', 'Jl. Pendidikan No. 92, Tasikmalaya', 1, '2026-07-30 01:00:00', '2026-07-30 01:00:00'),
 (93, '20260093', '0087654093', 'Citra Lestari', 'L', '2008-09-24', 'Jl. Pendidikan No. 93, Tasikmalaya', 1, '2026-07-31 01:00:00', '2026-07-31 01:00:00'),
 (94, '20260094', '0087654094', 'Dimas Aditya', 'P', '2009-10-26', 'Jl. Pendidikan No. 94, Tasikmalaya', 1, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
 (95, '20260095', '0087654095', 'Eka Nugraha', 'L', '2010-11-01', 'Jl. Pendidikan No. 95, Tasikmalaya', 1, '2026-07-02 01:00:00', '2026-07-02 01:00:00'),
@@ -846,7 +766,7 @@ INSERT INTO `t_siswa` (`id`, `nis`, `nisn`, `nama`, `jenis_kelamin`, `tanggal_la
 -- --------------------------------------------------------
 
 --
--- Table structure for table `t_tahun_ajaran`
+-- Struktur dari tabel `t_tahun_ajaran`
 --
 
 CREATE TABLE `t_tahun_ajaran` (
@@ -860,7 +780,7 @@ CREATE TABLE `t_tahun_ajaran` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `t_tahun_ajaran`
+-- Dumping data untuk tabel `t_tahun_ajaran`
 --
 
 INSERT INTO `t_tahun_ajaran` (`id`, `nama`, `tanggal_mulai`, `tanggal_selesai`, `status_aktif`, `created_at`, `updated_at`) VALUES
@@ -956,19 +876,13 @@ INSERT INTO `t_tahun_ajaran` (`id`, `nama`, `tanggal_mulai`, `tanggal_selesai`, 
 (90, '2042/2043', '2042-07-01', '2043-06-30', 1, '2026-07-28 01:00:00', '2026-07-28 01:00:00'),
 (91, '2042/2043', '2042-07-01', '2043-06-30', 1, '2026-07-29 01:00:00', '2026-07-29 01:00:00'),
 (92, '2042/2043', '2042-07-01', '2043-06-30', 1, '2026-07-30 01:00:00', '2026-07-30 01:00:00'),
-(93, '2043/2044', '2043-07-01', '2044-06-30', 1, '2026-07-31 01:00:00', '2026-07-31 01:00:00'),
 (94, '2043/2044', '2043-07-01', '2044-06-30', 1, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
-(95, '2043/2044', '2043-07-01', '2044-06-30', 1, '2026-07-02 01:00:00', '2026-07-02 01:00:00'),
-(96, '2043/2044', '2043-07-01', '2044-06-30', 1, '2026-07-03 01:00:00', '2026-07-03 01:00:00'),
-(97, '2044/2045', '2044-07-01', '2045-06-30', 1, '2026-07-04 01:00:00', '2026-07-04 01:00:00'),
-(98, '2044/2045', '2044-07-01', '2045-06-30', 1, '2026-07-05 01:00:00', '2026-07-05 01:00:00'),
-(99, '2044/2045', '2044-07-01', '2045-06-30', 1, '2026-07-06 01:00:00', '2026-07-06 01:00:00'),
-(100, '2044/2045', '2044-07-01', '2045-06-30', 1, '2026-07-07 01:00:00', '2026-07-07 01:00:00');
+(95, '2043/2044', '2043-07-01', '2044-06-30', 1, '2026-07-02 01:00:00', '2026-07-02 01:00:00');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `t_users`
+-- Struktur dari tabel `t_users`
 --
 
 CREATE TABLE `t_users` (
@@ -984,12 +898,12 @@ CREATE TABLE `t_users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `t_users`
+-- Dumping data untuk tabel `t_users`
 --
 
 INSERT INTO `t_users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `role`, `created_at`, `updated_at`) VALUES
-(1, 'Ahmad Ramadhan', 'user001@sekolah.test', '2026-07-01 01:00:00', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llCk0s3ZQmQxK9v7l3M6', '', 'admin', '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
-(2, 'Budi Permana', 'user002@sekolah.test', '2026-07-01 01:00:00', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llCk0s3ZQmQxK9v7l3M6', '', 'admin', '2026-07-02 01:00:00', '2026-07-02 01:00:00'),
+(1, 'admin', 'admin@gmail.com', '2026-07-01 01:00:00', 'admin123', '', 'admin', '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
+(2, 'guru', 'guru@gmail.com', '2026-07-01 01:00:00', 'guru123', '', 'admin', '2026-07-02 01:00:00', '2026-07-02 01:00:00'),
 (3, 'Citra Hidayat', 'user003@sekolah.test', '2026-07-01 01:00:00', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llCk0s3ZQmQxK9v7l3M6', '', 'admin', '2026-07-03 01:00:00', '2026-07-03 01:00:00'),
 (4, 'Dimas Sari', 'user004@sekolah.test', '2026-07-01 01:00:00', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llCk0s3ZQmQxK9v7l3M6', '', 'admin', '2026-07-04 01:00:00', '2026-07-04 01:00:00'),
 (5, 'Eka Pangestu', 'user005@sekolah.test', '2026-07-01 01:00:00', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llCk0s3ZQmQxK9v7l3M6', '', 'admin', '2026-07-05 01:00:00', '2026-07-05 01:00:00'),
@@ -1092,7 +1006,7 @@ INSERT INTO `t_users` (`id`, `name`, `email`, `email_verified_at`, `password`, `
 -- --------------------------------------------------------
 
 --
--- Table structure for table `t_wali_kelas`
+-- Struktur dari tabel `t_wali_kelas`
 --
 
 CREATE TABLE `t_wali_kelas` (
@@ -1108,11 +1022,10 @@ CREATE TABLE `t_wali_kelas` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `t_wali_kelas`
+-- Dumping data untuk tabel `t_wali_kelas`
 --
 
 INSERT INTO `t_wali_kelas` (`id`, `tahun_ajaran_id`, `kelas_id`, `guru_id`, `tanggal_mulai`, `tanggal_selesai`, `status_aktif`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 1, '2026-07-01', '0000-00-00', 1, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
 (2, 1, 2, 2, '2026-07-01', '0000-00-00', 1, '2026-07-02 01:00:00', '2026-07-02 01:00:00'),
 (3, 1, 3, 3, '2026-07-01', '0000-00-00', 1, '2026-07-03 01:00:00', '2026-07-03 01:00:00'),
 (4, 1, 4, 4, '2026-07-01', '0000-00-00', 1, '2026-07-04 01:00:00', '2026-07-04 01:00:00'),
@@ -1126,7 +1039,6 @@ INSERT INTO `t_wali_kelas` (`id`, `tahun_ajaran_id`, `kelas_id`, `guru_id`, `tan
 (12, 1, 12, 12, '2026-07-01', '0000-00-00', 1, '2026-07-12 01:00:00', '2026-07-12 01:00:00'),
 (13, 1, 13, 13, '2026-07-01', '0000-00-00', 1, '2026-07-13 01:00:00', '2026-07-13 01:00:00'),
 (14, 1, 14, 14, '2026-07-01', '0000-00-00', 1, '2026-07-14 01:00:00', '2026-07-14 01:00:00'),
-(15, 1, 15, 15, '2026-07-01', '0000-00-00', 1, '2026-07-15 01:00:00', '2026-07-15 01:00:00'),
 (16, 1, 16, 16, '2026-07-01', '0000-00-00', 1, '2026-07-16 01:00:00', '2026-07-16 01:00:00'),
 (17, 1, 17, 17, '2026-07-01', '0000-00-00', 1, '2026-07-17 01:00:00', '2026-07-17 01:00:00'),
 (18, 1, 18, 18, '2026-07-01', '0000-00-00', 1, '2026-07-18 01:00:00', '2026-07-18 01:00:00'),
@@ -1137,10 +1049,8 @@ INSERT INTO `t_wali_kelas` (`id`, `tahun_ajaran_id`, `kelas_id`, `guru_id`, `tan
 (23, 1, 23, 23, '2026-07-01', '0000-00-00', 1, '2026-07-23 01:00:00', '2026-07-23 01:00:00'),
 (24, 1, 24, 24, '2026-07-01', '0000-00-00', 1, '2026-07-24 01:00:00', '2026-07-24 01:00:00'),
 (25, 1, 25, 25, '2026-07-01', '0000-00-00', 1, '2026-07-25 01:00:00', '2026-07-25 01:00:00'),
-(26, 1, 26, 26, '2026-07-01', '0000-00-00', 1, '2026-07-26 01:00:00', '2026-07-26 01:00:00'),
 (27, 1, 27, 27, '2026-07-01', '0000-00-00', 1, '2026-07-27 01:00:00', '2026-07-27 01:00:00'),
 (28, 1, 28, 28, '2026-07-01', '0000-00-00', 1, '2026-07-28 01:00:00', '2026-07-28 01:00:00'),
-(29, 1, 29, 29, '2026-07-01', '0000-00-00', 1, '2026-07-29 01:00:00', '2026-07-29 01:00:00'),
 (30, 1, 30, 30, '2026-07-01', '0000-00-00', 1, '2026-07-30 01:00:00', '2026-07-30 01:00:00'),
 (31, 1, 31, 31, '2026-07-01', '0000-00-00', 1, '2026-07-31 01:00:00', '2026-07-31 01:00:00'),
 (32, 1, 32, 32, '2026-07-01', '0000-00-00', 1, '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
@@ -1154,15 +1064,12 @@ INSERT INTO `t_wali_kelas` (`id`, `tahun_ajaran_id`, `kelas_id`, `guru_id`, `tan
 (40, 1, 40, 40, '2026-07-01', '0000-00-00', 1, '2026-07-09 01:00:00', '2026-07-09 01:00:00'),
 (41, 1, 41, 41, '2026-07-01', '0000-00-00', 1, '2026-07-10 01:00:00', '2026-07-10 01:00:00'),
 (42, 1, 42, 42, '2026-07-01', '0000-00-00', 1, '2026-07-11 01:00:00', '2026-07-11 01:00:00'),
-(43, 1, 43, 43, '2026-07-01', '0000-00-00', 1, '2026-07-12 01:00:00', '2026-07-12 01:00:00'),
 (44, 1, 44, 44, '2026-07-01', '0000-00-00', 1, '2026-07-13 01:00:00', '2026-07-13 01:00:00'),
 (45, 1, 45, 45, '2026-07-01', '0000-00-00', 1, '2026-07-14 01:00:00', '2026-07-14 01:00:00'),
 (46, 1, 46, 46, '2026-07-01', '0000-00-00', 1, '2026-07-15 01:00:00', '2026-07-15 01:00:00'),
 (47, 1, 47, 47, '2026-07-01', '0000-00-00', 1, '2026-07-16 01:00:00', '2026-07-16 01:00:00'),
 (48, 1, 48, 48, '2026-07-01', '0000-00-00', 1, '2026-07-17 01:00:00', '2026-07-17 01:00:00'),
 (49, 1, 49, 49, '2026-07-01', '0000-00-00', 1, '2026-07-18 01:00:00', '2026-07-18 01:00:00'),
-(50, 1, 50, 50, '2026-07-01', '0000-00-00', 1, '2026-07-19 01:00:00', '2026-07-19 01:00:00'),
-(51, 1, 51, 1, '2026-07-01', '0000-00-00', 1, '2026-07-20 01:00:00', '2026-07-20 01:00:00'),
 (52, 1, 52, 2, '2026-07-01', '0000-00-00', 1, '2026-07-21 01:00:00', '2026-07-21 01:00:00'),
 (53, 1, 53, 3, '2026-07-01', '0000-00-00', 1, '2026-07-22 01:00:00', '2026-07-22 01:00:00'),
 (54, 1, 54, 4, '2026-07-01', '0000-00-00', 1, '2026-07-23 01:00:00', '2026-07-23 01:00:00'),
@@ -1187,7 +1094,6 @@ INSERT INTO `t_wali_kelas` (`id`, `tahun_ajaran_id`, `kelas_id`, `guru_id`, `tan
 (73, 1, 73, 23, '2026-07-01', '0000-00-00', 1, '2026-07-11 01:00:00', '2026-07-11 01:00:00'),
 (74, 1, 74, 24, '2026-07-01', '0000-00-00', 1, '2026-07-12 01:00:00', '2026-07-12 01:00:00'),
 (75, 1, 75, 25, '2026-07-01', '0000-00-00', 1, '2026-07-13 01:00:00', '2026-07-13 01:00:00'),
-(76, 1, 76, 26, '2026-07-01', '0000-00-00', 1, '2026-07-14 01:00:00', '2026-07-14 01:00:00'),
 (77, 1, 77, 27, '2026-07-01', '0000-00-00', 1, '2026-07-15 01:00:00', '2026-07-15 01:00:00'),
 (78, 1, 78, 28, '2026-07-01', '0000-00-00', 1, '2026-07-16 01:00:00', '2026-07-16 01:00:00'),
 (79, 1, 79, 29, '2026-07-01', '0000-00-00', 1, '2026-07-17 01:00:00', '2026-07-17 01:00:00'),
@@ -1196,7 +1102,6 @@ INSERT INTO `t_wali_kelas` (`id`, `tahun_ajaran_id`, `kelas_id`, `guru_id`, `tan
 (82, 1, 82, 32, '2026-07-01', '0000-00-00', 1, '2026-07-20 01:00:00', '2026-07-20 01:00:00'),
 (83, 1, 83, 33, '2026-07-01', '0000-00-00', 1, '2026-07-21 01:00:00', '2026-07-21 01:00:00'),
 (84, 1, 84, 34, '2026-07-01', '0000-00-00', 1, '2026-07-22 01:00:00', '2026-07-22 01:00:00'),
-(85, 1, 85, 35, '2026-07-01', '0000-00-00', 1, '2026-07-23 01:00:00', '2026-07-23 01:00:00'),
 (86, 1, 86, 36, '2026-07-01', '0000-00-00', 1, '2026-07-24 01:00:00', '2026-07-24 01:00:00'),
 (87, 1, 87, 37, '2026-07-01', '0000-00-00', 1, '2026-07-25 01:00:00', '2026-07-25 01:00:00'),
 (88, 1, 88, 38, '2026-07-01', '0000-00-00', 1, '2026-07-26 01:00:00', '2026-07-26 01:00:00'),
@@ -1209,29 +1114,27 @@ INSERT INTO `t_wali_kelas` (`id`, `tahun_ajaran_id`, `kelas_id`, `guru_id`, `tan
 (95, 1, 95, 45, '2026-07-01', '0000-00-00', 1, '2026-07-02 01:00:00', '2026-07-02 01:00:00'),
 (96, 1, 96, 46, '2026-07-01', '0000-00-00', 1, '2026-07-03 01:00:00', '2026-07-03 01:00:00'),
 (97, 1, 97, 47, '2026-07-01', '0000-00-00', 1, '2026-07-04 01:00:00', '2026-07-04 01:00:00'),
-(98, 1, 98, 48, '2026-07-01', '0000-00-00', 1, '2026-07-05 01:00:00', '2026-07-05 01:00:00'),
-(99, 1, 99, 49, '2026-07-01', '0000-00-00', 1, '2026-07-06 01:00:00', '2026-07-06 01:00:00'),
-(100, 1, 100, 50, '2026-07-01', '0000-00-00', 1, '2026-07-07 01:00:00', '2026-07-07 01:00:00');
+(98, 1, 98, 48, '2026-07-01', '0000-00-00', 1, '2026-07-05 01:00:00', '2026-07-05 01:00:00');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `t_guru`
+-- Indeks untuk tabel `t_guru`
 --
 ALTER TABLE `t_guru`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`);
 
 --
--- Indexes for table `t_kelas`
+-- Indeks untuk tabel `t_kelas`
 --
 ALTER TABLE `t_kelas`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `t_kelas_siswa`
+-- Indeks untuk tabel `t_kelas_siswa`
 --
 ALTER TABLE `t_kelas_siswa`
   ADD PRIMARY KEY (`id`),
@@ -1240,20 +1143,20 @@ ALTER TABLE `t_kelas_siswa`
   ADD KEY `kelas_id` (`kelas_id`);
 
 --
--- Indexes for table `t_pelanggaran`
+-- Indeks untuk tabel `t_pelanggaran`
 --
 ALTER TABLE `t_pelanggaran`
   ADD PRIMARY KEY (`id`),
   ADD KEY `pelanggaran_kategori_id` (`pelanggaran_kategori_id`);
 
 --
--- Indexes for table `t_pelanggaran_kategori`
+-- Indeks untuk tabel `t_pelanggaran_kategori`
 --
 ALTER TABLE `t_pelanggaran_kategori`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `t_pelanggaran_siswa`
+-- Indeks untuk tabel `t_pelanggaran_siswa`
 --
 ALTER TABLE `t_pelanggaran_siswa`
   ADD PRIMARY KEY (`id`),
@@ -1265,25 +1168,25 @@ ALTER TABLE `t_pelanggaran_siswa`
   ADD KEY `guru_id` (`guru_id`);
 
 --
--- Indexes for table `t_siswa`
+-- Indeks untuk tabel `t_siswa`
 --
 ALTER TABLE `t_siswa`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `t_tahun_ajaran`
+-- Indeks untuk tabel `t_tahun_ajaran`
 --
 ALTER TABLE `t_tahun_ajaran`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `t_users`
+-- Indeks untuk tabel `t_users`
 --
 ALTER TABLE `t_users`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `t_wali_kelas`
+-- Indeks untuk tabel `t_wali_kelas`
 --
 ALTER TABLE `t_wali_kelas`
   ADD PRIMARY KEY (`id`),
@@ -1292,81 +1195,81 @@ ALTER TABLE `t_wali_kelas`
   ADD KEY `guru_id` (`guru_id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT untuk tabel yang dibuang
 --
 
 --
--- AUTO_INCREMENT for table `t_guru`
+-- AUTO_INCREMENT untuk tabel `t_guru`
 --
 ALTER TABLE `t_guru`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
--- AUTO_INCREMENT for table `t_kelas`
+-- AUTO_INCREMENT untuk tabel `t_kelas`
 --
 ALTER TABLE `t_kelas`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
 
 --
--- AUTO_INCREMENT for table `t_kelas_siswa`
+-- AUTO_INCREMENT untuk tabel `t_kelas_siswa`
 --
 ALTER TABLE `t_kelas_siswa`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
 
 --
--- AUTO_INCREMENT for table `t_pelanggaran`
+-- AUTO_INCREMENT untuk tabel `t_pelanggaran`
 --
 ALTER TABLE `t_pelanggaran`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
 
 --
--- AUTO_INCREMENT for table `t_pelanggaran_kategori`
+-- AUTO_INCREMENT untuk tabel `t_pelanggaran_kategori`
 --
 ALTER TABLE `t_pelanggaran_kategori`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
 
 --
--- AUTO_INCREMENT for table `t_pelanggaran_siswa`
+-- AUTO_INCREMENT untuk tabel `t_pelanggaran_siswa`
 --
 ALTER TABLE `t_pelanggaran_siswa`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
 
 --
--- AUTO_INCREMENT for table `t_siswa`
+-- AUTO_INCREMENT untuk tabel `t_siswa`
 --
 ALTER TABLE `t_siswa`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
 
 --
--- AUTO_INCREMENT for table `t_tahun_ajaran`
+-- AUTO_INCREMENT untuk tabel `t_tahun_ajaran`
 --
 ALTER TABLE `t_tahun_ajaran`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
 
 --
--- AUTO_INCREMENT for table `t_users`
+-- AUTO_INCREMENT untuk tabel `t_users`
 --
 ALTER TABLE `t_users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
 
 --
--- AUTO_INCREMENT for table `t_wali_kelas`
+-- AUTO_INCREMENT untuk tabel `t_wali_kelas`
 --
 ALTER TABLE `t_wali_kelas`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
 
 --
--- Constraints for dumped tables
+-- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
 --
 
 --
--- Constraints for table `t_guru`
+-- Ketidakleluasaan untuk tabel `t_guru`
 --
 ALTER TABLE `t_guru`
   ADD CONSTRAINT `t_guru_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `t_users` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `t_kelas_siswa`
+-- Ketidakleluasaan untuk tabel `t_kelas_siswa`
 --
 ALTER TABLE `t_kelas_siswa`
   ADD CONSTRAINT `t_kelas_siswa_ibfk_1` FOREIGN KEY (`tahun_ajaran_id`) REFERENCES `t_tahun_ajaran` (`id`) ON DELETE CASCADE,
@@ -1374,13 +1277,13 @@ ALTER TABLE `t_kelas_siswa`
   ADD CONSTRAINT `t_kelas_siswa_ibfk_3` FOREIGN KEY (`siswa_id`) REFERENCES `t_siswa` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `t_pelanggaran`
+-- Ketidakleluasaan untuk tabel `t_pelanggaran`
 --
 ALTER TABLE `t_pelanggaran`
   ADD CONSTRAINT `t_pelanggaran_ibfk_1` FOREIGN KEY (`pelanggaran_kategori_id`) REFERENCES `t_pelanggaran_kategori` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `t_pelanggaran_siswa`
+-- Ketidakleluasaan untuk tabel `t_pelanggaran_siswa`
 --
 ALTER TABLE `t_pelanggaran_siswa`
   ADD CONSTRAINT `t_pelanggaran_siswa_ibfk_1` FOREIGN KEY (`tahun_ajaran_id`) REFERENCES `t_tahun_ajaran` (`id`),
@@ -1391,7 +1294,7 @@ ALTER TABLE `t_pelanggaran_siswa`
   ADD CONSTRAINT `t_pelanggaran_siswa_ibfk_6` FOREIGN KEY (`siswa_id`) REFERENCES `t_siswa` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `t_wali_kelas`
+-- Ketidakleluasaan untuk tabel `t_wali_kelas`
 --
 ALTER TABLE `t_wali_kelas`
   ADD CONSTRAINT `t_wali_kelas_ibfk_1` FOREIGN KEY (`guru_id`) REFERENCES `t_guru` (`id`) ON DELETE CASCADE,
