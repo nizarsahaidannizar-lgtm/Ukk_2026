@@ -3,6 +3,10 @@
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
+// HANYA ROLE ADMIN YANG BISA AKSES
+batasi_akses(['admin']);
+
+// QUERY DATABASE (Mencegah Undefined variable $hasil)
 $sql = "SELECT * FROM t_kelas ORDER BY nama ASC";
 $hasil = mysqli_query($koneksi, $sql);
 ?>

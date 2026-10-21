@@ -3,6 +3,9 @@
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
+// PROTEKSI HAK AKSES: Hanya role 'admin' yang diperbolehkan mengelola data siswa
+batasi_akses(['admin']);
+
 $sql = "SELECT * FROM t_siswa ORDER BY nama ASC";
 $hasil = mysqli_query($koneksi, $sql);
 ?>

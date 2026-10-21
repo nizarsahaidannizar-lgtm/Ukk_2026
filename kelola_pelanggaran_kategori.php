@@ -1,12 +1,14 @@
 <?php
 // kelola_pelanggaran_kategori.php
-
-include 'includes/cek_session.php';
+include 'includes/cek_session.php'; // Pakai '../includes/cek_session.php' jika di dalam folder guru/
 include 'config/koneksi.php';
 
-$sql = "SELECT * FROM t_pelanggaran_kategori ORDER BY id DESC";
-$hasil = mysqli_query($koneksi, $sql);
+// HANYA ROLE ADMIN YANG BISA AKSES
+batasi_akses(['admin']);
 
+// QUERY DATABASE (Menyiapkan variabel $hasil agar tidak error)
+$sql = "SELECT * FROM t_pelanggaran_kategori ORDER BY nama ASC";
+$hasil = mysqli_query($koneksi, $sql);
 ?>
 
 <!DOCTYPE html>
@@ -14,10 +16,11 @@ $hasil = mysqli_query($koneksi, $sql);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelola Kategori Pelanggaran</title>
+    <title>Kelola Kategori Pelanggaran - SIP</title>
 
-    <!-- Bootstrap 5 CSS -->
+    <!-- Bootstrap 5 CSS & FontAwesome Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- DataTables Bootstrap 5 CSS -->
     <link href="https://cdn.datatables.net/2.3.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
@@ -34,25 +37,50 @@ $hasil = mysqli_query($koneksi, $sql);
         <!-- KONTEN UTAMA -->
         <main class="col-md-9 ms-sm-auto col-lg-10 p-4">
 
-            <!-- HEADER & TOMBOL TAMBAH KATEGORI PELANGGARAN -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h2 m-0">Kelola Kategori Pelanggaran</h1>
+            <!-- HEADER BRANDING SIP & LOGO SEKOLAH -->
+            <div class="d-flex align-items-center mb-4 pb-3 border-bottom">
+                <div class="bg-white p-3 rounded-3 shadow-sm me-3 border">
+                    <i class="fa-solid fa-school fs-2 text-dark"></i>
+                </div>
+                <div>
+                    <h1 class="h2 fw-bold text-dark m-0">SIP</h1>
+                    <p class="text-muted m-0 small">Sistem Informasi Pelanggaran Siswa</p>
+                </div>
+            </div>
 
+            <!-- TOMBOL KEMBALI KE DASHBOARD & TAMBAH KATEGORI PELANGGARAN -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <a href="dashboard.php" class="btn btn-secondary fw-semibold">
+                    Kembali ke Dashboard
+                </a>
                 <a href="tambah_pelanggaran_kategori.php" class="btn btn-primary fw-semibold">
                     + Tambah Kategori Pelanggaran
                 </a>
             </div>
 
-            <!-- TOMBOL KEMBALI KE DASHBOARD -->
-            <a href="dashboard.php" class="btn btn-secondary mb-3">
-                Kembali ke Dashboard
-            </a>
+            <!-- ALERT NOTIFIKASI SUKSES / ERROR -->
+            <?php if (isset($_SESSION['pesan_sukses'])) { ?>
+                <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+                    <?= $_SESSION['pesan_sukses']; ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <?php unset($_SESSION['pesan_sukses']); ?>
+            <?php } ?>
+
+            <?php if (isset($_SESSION['pesan_error'])) { ?>
+                <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                    <?= $_SESSION['pesan_error']; ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <?php unset($_SESSION['pesan_error']); ?>
+            <?php } ?>
 
             <!-- CARD TABEL DATA KATEGORI PELANGGARAN -->
-            <div class="card shadow-sm border-0 rounded-3">
-                <div class="card-body">
-                    <h5 class="card-title m-0 fw-bold">Data Tahun Ajaran</h5>
-
+            <div class="card shadow-sm border-0 rounded-3 mb-5">
+                <div class="card-header bg-white py-3">
+                    <h5 class="card-title m-0 fw-bold">Data Kategori Pelanggaran</h5>
+                </div>
+                <div class="card-body p-4">
 
                     <div class="table-responsive">
                         <table id="tabelKategori" class="table table-sm table-striped table-bordered table-hover align-middle w-100">
@@ -94,20 +122,20 @@ $hasil = mysqli_query($koneksi, $sql);
                                     </td>
 
                                     <td>
-                                        <?= htmlspecialchars($row['created_at']) ?>
+                                        <?= htmlspecialchars($row['created_at'] ?? '-') ?>
                                     </td>
 
                                     <td>
-                                        <?= htmlspecialchars($row['updated_at']) ?>
+                                        <?= htmlspecialchars($row['updated_at'] ?? '-') ?>
                                     </td>
 
                                     <td class="text-center text-nowrap">
-                                        <a href="edit_pelanggaran_kategori.php?id=<?= urlencode($row['id']) ?>" class="btn btn-warning btn-sm me-1">
+                                        <a href="edit_pelanggaran_kategori.php?id=<?= urlencode($row['id']) ?>" class="btn btn-warning btn-sm me-1 fw-semibold text-white">
                                             Edit
                                         </a>
 
                                         <a href="hapus_pelanggaran_kategori.php?id=<?= urlencode($row['id']) ?>" 
-                                           class="btn btn-danger btn-sm"
+                                           class="btn btn-danger btn-sm fw-semibold"
                                            onclick="return confirm('Yakin ingin menghapus kategori pelanggaran ini?');">
                                             Hapus
                                         </a>
@@ -137,7 +165,7 @@ $hasil = mysqli_query($koneksi, $sql);
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.bootstrap5.min.js"></script>
 
 <!-- Bootstrap 5 JS Bundle -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
 $(document).ready(function () {

@@ -3,6 +3,13 @@
 include '../includes/cek_session.php';
 include '../config/koneksi.php';
 
+// PROTEKSI ROLE: Hanya role 'admin' yang bisa membuka halaman Data Guru
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    $_SESSION['pesan_error'] = "Akses ditolak! Anda tidak memiliki izin untuk mengelola Data Guru.";
+    header("Location: ../dashboard.php");
+    exit();
+}
+
 $sql = "SELECT * FROM t_guru ORDER BY nama ASC";
 $hasil = mysqli_query($koneksi, $sql);
 ?>

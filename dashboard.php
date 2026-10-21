@@ -1,9 +1,10 @@
 <?php
-// dashboard.php
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
-?>
 
+// SEMUA ROLE BISA AKSES
+batasi_akses(['admin', 'guru']);
+?>
 <!DOCTYPE html>
 <html lang="id">
 
