@@ -60,14 +60,19 @@ include 'config/koneksi.php';
                             </div>
 
                             <!-- NISN -->
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold">NISN</label>
-                                <input type="text" 
-                                       name="nisn" 
-                                       class="form-control" 
-                                       placeholder="Masukkan NISN" 
-                                       required>
-                            </div>
+<div class="col-md-6">
+    <label class="form-label fw-semibold">NISN</label>
+    <input type="text" 
+           name="nisn" 
+           class="form-control" 
+           placeholder="Masukkan 10 digit NISN" 
+           maxlength="10"
+           minlength="10"
+           pattern="[0-9]{10}"
+           oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+           title="NISN harus berupa 10 digit angka"
+           required>
+</div>
 
                             <!-- Nama Siswa -->
                             <div class="col-md-6">

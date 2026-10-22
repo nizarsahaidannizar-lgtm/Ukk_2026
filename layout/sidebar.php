@@ -9,12 +9,11 @@ $role = $_SESSION['role'] ?? '';
 
 // Deteksi otomatis jika sidebar dipanggil dari dalam folder guru/
 $prefix = (strpos($_SERVER['PHP_SELF'], '/guru/') !== false) ? '../' : '';
-
 if ($role === "admin") {
 ?>
     <!-- SIDEBAR ADMIN (SEMUA FITUR) -->
     <div class="col-md-3 col-lg-2 bg-dark min-vh-100 p-3">
-        <h4 class="text-white mb-4">Pelanggaran Siswa</h4>
+        <h4 class="text-white mb-4">Sistem Pelanggaran Siswa</h4>
         <ul class="nav nav-pills flex-column">
             <li class="nav-item mb-2">
                 <a href="<?= $prefix ?>dashboard.php" class="nav-link <?= ($current_page == 'dashboard.php') ? 'active' : 'text-white' ?>">Dashboard</a>
@@ -41,7 +40,7 @@ if ($role === "admin") {
                 <a href="<?= $prefix ?>kelola_pelanggaran_kategori.php" class="nav-link <?= ($current_page == 'kelola_pelanggaran_kategori.php') ? 'active' : 'text-white' ?>">Kategori Pelanggaran</a>
             </li>
             <li class="nav-item mb-2">
-                <a href="<?= $prefix ?>about_me.php" class="nav-link <?= ($current_page == 'about_me.php') ? 'active' : 'text-white' ?>">About Me</a>
+                <a href="<?= $prefix ?>cetak_laporan.php" class="nav-link <?= ($current_page == 'cetak_laporan.php') ? 'active' : 'text-white' ?>" target="_blank">Cetak Laporan</a>
             </li>
             <hr class="text-secondary">
             <li class="nav-item">
@@ -57,9 +56,6 @@ if ($role === "admin") {
     <div class="col-md-3 col-lg-2 bg-dark min-vh-100 p-3">
         <h4 class="text-white mb-4">Pelanggaran Siswa</h4>
         <ul class="nav nav-pills flex-column">
-            <li class="nav-item mb-2">
-                <a href="<?= $prefix ?>dashboard.php" class="nav-link <?= ($current_page == 'dashboard.php') ? 'active' : 'text-white' ?>">Dashboard</a>
-            </li>
             <li class="nav-item mb-2">
                 <a href="<?= $prefix ?>catat_pelanggaran.php" class="nav-link <?= ($current_page == 'catat_pelanggaran.php') ? 'active' : 'text-white' ?>">Catat Pelanggaran</a>
             </li>

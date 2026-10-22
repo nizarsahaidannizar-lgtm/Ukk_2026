@@ -1,7 +1,11 @@
 <?php
 //buat_user_admin.php
-//jalankan file ini satu kali saja lewat browser untuk membuat user awal
-include 'config/koneksi.php';
+if (PHP_SAPI !== 'cli') {
+    http_response_code(404);
+    exit;
+}
+
+include __DIR__ . '/config/koneksi.php';
 
 $name = 'Administator';
 $email= 'admin@gmail.com';

@@ -6,9 +6,11 @@ $user = 'root';
 $password = '';
 $database = 'db_ukk_2026_jay';
 
-$koneksi = mysqli_connect($host,$user,$password,$database);
+if (!isset($koneksi) || !($koneksi instanceof mysqli)) {
+    $koneksi = mysqli_connect($host,$user,$password,$database);
 
-if (!$koneksi) {
-    die('Koneksi database gagal: ' .mysqli_connect_error());
+    if (!$koneksi) {
+        die('Koneksi database gagal: ' .mysqli_connect_error());
+    }
 }
 ?>

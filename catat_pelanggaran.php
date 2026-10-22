@@ -3,6 +3,10 @@
 // catat_pelanggaran.php
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
+include 'includes/akses_pelanggaran.php';
+
+$konteks_akses = konteks_akses_pelanggaran($koneksi);
+$lingkup_akses = lingkup_sql_pelanggaran($konteks_akses, 'ps');
 
 // Daftar siswa
 $siswa = mysqli_query(
@@ -40,14 +44,14 @@ $pelanggaran = mysqli_query(
      ORDER BY nama ASC"
 );
 
-// Daftar guru
-$guru = mysqli_query(
+$stmt_guru = mysqli_prepare(
     $koneksi,
-    "SELECT id, nama
-     FROM t_guru
-     WHERE status_aktif = 1
-     ORDER BY nama ASC"
+    'SELECT id, nama FROM t_guru WHERE user_id = ? AND status_aktif = 1 LIMIT 1'
 );
+$id_user = (int)($_SESSION['id_user'] ?? 0);
+mysqli_stmt_bind_param($stmt_guru, 'i', $id_user);
+mysqli_stmt_execute($stmt_guru);
+$guru_login = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt_guru)) ?: [];
 
 // Data catatan pelanggaran
 $sql = "SELECT
@@ -63,6 +67,7 @@ $sql = "SELECT
             ON ps.siswa_id = s.id
         LEFT JOIN t_kelas k
             ON ps.kelas_id = k.id
+        WHERE $lingkup_akses
         ORDER BY ps.id DESC";
 
 $hasil = mysqli_query($koneksi, $sql);
@@ -187,15 +192,11 @@ $hasil = mysqli_query($koneksi, $sql);
 
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Guru Pelapor</label>
-                                <select name="guru_id"
-                                        class="form-select" required>
-                                    <option value="">-- Pilih Guru --</option>
-                                    <?php while ($g = mysqli_fetch_assoc($guru)) { ?>
-                                        <option value="<?php echo $g['id']; ?>">
-                                            <?php echo htmlspecialchars($g['nama']); ?>
-                                        </option>
-                                    <?php } ?>
-                                </select>
+                                <input type="text" class="form-control"
+                                       value="<?= htmlspecialchars($guru_login['nama'] ?? $_SESSION['nama'] ?? '') ?>"
+                                       readonly>
+                                <input type="hidden" name="guru_id"
+                                       value="<?= (int)($guru_login['id'] ?? 0) ?>">
                             </div>
 
                             <div class="col-md-6 mb-3">
@@ -248,9 +249,6 @@ $hasil = mysqli_query($koneksi, $sql);
                         <button type="submit" class="btn btn-primary">
                             Simpan Pelanggaran
                         </button>
-
-                        <a href="dashboard.php"
-                           class="btn btn-secondary">Kembali</a>
                     </form>
                 </div>
             </div>

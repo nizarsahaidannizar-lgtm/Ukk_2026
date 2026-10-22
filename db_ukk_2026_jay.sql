@@ -903,10 +903,10 @@ CREATE TABLE `t_users` (
 
 INSERT INTO `t_users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `role`, `created_at`, `updated_at`) VALUES
 (1, 'admin', 'admin@gmail.com', '2026-07-01 01:00:00', 'admin123', '', 'admin', '2026-07-01 01:00:00', '2026-07-01 01:00:00'),
-(2, 'guru', 'guru@gmail.com', '2026-07-01 01:00:00', 'guru123', '', 'admin', '2026-07-02 01:00:00', '2026-07-02 01:00:00'),
-(3, 'Citra Hidayat', 'user003@sekolah.test', '2026-07-01 01:00:00', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llCk0s3ZQmQxK9v7l3M6', '', 'admin', '2026-07-03 01:00:00', '2026-07-03 01:00:00'),
-(4, 'Dimas Sari', 'user004@sekolah.test', '2026-07-01 01:00:00', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llCk0s3ZQmQxK9v7l3M6', '', 'admin', '2026-07-04 01:00:00', '2026-07-04 01:00:00'),
-(5, 'Eka Pangestu', 'user005@sekolah.test', '2026-07-01 01:00:00', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llCk0s3ZQmQxK9v7l3M6', '', 'admin', '2026-07-05 01:00:00', '2026-07-05 01:00:00'),
+(2, 'guru', 'guru@gmail.com', '2026-07-01 01:00:00', 'guru123', '', 'guru', '2026-07-02 01:00:00', '2026-07-02 01:00:00'),
+(3, 'Citra Hidayat', 'user003@sekolah.test', '2026-07-01 01:00:00', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llCk0s3ZQmQxK9v7l3M6', '', 'guru', '2026-07-03 01:00:00', '2026-07-03 01:00:00'),
+(4, 'Dimas Sari', 'user004@sekolah.test', '2026-07-01 01:00:00', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llCk0s3ZQmQxK9v7l3M6', '', 'guru', '2026-07-04 01:00:00', '2026-07-04 01:00:00'),
+(5, 'Eka Pangestu', 'user005@sekolah.test', '2026-07-01 01:00:00', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llCk0s3ZQmQxK9v7l3M6', '', 'guru', '2026-07-05 01:00:00', '2026-07-05 01:00:00'),
 (6, 'Fajar Aditya', 'user006@sekolah.test', '2026-07-01 01:00:00', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llCk0s3ZQmQxK9v7l3M6', '', 'guru', '2026-07-06 01:00:00', '2026-07-06 01:00:00'),
 (7, 'Galih Pratama', 'user007@sekolah.test', '2026-07-01 01:00:00', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llCk0s3ZQmQxK9v7l3M6', '', 'guru', '2026-07-07 01:00:00', '2026-07-07 01:00:00'),
 (8, 'Hana Maulana', 'user008@sekolah.test', '2026-07-01 01:00:00', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llCk0s3ZQmQxK9v7l3M6', '', 'guru', '2026-07-08 01:00:00', '2026-07-08 01:00:00'),

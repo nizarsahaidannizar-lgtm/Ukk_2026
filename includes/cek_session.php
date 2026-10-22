@@ -1,33 +1,52 @@
 <?php
-// includes/cek_session.php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Cek apakah pengguna sudah login
 if (!isset($_SESSION['status']) || $_SESSION['status'] !== "login") {
-    header("Location: index.php");
+    header("Location: " . (strpos($_SERVER['PHP_SELF'], '/guru/') !== false ? '../login.php' : 'login.php'));
     exit();
 }
 
-/**
- * Fungsi Pembatasan Hak Akses (RBAC)
- * @param array $roles_diizinkan Array role yang boleh mengakses halaman ini
- */
 function batasi_akses(array $roles_diizinkan) {
-    $role_aktif = strtolower($_SESSION['role'] ?? '');
+    $role_aktif = strtolower(trim($_SESSION['role'] ?? ''));
+    $roles_diizinkan = array_map('strtolower', $roles_diizinkan);
 
-    // Jika role user tidak terdaftar dalam $roles_diizinkan
-    if (!in_array($role_aktif, array_map('strtolower', $roles_diizinkan))) {
-        $_SESSION['pesan_error'] = "Akses ditolak! Anda tidak memiliki izin untuk mengakses halaman tersebut.";
-
-        // Kembalikan ke dashboard (menyesuaikan jika halaman berada dalam subfolder guru/)
-        if (strpos($_SERVER['PHP_SELF'], '/guru/') !== false) {
-            header("Location: ../dashboard.php");
+    if (!in_array($role_aktif, $roles_diizinkan, true)) {
+        $_SESSION['pesan_error'] = 'Akses ditolak. Anda tidak memiliki izin ke halaman ini.';
+        $prefix = strpos($_SERVER['PHP_SELF'], '/guru/') !== false ? '../' : '';
+        if ($role_aktif === 'admin') {
+            header('Location: ' . $prefix . 'dashboard.php');
+        } elseif ($role_aktif === 'guru') {
+            header('Location: ' . $prefix . 'catat_pelanggaran.php');
         } else {
-            header("Location: dashboard.php");
+            header('Location: ' . $prefix . 'login.php');
         }
         exit();
     }
 }
+
+$halaman = basename($_SERVER['PHP_SELF']);
+$hak_akses_halaman = [
+    'dashboard.php' => ['admin'],
+    'dashboard_guru.php' => [],
+    'kelola_siswa.php' => ['admin'],
+    'tambah_siswa.php' => ['admin'],
+    'edit_siswa.php' => ['admin'],
+    'hapus_siswa.php' => ['admin'],
+    'proses_tambah_siswa.php' => ['admin'],
+    'proses_edit_siswa.php' => ['admin'],
+    'penempatan_siswa.php' => ['admin'],
+    'proses_simpan_penempatan.php' => ['admin'],
+    'catat_pelanggaran.php' => ['guru'],
+    'proses_simpan_pelanggaran.php' => ['guru'],
+    'tindakan.php' => ['admin', 'guru'],
+    'proses_tindakan.php' => ['admin', 'guru'],
+    'laporan.php' => ['admin', 'guru'],
+    'cetak_laporan.php' => ['admin'],
+    'riwayat.php' => ['admin', 'guru'],
+    'rekap_poin.php' => ['admin', 'guru'],
+];
+
+batasi_akses($hak_akses_halaman[$halaman] ?? ['admin']);
 ?>

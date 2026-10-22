@@ -19,6 +19,18 @@ $kategori_id = filter_input(
 $guru_id = filter_input(INPUT_POST, 'guru_id', FILTER_VALIDATE_INT);
 $poin = filter_input(INPUT_POST, 'poin', FILTER_VALIDATE_INT);
 
+if (($_SESSION['role'] ?? '') === 'guru') {
+    $stmt_guru = mysqli_prepare(
+        $koneksi,
+        'SELECT id FROM t_guru WHERE user_id = ? AND status_aktif = 1 LIMIT 1'
+    );
+    $id_user = (int)($_SESSION['id_user'] ?? 0);
+    mysqli_stmt_bind_param($stmt_guru, 'i', $id_user);
+    mysqli_stmt_execute($stmt_guru);
+    $guru_login = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt_guru));
+    $guru_id = $guru_login ? (int)$guru_login['id'] : null;
+}
+
 $tanggal = $_POST['tanggal'] ?? '';
 $keterangan = trim($_POST['keterangan'] ?? '');
 $tindakan = trim($_POST['tindakan'] ?? '');
@@ -138,7 +150,7 @@ $stmt = mysqli_prepare($koneksi, $sql);
 
 mysqli_stmt_bind_param(
     $stmt,
-    "iis isisiiisssiss",
+    "iisisisiisssiss",
     $tahun_id,
     $siswa_id,
     $nama_siswa,
@@ -155,3 +167,13 @@ mysqli_stmt_bind_param(
     $tindakan,
     $status
 );
+
+if (mysqli_stmt_execute($stmt)) {
+    $_SESSION['pesan_sukses'] = 'Catatan pelanggaran berhasil disimpan.';
+} else {
+    $_SESSION['pesan_error'] = 'Catatan pelanggaran gagal disimpan.';
+}
+
+mysqli_stmt_close($stmt);
+header('Location: catat_pelanggaran.php');
+exit;
