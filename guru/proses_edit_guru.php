@@ -1,7 +1,7 @@
 <?php
 // proses_edit_guru.php
-include 'includes/cek_session.php';
-include 'config/koneksi.php';
+include '../includes/cek_session.php';
+include '../config/koneksi.php';
 
 $id = $_POST['id'];
 $nip = $_POST['nip'];

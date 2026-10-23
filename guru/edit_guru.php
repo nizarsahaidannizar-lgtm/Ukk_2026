@@ -1,7 +1,7 @@
 <?php
 // edit_guru.php
-include 'includes/cek_session.php';
-include 'config/koneksi.php';
+include '../includes/cek_session.php';
+include '../config/koneksi.php';
 
 // Pastikan parameter ID disaring agar aman
 $id = mysqli_real_escape_string($koneksi, $_GET['id'] ?? '');
@@ -27,7 +27,7 @@ $data = mysqli_fetch_assoc($hasil);
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="layout/style.css">
+    <link rel="stylesheet" href="../layout/style.css">
 </head>
 
 <body class="bg-light">
@@ -35,7 +35,7 @@ $data = mysqli_fetch_assoc($hasil);
 <div class="container-fluid">
     <div class="row">
 
-        <?php include 'layout/sidebar.php'; ?>
+        <?php include '../layout/sidebar.php'; ?>
 
         <!-- KONTEN UTAMA -->
         <main class="col-md-9 ms-sm-auto col-lg-10 p-4">

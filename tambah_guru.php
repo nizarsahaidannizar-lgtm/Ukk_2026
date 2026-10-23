@@ -34,7 +34,7 @@ include 'config/koneksi.php';
 
             <!-- TOMBOL KEMBALI -->
             <div class="mb-4">
-                <a href="kelola_guru.php" class="btn btn-secondary fw-semibold">
+                <a href="guru/kelola_guru.php" class="btn btn-secondary fw-semibold">
                     Kembali ke Kelola Guru
                 </a>
             </div>
@@ -93,7 +93,7 @@ include 'config/koneksi.php';
                                 <button type="submit" class="btn btn-primary px-4 fw-semibold">
                                     Simpan Data Guru
                                 </button>
-                                <a href="kelola_guru.php" class="btn btn-outline-secondary px-4 ms-2">
+                                <a href="guru/kelola_guru.php" class="btn btn-outline-secondary px-4 ms-2">
                                     Batal
                                 </a>
                             </div>

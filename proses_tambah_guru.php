@@ -17,7 +17,7 @@ $sql = "INSERT INTO t_guru
 $hasil = mysqli_query($koneksi, $sql);
 
 if ($hasil) {
-    header("Location: kelola_guru.php");
+    header("Location: guru/kelola_guru.php");
     exit;
 } else {
     echo "Gagal menambahkan data guru: " . mysqli_error($koneksi);

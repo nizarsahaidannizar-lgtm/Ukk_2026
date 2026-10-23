@@ -22,6 +22,10 @@ $hasil = mysqli_query($koneksi, $sql);
     <!-- Bootstrap 5 CSS & FontAwesome Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- DataTables Bootstrap 5 CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    
     <link rel="stylesheet" href="layout/style.css">
 </head>
 
@@ -78,11 +82,11 @@ $hasil = mysqli_query($koneksi, $sql);
                 <div class="card-header bg-white py-3">
                     <h5 class="card-title m-0 fw-bold">Data Tahun Ajaran</h5>
                 </div>
-                <div class="card-body p-0">
+                <div class="card-body p-3">
 
                     <div class="table-responsive">
-                        <!-- TABEL MURNI BOOTSTRAP 5 -->
-                        <table class="table table-striped table-hover align-middle m-0">
+                        <!-- TABEL DENGAN DATATABLES -->
+                        <table id="tabelTahunAjaran" class="table table-striped table-hover align-middle m-0 w-100">
 
                             <thead class="table-dark">
                                 <tr>
@@ -149,13 +153,7 @@ $hasil = mysqli_query($koneksi, $sql);
                                     </tr>
 
                                     <?php } 
-                                } else { ?>
-                                    <tr>
-                                        <td colspan="8" class="text-center py-4 text-muted">
-                                            Belum ada data tahun ajaran.
-                                        </td>
-                                    </tr>
-                                <?php } ?>
+                                } ?>
                             </tbody>
 
                         </table>
@@ -168,8 +166,38 @@ $hasil = mysqli_query($koneksi, $sql);
     </div>
 </div>
 
+<!-- jQuery (dibutuhkan oleh DataTables) -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
 <!-- Bootstrap 5 JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- DataTables JS & Bootstrap 5 Integration -->
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+<!-- Inisialisasi DataTables dengan Bahasa Indonesia -->
+<script>
+    $(document).ready(function() {
+        $('#tabelTahunAjaran').DataTable({
+            "language": {
+                "lengthMenu": "Tampilkan _MENU_ data",
+                "zeroRecords": "Data tidak ditemukan",
+                "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                "infoEmpty": "Menampilkan 0 sampai 0 dari 0 data",
+                "infoFiltered": "(disaring dari total _MAX_ data)",
+                "search": "Cari:",
+                "paginate": {
+                    "first": "Pertama",
+                    "last": "Terakhir",
+                    "next": "Selanjutnya",
+                    "previous": "Sebelumnya"
+                }
+            },
+            "pageLength": 10
+        });
+    });
+</script>
 
 </body>
 </html>
