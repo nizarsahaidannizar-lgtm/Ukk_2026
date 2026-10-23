@@ -44,6 +44,7 @@ if (!$data) {
                 <td>:</td>
                 <td>
                     <input type="text" name="nama"
+                              maxlength="20"
                            value="<?php echo htmlspecialchars($data['nama']); ?>"
                            placeholder="Contoh: 2026/2027"
                            required>

@@ -97,7 +97,6 @@ $hasil = mysqli_query($koneksi, $sql);
                             <thead class="table-dark">
                                 <tr>
                                     <th>No.</th>
-                                    <th>Tahun Ajaran ID</th>
                                     <th>Kelas</th>
                                     <th>Guru</th>
                                     <th>Tanggal Mulai</th>
@@ -114,8 +113,6 @@ $hasil = mysqli_query($koneksi, $sql);
 
                                 <tr>
                                     <td><?= $no++ ?></td>
-
-                                    <td><?= htmlspecialchars($row['tahun_ajaran_id'] ?? '-') ?></td>
 
                                     <td><?= htmlspecialchars($row['nama_kelas'] ?? '-') ?></td>
 
@@ -176,7 +173,7 @@ $(document).ready(function () {
     $('#tabelWaliKelas').DataTable({
         pageLength: 10,
         lengthMenu: [5, 10, 25, 50, 100],
-        order: [[2, 'asc']], // Urutkan berdasarkan Nama Kelas
+        order: [[1, 'asc']], // Urutkan berdasarkan Nama Kelas
         scrollX: true,
         language: {
             search: "Cari:",

@@ -199,6 +199,17 @@
             color: #fff;
         }
 
+        @media (min-width: 768px) {
+            .sidebar-sticky {
+                position: sticky;
+                top: 0;
+                align-self: flex-start;
+                height: 100vh;
+                min-height: 100vh;
+                overflow-y: auto;
+            }
+        }
+
         @media (max-width: 767px) {
             .main-content {
                 padding: 23px 15px;

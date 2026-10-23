@@ -12,8 +12,8 @@ $prefix = (strpos($_SERVER['PHP_SELF'], '/guru/') !== false) ? '../' : '';
 if ($role === "admin") {
 ?>
     <!-- SIDEBAR ADMIN (SEMUA FITUR) -->
-    <div class="col-md-3 col-lg-2 bg-dark min-vh-100 p-3">
-        <h4 class="text-white mb-4">Sistem Pelanggaran Siswa</h4>
+    <div class="col-md-3 col-lg-2 bg-dark min-vh-100 p-3 sidebar-sticky">
+        <h4 class="text-white mb-4">Sistem Pelanggaran<span class="d-block">Siswa</span></h4>
         <ul class="nav nav-pills flex-column">
             <li class="nav-item mb-2">
                 <a href="<?= $prefix ?>dashboard.php" class="nav-link <?= ($current_page == 'dashboard.php') ? 'active' : 'text-white' ?>">Dashboard</a>
@@ -40,7 +40,10 @@ if ($role === "admin") {
                 <a href="<?= $prefix ?>kelola_pelanggaran_kategori.php" class="nav-link <?= ($current_page == 'kelola_pelanggaran_kategori.php') ? 'active' : 'text-white' ?>">Kategori Pelanggaran</a>
             </li>
             <li class="nav-item mb-2">
-                <a href="<?= $prefix ?>cetak_laporan.php" class="nav-link <?= ($current_page == 'cetak_laporan.php') ? 'active' : 'text-white' ?>" target="_blank">Cetak Laporan</a>
+                <a href="<?= $prefix ?>laporan.php" class="nav-link <?= ($current_page == 'laporan.php') ? 'active' : 'text-white' ?>">Laporan</a>
+            </li>
+            <li class="nav-item mb-2">
+                <a href="<?= $prefix ?>riwayat.php" class="nav-link <?= ($current_page == 'riwayat.php') ? 'active' : 'text-white' ?>">Riwayat</a>
             </li>
             <hr class="text-secondary">
             <li class="nav-item">
@@ -53,23 +56,29 @@ if ($role === "admin") {
 } elseif ($role === "guru") {
 ?>
     <!-- SIDEBAR GURU (SESUAI USE CASE) -->
-    <div class="col-md-3 col-lg-2 bg-dark min-vh-100 p-3">
-        <h4 class="text-white mb-4">Pelanggaran Siswa</h4>
+    <div class="col-md-3 col-lg-2 bg-dark min-vh-100 p-3 sidebar-sticky">
+        <h4 class="text-white mb-4">Sistem Pelanggaran<span class="d-block">Siswa</span></h4>
         <ul class="nav nav-pills flex-column">
             <li class="nav-item mb-2">
-                <a href="<?= $prefix ?>catat_pelanggaran.php" class="nav-link <?= ($current_page == 'catat_pelanggaran.php') ? 'active' : 'text-white' ?>">Catat Pelanggaran</a>
+                <a href="<?= $prefix ?>guru/dashboard_guru.php" class="nav-link <?= ($current_page == 'dashboard_guru.php') ? 'active' : 'text-white' ?>">Dashboard</a>
             </li>
             <li class="nav-item mb-2">
-                <a href="<?= $prefix ?>tindakan.php" class="nav-link <?= ($current_page == 'tindakan.php') ? 'active' : 'text-white' ?>">Tindakan</a>
+                <a href="<?= $prefix ?>guru/catat_pelanggaran.php" class="nav-link <?= ($current_page == 'catat_pelanggaran.php') ? 'active' : 'text-white' ?>">Catat Pelanggaran</a>
             </li>
             <li class="nav-item mb-2">
-                <a href="<?= $prefix ?>laporan.php" class="nav-link <?= ($current_page == 'laporan.php') ? 'active' : 'text-white' ?>">Laporan</a>
+                <a href="<?= $prefix ?>guru/tindakan_guru.php" class="nav-link <?= ($current_page == 'tindakan_guru.php') ? 'active' : 'text-white' ?>">Tindakan</a>
             </li>
             <li class="nav-item mb-2">
-                <a href="<?= $prefix ?>riwayat.php" class="nav-link <?= ($current_page == 'riwayat.php') ? 'active' : 'text-white' ?>">Riwayat</a>
+                <a href="<?= $prefix ?>guru/laporan_guru.php" class="nav-link <?= ($current_page == 'laporan_guru.php') ? 'active' : 'text-white' ?>">Laporan</a>
             </li>
             <li class="nav-item mb-2">
-                <a href="<?= $prefix ?>rekap_poin.php" class="nav-link <?= ($current_page == 'rekap_poin.php') ? 'active' : 'text-white' ?>">Rekap Poin</a>
+                <a href="<?= $prefix ?>cetak_laporan.php" class="nav-link <?= ($current_page == 'cetak_laporan.php') ? 'active' : 'text-white' ?>" target="_blank">Cetak Laporan</a>
+            </li>
+            <li class="nav-item mb-2">
+                <a href="<?= $prefix ?>guru/riwayat_guru.php" class="nav-link <?= ($current_page == 'riwayat_guru.php') ? 'active' : 'text-white' ?>">Riwayat</a>
+            </li>
+            <li class="nav-item mb-2">
+                <a href="<?= $prefix ?>guru/rekap_poin.php" class="nav-link <?= ($current_page == 'rekap_poin.php') ? 'active' : 'text-white' ?>">Rekap Poin</a>
             </li>
             <hr class="text-secondary">
             <li class="nav-item">
@@ -80,3 +89,24 @@ if ($role === "admin") {
 <?php
 }
 ?>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const textLimits = <?= json_encode($aturan_batas_input[$current_page] ?? []) ?>;
+    const numberLimits = <?= json_encode($aturan_batas_angka[$current_page] ?? []) ?>;
+
+    Object.entries(textLimits).forEach(([name, rule]) => {
+        Array.from(document.getElementsByName(name)).forEach((field) => {
+            if ('max' in rule) field.maxLength = rule.max;
+            if ('min' in rule) field.minLength = rule.min;
+        });
+    });
+
+    Object.entries(numberLimits).forEach(([name, rule]) => {
+        Array.from(document.getElementsByName(name)).forEach((field) => {
+            field.min = rule.min;
+            field.max = rule.max;
+        });
+    });
+});
+</script>

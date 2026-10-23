@@ -29,6 +29,10 @@ include '../config/koneksi.php';
                 <h1 class="h2 m-0">Tambah Data Guru</h1>
             </div>
 
+            <?php if (isset($_SESSION['pesan_error'])): ?>
+                <div class="alert alert-danger"><?= htmlspecialchars($_SESSION['pesan_error']); unset($_SESSION['pesan_error']); ?></div>
+            <?php endif; ?>
+
             <div class="mb-4">
                 <a href="kelola_guru.php" class="btn btn-secondary fw-semibold">
                     Kembali ke Kelola Guru
@@ -57,6 +61,12 @@ include '../config/koneksi.php';
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Email</label>
                                 <input type="email" name="email" class="form-control" placeholder="contoh@sekolah.sch.id" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Password Awal</label>
+                                <input type="password" name="password" class="form-control" minlength="8" autocomplete="new-password" required>
+                                <small class="text-muted">Minimal 8 karakter.</small>
                             </div>
 
                             <div class="col-md-6">

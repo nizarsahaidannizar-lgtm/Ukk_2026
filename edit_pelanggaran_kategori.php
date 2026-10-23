@@ -65,7 +65,7 @@ if (!$data) {
                 </div>
                 <div class="card-body p-4">
                     
-                    <form action="proses_edit_pelanggaran_kategori.php" method="POST">
+                    <form action="proses_edit_pelanggaran.php" method="POST">
                         <input type="hidden" name="id" value="<?= htmlspecialchars($data['id']); ?>">
 
                         <div class="row g-3">

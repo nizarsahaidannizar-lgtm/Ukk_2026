@@ -2,9 +2,21 @@
 session_start();
 include "config/koneksi.php";
 
-if (isset($_POST['login'])) {
-    $email = mysqli_real_escape_string($koneksi, $_POST['email']);
-    $password = $_POST['password'];
+if (
+    $_SERVER['REQUEST_METHOD'] !== 'POST' ||
+    !isset($_POST['login']) ||
+    !is_string($_POST['email'] ?? null) ||
+    !is_string($_POST['password'] ?? null) ||
+    strlen($_POST['email']) > 255 ||
+    strlen($_POST['password']) > 255
+) {
+    $_SESSION['pesan_error'] = 'Email atau password melebihi batas input.';
+    header("Location: login.php");
+    exit();
+}
+
+$email = mysqli_real_escape_string($koneksi, $_POST['email']);
+$password = $_POST['password'];
 
     // Nama tabel disesuaikan menjadi t_users
     $query = mysqli_query(
@@ -36,7 +48,7 @@ if (isset($_POST['login'])) {
             $_SESSION['role']     = $role_login;
             $_SESSION['role_verified'] = true;
 
-            header("Location: " . ($_SESSION['role'] === 'admin' ? 'dashboard.php' : 'catat_pelanggaran.php'));
+            header("Location: " . ($_SESSION['role'] === 'admin' ? 'dashboard.php' : 'guru/dashboard_guru.php'));
             exit();
         } else {
             $_SESSION['pesan_error'] = "Email, password, atau hak akses tidak valid.";
@@ -48,8 +60,4 @@ if (isset($_POST['login'])) {
         header("Location: login.php");
         exit();
     }
-} else {
-    header("Location: login.php");
-    exit();
-}
 ?>

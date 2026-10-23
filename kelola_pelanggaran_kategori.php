@@ -44,7 +44,8 @@ $hasil = mysqli_query($koneksi, $sql);
                 </div>
                 <div>
                     <h1 class="h2 fw-bold text-dark m-0">SIP</h1>
-                    <p class="text-muted m-0 small">Sistem Informasi Pelanggaran Siswa</p>
+                    <p class="text-muted m-0 small">Sistem Informasi Pelanggaran 
+                        Siswa</p>
                 </div>
             </div>
 

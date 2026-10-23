@@ -82,6 +82,7 @@ $hasil = mysqli_query($koneksi, $sql);
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
           rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
@@ -90,6 +91,7 @@ $hasil = mysqli_query($koneksi, $sql);
         <?php include 'layout/sidebar.php'; ?>
 
         <main class="col-md-9 col-lg-10 p-4">
+            <?php include 'layout/brand_header.php'; ?>
 
             <h2 class="mb-4">Catat Pelanggaran Siswa</h2>
 

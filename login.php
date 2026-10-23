@@ -51,6 +51,7 @@ session_start();
                                name="email"
                                id="email"
                                class="form-control bg-light border-0 rounded-3 py-2 px-3"
+                               maxlength="255"
                                placeholder="admin@gmail.com"
                                required>
                     </div>
@@ -61,6 +62,7 @@ session_start();
                                name="password"
                                id="password"
                                class="form-control bg-light border-0 rounded-3 py-2 px-3"
+                               maxlength="255"
                                placeholder="••••••••••••"
                                required>
                     </div>
