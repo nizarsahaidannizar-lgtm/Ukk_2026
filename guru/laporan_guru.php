@@ -230,6 +230,7 @@ if ($hasil && mysqli_num_rows($hasil) > 0) {
 <script>
     $(document).ready(function() {
         $('#tabelLaporanGuru').DataTable({
+            "autoWidth": false,
             "language": {
                 "lengthMenu": "Tampilkan _MENU_ data",
                 "zeroRecords": "Data tidak ditemukan",

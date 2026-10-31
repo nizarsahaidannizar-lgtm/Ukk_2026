@@ -74,7 +74,7 @@ $hasil = mysqli_query($koneksi, $sql);
     <div class="row">
         <?php include '../layout/sidebar.php'; ?>
 
-        <main class="col-md-9 ms-sm-auto col-lg-10 p-4 guru-content">
+        <main class="col-md-9 ms-sm-auto col-lg-10 p-4 guru-content guru-violation-list">
             <header class="admin-page-header">
                 <div class="admin-page-heading">
                     <div>
@@ -191,20 +191,20 @@ $hasil = mysqli_query($koneksi, $sql);
                 <div class="card-header bg-white py-3 fw-bold">Data Catatan Pelanggaran</div>
                 <div class="card-body p-3">
                     <div class="table-responsive">
-                        <table id="tabelPelanggaran" class="table table-striped table-hover align-middle mb-0 w-100">
-                            <thead class="table-dark">
+                        <table id="tabelPelanggaran" class="table table-sm table-striped table-hover align-middle mb-0 w-100 guru-violation-table">
+                            <thead class="table-dark text-center">
                                 <tr>
-                                    <th class="text-center py-3">No</th>
-                                    <th class="py-3">Nama Siswa</th>
-                                    <th class="py-3">Kelas</th>
-                                    <th class="py-3">Tahun Ajaran</th>
-                                    <th class="py-3">Pelanggaran</th>
-                                    <th class="py-3">Guru</th>
-                                    <th class="text-center py-3">Tanggal</th>
-                                    <th class="text-center py-3">Poin</th>
-                                    <th class="py-3">Tindakan</th>
-                                    <th class="text-center py-3">Status</th>
-                                    <th class="text-center py-3">Aksi</th>
+                                    <th>No.</th>
+                                    <th>Nama Siswa</th>
+                                    <th>Kelas</th>
+                                    <th>Tahun Ajaran</th>
+                                    <th>Pelanggaran</th>
+                                    <th>Guru</th>
+                                    <th>Tanggal</th>
+                                    <th>Poin</th>
+                                    <th>Tindakan</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -219,7 +219,7 @@ $hasil = mysqli_query($koneksi, $sql);
                                             <td><?= htmlspecialchars($row['tahun_ajaran']) ?></td>
                                             <td><?= htmlspecialchars($row['nama_pelanggaran']) ?></td>
                                             <td><?= htmlspecialchars($row['nama_guru']) ?></td>
-                                            <td class="text-center"><?= htmlspecialchars($row['tanggal'] ?? '-') ?></td>
+                                            <td class="text-center text-nowrap"><?= htmlspecialchars($row['tanggal'] ?? '-') ?></td>
                                             <td class="text-center fw-bold"><?= htmlspecialchars($row['poin'] ?? '0') ?></td>
                                             <td><?= htmlspecialchars($row['tindakan'] ?? '-') ?></td>
                                             <td class="text-center">
@@ -230,13 +230,15 @@ $hasil = mysqli_query($koneksi, $sql);
                                             <td class="text-center text-nowrap">
                                                 <a href="edit_catatan_pelanggaran.php?id=<?= (int)$row['id'] ?>"
                                                    class="btn btn-warning btn-sm text-white me-1"
-                                                   aria-label="Edit catatan pelanggaran">
-                                                    Edit
+                                                   title="Edit" aria-label="Edit catatan pelanggaran">
+                                                    <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
                                                 </a>
                                                 <form action="proses_hapus_catatan_pelanggaran.php" method="POST" class="d-inline"
                                                       onsubmit="return confirm('Yakin ingin menghapus catatan pelanggaran ini?');">
                                                     <input type="hidden" name="id" value="<?= (int)$row['id'] ?>">
-                                                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                                    <button type="submit" class="btn btn-danger btn-sm" title="Hapus" aria-label="Hapus catatan pelanggaran">
+                                                        <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+                                                    </button>
                                                 </form>
                                             </td>
                                         </tr>
@@ -268,6 +270,20 @@ $hasil = mysqli_query($koneksi, $sql);
 
     $(document).ready(function() {
         $('#tabelPelanggaran').DataTable({
+            "autoWidth": false,
+            "columnDefs": [
+                { "targets": 0, "width": "4%", "orderable": false },
+                { "targets": 1, "width": "11%" },
+                { "targets": 2, "width": "8%" },
+                { "targets": 3, "width": "8%" },
+                { "targets": 4, "width": "14%" },
+                { "targets": 5, "width": "9%" },
+                { "targets": 6, "width": "9%" },
+                { "targets": 7, "width": "5%" },
+                { "targets": 8, "width": "12%" },
+                { "targets": 9, "width": "8%" },
+                { "targets": 10, "width": "12%", "orderable": false }
+            ],
             "language": {
                 "lengthMenu": "Tampilkan _MENU_ data",
                 "zeroRecords": "Data tidak ditemukan",

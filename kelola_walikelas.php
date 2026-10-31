@@ -79,7 +79,7 @@ $hasil = mysqli_query($koneksi, $sql);
                 <div class="card-body p-4">
 
                     <div class="table-responsive">
-                        <table id="tabelWaliKelas" class="table table-striped table-bordered table-hover align-middle w-100">
+                        <table id="tabelWaliKelas" class="table table-striped table-bordered table-hover align-middle w-100 admin-walikelas-table">
 
                             <thead class="table-dark">
                                 <tr>
@@ -89,7 +89,7 @@ $hasil = mysqli_query($koneksi, $sql);
                                     <th>Tanggal Mulai</th>
                                     <th>Tanggal Selesai</th>
                                     <th>Status</th>
-                                    <th class="text-center">Aksi</th>
+                                    <th class="text-center action-column">Aksi</th>
                                 </tr>
                             </thead>
 
@@ -117,15 +117,15 @@ $hasil = mysqli_query($koneksi, $sql);
                                         <?php } ?>
                                     </td>
 
-                                    <td class="text-center text-nowrap">
-                                        <a href="edit_walikelas.php?id=<?= urlencode($row['id']) ?>" class="btn btn-warning btn-sm me-1 fw-semibold text-white">
-                                            Edit
+                                    <td class="text-center text-nowrap action-column">
+                                        <a href="edit_walikelas.php?id=<?= urlencode($row['id']) ?>" class="btn btn-warning btn-sm me-1 fw-semibold text-white" title="Edit" aria-label="Edit wali kelas">
+                                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
                                         </a>
 
                                         <a href="hapus_walikelas.php?id=<?= urlencode($row['id']) ?>" 
-                                           class="btn btn-danger btn-sm fw-semibold"
+                                           class="btn btn-danger btn-sm fw-semibold" title="Hapus" aria-label="Hapus wali kelas"
                                            onclick="return confirm('Yakin ingin menghapus data wali kelas ini?');">
-                                            Hapus
+                                            <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -161,7 +161,16 @@ $(document).ready(function () {
         pageLength: 10,
         lengthMenu: [5, 10, 25, 50, 100],
         order: [[1, 'asc']], // Urutkan berdasarkan Nama Kelas
-        scrollX: true,
+        autoWidth: false,
+        columnDefs: [
+            { targets: 0, width: '6%', orderable: false },
+            { targets: 1, width: '15%' },
+            { targets: 2, width: '20%' },
+            { targets: 3, width: '16%' },
+            { targets: 4, width: '16%' },
+            { targets: 5, width: '12%' },
+            { targets: 6, width: '15%', orderable: false }
+        ],
         language: {
             search: "Cari:",
             lengthMenu: "Tampilkan _MENU_ data",

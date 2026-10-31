@@ -8,6 +8,12 @@ $lingkup = lingkup_sql_pelanggaran($konteks);
 $mulai = $_GET['mulai'] ?? '';
 $sampai = $_GET['sampai'] ?? '';
 $status = $_GET['status'] ?? '';
+$halaman_kembali = ($_SESSION['role'] ?? '') === 'admin'
+    ? 'laporan.php'
+    : 'guru/laporan_guru.php';
+$label_kembali = ($_SESSION['role'] ?? '') === 'admin'
+    ? 'Kembali ke Laporan'
+    : 'Kembali ke Laporan Guru';
 $tanggal_valid = static function ($nilai): bool {
     if (!is_string($nilai) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $nilai)) {
         return false;
@@ -41,6 +47,9 @@ $hasil = mysqli_query(
      WHERE " . implode(' AND ', $where) . '
      ORDER BY ps.tanggal DESC, ps.id DESC'
 );
+if (!$hasil) {
+    error_log('Gagal memuat laporan cetak: ' . mysqli_error($koneksi));
+}
 $total_poin = 0;
 $jumlah_catatan = 0;
 ?>
@@ -75,8 +84,8 @@ $jumlah_catatan = 0;
         <?php include 'layout/sidebar.php'; ?>
         <main class="col-md-9 ms-sm-auto col-lg-10 p-4 print-main">
             <div class="toolbar d-flex flex-wrap gap-2">
-                <a class="btn btn-outline-secondary" href="guru/laporan_guru.php?<?= htmlspecialchars(http_build_query(['mulai' => $mulai, 'sampai' => $sampai, 'status' => $status]), ENT_QUOTES, 'UTF-8') ?>" title="Kembali ke laporan guru">
-                    <i class="fa-solid fa-arrow-left me-1" aria-hidden="true"></i>Kembali
+                <a class="btn btn-outline-secondary" href="<?= htmlspecialchars($halaman_kembali, ENT_QUOTES, 'UTF-8') ?>?<?= htmlspecialchars(http_build_query(['mulai' => $mulai, 'sampai' => $sampai, 'status' => $status]), ENT_QUOTES, 'UTF-8') ?>" title="<?= htmlspecialchars($label_kembali, ENT_QUOTES, 'UTF-8') ?>">
+                    <i class="fa-solid fa-arrow-left me-1" aria-hidden="true"></i><?= htmlspecialchars($label_kembali, ENT_QUOTES, 'UTF-8') ?>
                 </a>
                 <button class="btn btn-primary" type="button" onclick="window.print()">
                     <i class="fa-solid fa-print me-1" aria-hidden="true"></i>Cetak
@@ -87,9 +96,15 @@ $jumlah_catatan = 0;
             <table class="report-table">
         <thead><tr><th>Tanggal</th><th>Siswa</th><th>Kelas</th><th>Pelanggaran</th><th>Guru</th><th>Poin</th><th>Tindakan</th><th>Status</th></tr></thead>
         <tbody>
+        <?php if (!$hasil): ?>
+            <tr><td colspan="8">Laporan tidak dapat dimuat. Silakan coba lagi.</td></tr>
+        <?php elseif (mysqli_num_rows($hasil) === 0): ?>
+            <tr><td colspan="8">Tidak ada catatan pelanggaran sesuai kriteria laporan.</td></tr>
+        <?php else: ?>
         <?php while ($row = mysqli_fetch_assoc($hasil)): $total_poin += (int)$row['poin']; $jumlah_catatan++; ?>
             <tr><td><?= htmlspecialchars($row['tanggal'] ?? '-') ?></td><td><?= htmlspecialchars($row['nama_siswa']) ?></td><td><?= htmlspecialchars($row['nama_kelas']) ?></td><td><?= htmlspecialchars($row['nama_pelanggaran']) ?></td><td><?= htmlspecialchars($row['nama_guru']) ?></td><td><?= (int)$row['poin'] ?></td><td><?= htmlspecialchars($row['tindakan']) ?></td><td><?= htmlspecialchars($row['status']) ?></td></tr>
         <?php endwhile; ?>
+        <?php endif; ?>
         </tbody>
         <tfoot><tr><th colspan="5">Total (<?= $jumlah_catatan ?> catatan)</th><th><?= $total_poin ?></th><th colspan="2"></th></tr></tfoot>
             </table>

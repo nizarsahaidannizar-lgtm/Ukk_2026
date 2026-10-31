@@ -4,6 +4,7 @@
 
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
+require_once 'includes/tahun_ajaran.php';
 
 // Pastikan data dikirim menggunakan POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -45,41 +46,58 @@ if ($tanggal_mulai > $tanggal_selesai) {
     die("Tanggal mulai tidak boleh melebihi tanggal selesai.");
 }
 
-// Simpan data ke database
-$sql = "INSERT INTO t_tahun_ajaran
-        (nama, tanggal_mulai, tanggal_selesai, status_aktif)
-        VALUES (?, ?, ?, ?)";
+$status_aktif = (int) $status_aktif;
 
-$stmt = mysqli_prepare($koneksi, $sql);
+mysqli_begin_transaction($koneksi);
 
-if (!$stmt) {
-    die("Gagal menyiapkan query: " .
-        htmlspecialchars(mysqli_error($koneksi)));
+if (!normalisasi_tahun_ajaran_aktif($koneksi)) {
+    mysqli_rollback($koneksi);
+    $_SESSION['pesan_error'] = 'Gagal memeriksa status tahun ajaran aktif.';
+    header('Location: kelola_tahun_ajaran.php');
+    exit;
 }
 
-mysqli_stmt_bind_param(
-    $stmt,
-    "sssi",
-    $nama,
-    $tanggal_mulai,
-    $tanggal_selesai,
-    $status_aktif
+if ($status_aktif === 1 && !mysqli_query(
+    $koneksi,
+    "UPDATE t_tahun_ajaran
+     SET status_aktif = 0, updated_at = CURRENT_TIMESTAMP
+     WHERE status_aktif = 1"
+)) {
+    mysqli_rollback($koneksi);
+    $_SESSION['pesan_error'] = 'Gagal menonaktifkan tahun ajaran sebelumnya.';
+    header('Location: kelola_tahun_ajaran.php');
+    exit;
+}
+
+$stmt = mysqli_prepare(
+    $koneksi,
+    "INSERT INTO t_tahun_ajaran
+     (nama, tanggal_mulai, tanggal_selesai, status_aktif)
+     VALUES (?, ?, ?, ?)"
 );
 
-if (mysqli_stmt_execute($stmt)) {
-    mysqli_stmt_close($stmt);
-
-    echo "<script>
-        alert('Tahun ajaran berhasil ditambahkan!');
-        window.location.href = 'kelola_tahun_ajaran.php';
-    </script>";
+if (!$stmt) {
+    mysqli_rollback($koneksi);
+    $_SESSION['pesan_error'] = 'Gagal menyiapkan data tahun ajaran.';
+    header('Location: kelola_tahun_ajaran.php');
     exit;
-} else {
-    $pesan = mysqli_stmt_error($stmt);
-    mysqli_stmt_close($stmt);
-
-    die("Gagal menambahkan tahun ajaran: " .
-        htmlspecialchars($pesan));
 }
+
+mysqli_stmt_bind_param($stmt, 'sssi', $nama, $tanggal_mulai, $tanggal_selesai, $status_aktif);
+$berhasil = mysqli_stmt_execute($stmt);
+mysqli_stmt_close($stmt);
+
+if (!$berhasil || !mysqli_commit($koneksi)) {
+    mysqli_rollback($koneksi);
+    $_SESSION['pesan_error'] = 'Gagal menambahkan tahun ajaran.';
+    header('Location: kelola_tahun_ajaran.php');
+    exit;
+}
+
+$_SESSION['pesan_sukses'] = $status_aktif === 1
+    ? 'Tahun ajaran berhasil ditambahkan dan menjadi satu-satunya yang aktif.'
+    : 'Tahun ajaran berhasil ditambahkan.';
+header('Location: kelola_tahun_ajaran.php');
+exit;
 ?>
 

@@ -66,13 +66,10 @@ if ($role === "admin") {
                 <a href="<?= $prefix ?>kelola_pelanggaran_kategori.php" class="nav-link <?= $is_admin_menu_active(['kelola_pelanggaran_kategori.php', 'tambah_pelanggaran_kategori.php', 'edit_pelanggaran_kategori.php', 'hapus_pelanggaran_kategori.php', 'proses_tambah_pelanggaran_kategori.php', 'proses_edit_pelanggaran.php']) ?>"><svg class="sidebar-menu-icon" aria-hidden="true"><use href="#sidebar-icon-warning"/></svg><span>Kategori Pelanggaran</span></a>
             </li>
             <li class="nav-item mb-2">
-                <a href="<?= $prefix ?>kelola_jenis_pelanggaran.php" class="nav-link <?= $is_admin_menu_active(['kelola_jenis_pelanggaran.php', 'tambah_jenis_pelanggaran.php', 'proses_tambah_jenis_pelanggaran.php', 'edit_jenis_pelanggaran.php', 'proses_edit_jenis_pelanggaran.php', 'hapus_jenis_pelanggaran.php']) ?>"><svg class="sidebar-menu-icon" aria-hidden="true"><use href="#sidebar-icon-warning"/></svg><span>Jenis Pelanggaran</span></a>
-            </li>
-            <li class="nav-item mb-2">
                 <a href="<?= $prefix ?>laporan.php" class="nav-link <?= $is_admin_menu_active(['laporan.php', 'cetak_laporan.php']) ?>"><svg class="sidebar-menu-icon" aria-hidden="true"><use href="#sidebar-icon-report"/></svg><span>Laporan</span></a>
             </li>
             <li class="nav-item mb-2">
-                <a href="<?= $prefix ?>riwayat.php" class="nav-link <?= $is_admin_menu_active(['riwayat.php', 'proses_tindakan.php']) ?>"><svg class="sidebar-menu-icon" aria-hidden="true"><use href="#sidebar-icon-history"/></svg><span>Riwayat</span></a>
+                <a href="<?= $prefix ?>kelola_jenis_pelanggaran.php" class="nav-link <?= $is_admin_menu_active(['kelola_jenis_pelanggaran.php', 'tambah_jenis_pelanggaran.php', 'proses_tambah_jenis_pelanggaran.php', 'edit_jenis_pelanggaran.php', 'proses_edit_jenis_pelanggaran.php', 'hapus_jenis_pelanggaran.php']) ?>"><svg class="sidebar-menu-icon" aria-hidden="true"><use href="#sidebar-icon-warning"/></svg><span>Jenis Pelanggaran</span></a>
             </li>
         </ul>
         <div class="sidebar-footer">

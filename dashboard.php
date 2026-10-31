@@ -14,6 +14,22 @@ $filter_bulan = !array_key_exists('bulan', $_GET)
 $filter_tahun = ($tahun_input >= 2000 && $tahun_input <= (int)date('Y') + 1)
     ? $tahun_input
     : (int)date('Y');
+$filter_awal = !isset($_GET['hari']) && !isset($_GET['bulan']) && !isset($_GET['tahun']);
+
+if ($filter_awal) {
+    $periode_terbaru = mysqli_query(
+        $koneksi,
+        "SELECT MAX(tanggal) AS tanggal_terbaru FROM t_pelanggaran_siswa"
+    );
+    $data_periode_terbaru = $periode_terbaru
+        ? mysqli_fetch_assoc($periode_terbaru)
+        : null;
+
+    if (!empty($data_periode_terbaru['tanggal_terbaru'])) {
+        $filter_tahun = (int) date('Y', strtotime($data_periode_terbaru['tanggal_terbaru']));
+        $filter_bulan = (int) date('n', strtotime($data_periode_terbaru['tanggal_terbaru']));
+    }
+}
 
 if ($filter_bulan === '') {
     $filter_hari = '';
@@ -355,6 +371,8 @@ $rekap_poin = mysqli_query(
 const labelsAdmin = <?= json_encode($chart_labels) ?>;
 const dataAdmin = <?= json_encode($chart_data) ?>;
 const selectedIndexAdmin = <?= json_encode($chart_selected_index) ?>;
+const tooltipUnitAdmin = <?= json_encode($filter_bulan ? 'Tanggal' : 'Bulan') ?>;
+const tooltipPeriodAdmin = <?= json_encode($filter_bulan ? $nama_bulan[(int)$filter_bulan] . ' ' . $filter_tahun : (string)$filter_tahun) ?>;
 const maxValueAdmin = Math.max(...dataAdmin);
 const tickStepAdmin = Math.max(1, Math.ceil(maxValueAdmin / 5));
 
@@ -428,7 +446,8 @@ new Chart(document.getElementById('grafikAdmin'), {
                 padding: 12,
                 displayColors: false,
                 callbacks: {
-                    label: (context) => `${context.parsed.y} kasus`
+                    title: (items) => `${tooltipUnitAdmin} ${items[0].label} · ${tooltipPeriodAdmin}`,
+                    label: (context) => `${context.parsed.y} kasus pelanggaran`
                 }
             }
         }

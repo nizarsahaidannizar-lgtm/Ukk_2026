@@ -1,123 +1,99 @@
 
 <?php
-// edit_tahun_ajaran.php
-
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
+require_once 'includes/tahun_ajaran.php';
 
-$id = $_GET['id'] ?? '';
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: kelola_tahun_ajaran.php');
+    exit;
+}
+
+$id = $_POST['id'] ?? '';
+$nama = trim($_POST['nama'] ?? '');
+$tanggal_mulai = $_POST['tanggal_mulai'] ?? '';
+$tanggal_selesai = $_POST['tanggal_selesai'] ?? '';
+$status_aktif = $_POST['status_aktif'] ?? '';
+
+if (
+    !ctype_digit((string) $id) ||
+    (int) $id < 1 ||
+    !preg_match('/^[0-9]{4}\/[0-9]{4}$/', $nama) ||
+    $tanggal_mulai === '' ||
+    $tanggal_selesai === '' ||
+    !in_array($status_aktif, ['0', '1'], true)
+) {
+    $_SESSION['pesan_error'] = 'Data tahun ajaran tidak valid.';
+    header('Location: kelola_tahun_ajaran.php');
+    exit;
+}
+
+$mulai = DateTime::createFromFormat('!Y-m-d', $tanggal_mulai);
+$selesai = DateTime::createFromFormat('!Y-m-d', $tanggal_selesai);
+
+if (
+    !$mulai ||
+    !$selesai ||
+    $mulai->format('Y-m-d') !== $tanggal_mulai ||
+    $selesai->format('Y-m-d') !== $tanggal_selesai ||
+    $tanggal_mulai > $tanggal_selesai
+) {
+    $_SESSION['pesan_error'] = 'Tanggal tahun ajaran tidak valid.';
+    header('Location: kelola_tahun_ajaran.php');
+    exit;
+}
+
+$id = (int) $id;
+$status_aktif = (int) $status_aktif;
+mysqli_begin_transaction($koneksi);
+
+if (!normalisasi_tahun_ajaran_aktif($koneksi)) {
+    mysqli_rollback($koneksi);
+    $_SESSION['pesan_error'] = 'Gagal memeriksa status tahun ajaran aktif.';
+    header('Location: kelola_tahun_ajaran.php');
+    exit;
+}
+
+if ($status_aktif === 1 && !mysqli_query(
+    $koneksi,
+    "UPDATE t_tahun_ajaran
+     SET status_aktif = 0, updated_at = CURRENT_TIMESTAMP
+     WHERE status_aktif = 1"
+)) {
+    mysqli_rollback($koneksi);
+    $_SESSION['pesan_error'] = 'Gagal menonaktifkan tahun ajaran sebelumnya.';
+    header('Location: kelola_tahun_ajaran.php');
+    exit;
+}
 
 $stmt = mysqli_prepare(
     $koneksi,
-    "SELECT * FROM t_tahun_ajaran WHERE id = ?"
+    "UPDATE t_tahun_ajaran
+     SET nama = ?, tanggal_mulai = ?, tanggal_selesai = ?, status_aktif = ?, updated_at = CURRENT_TIMESTAMP
+     WHERE id = ?"
 );
 
-mysqli_stmt_bind_param($stmt, "i", $id);
-mysqli_stmt_execute($stmt);
-
-$hasil = mysqli_stmt_get_result($stmt);
-$data = mysqli_fetch_assoc($hasil);
-
-if (!$data) {
-    die("Data tahun ajaran tidak ditemukan.");
+if (!$stmt) {
+    mysqli_rollback($koneksi);
+    $_SESSION['pesan_error'] = 'Gagal menyiapkan perubahan tahun ajaran.';
+    header('Location: kelola_tahun_ajaran.php');
+    exit;
 }
-?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Edit Tahun Ajaran</title>
-</head>
-<body>
+mysqli_stmt_bind_param($stmt, 'sssii', $nama, $tanggal_mulai, $tanggal_selesai, $status_aktif, $id);
+$berhasil = mysqli_stmt_execute($stmt);
+$baris_diubah = mysqli_stmt_affected_rows($stmt);
+mysqli_stmt_close($stmt);
 
-    <h1>Edit Tahun Ajaran</h1>
+if (!$berhasil || $baris_diubah < 0 || !mysqli_commit($koneksi)) {
+    mysqli_rollback($koneksi);
+    $_SESSION['pesan_error'] = 'Gagal mengubah tahun ajaran.';
+    header('Location: kelola_tahun_ajaran.php');
+    exit;
+}
 
-    <form action="proses_edit_tahun_ajaran.php" method="POST">
-
-        <input type="hidden" name="id"
-               value="<?php echo htmlspecialchars($data['id']); ?>">
-
-        <table>
-
-            <tr>
-                <td>Nama Tahun Ajaran</td>
-                <td>:</td>
-                <td>
-                    <input type="text" name="nama"
-                           maxlength="9"
-                           pattern="[0-9]{4}/[0-9]{4}"
-                           inputmode="numeric"
-                           oninput="this.value = this.value.replace(/[^0-9/]/g, '').slice(0, 9);"
-                           value="<?php echo htmlspecialchars($data['nama']); ?>"
-                           placeholder="Contoh: 2026/2027"
-                           title="Nama tahun ajaran harus berformat angka seperti 2026/2027"
-                           required>
-                </td>
-            </tr>
-
-            <tr>
-                <td>Tanggal Mulai</td>
-                <td>:</td>
-                <td>
-                    <input type="date" name="tanggal_mulai"
-                           value="<?php echo htmlspecialchars($data['tanggal_mulai']); ?>"
-                           required>
-                </td>
-            </tr>
-
-            <tr>
-                <td>Tanggal Selesai</td>
-                <td>:</td>
-                <td>
-                    <input type="date" name="tanggal_selesai"
-                           value="<?php echo htmlspecialchars($data['tanggal_selesai']); ?>"
-                           required>
-                </td>
-            </tr>
-
-            <tr>
-                <td>Status Aktif</td>
-                <td>:</td>
-                <td>
-                    <select name="status_aktif" required>
-
-                        <option value="1"
-                            <?php
-                            if ($data['status_aktif'] == 1) {
-                                echo 'selected';
-                            }
-                            ?>>
-                            Aktif
-                        </option>
-
-                        <option value="0"
-                            <?php
-                            if ($data['status_aktif'] == 0) {
-                                echo 'selected';
-                            }
-                            ?>>
-                            Tidak Aktif
-                        </option>
-
-                    </select>
-                </td>
-            </tr>
-
-            <tr>
-                <td colspan="3">
-                    <input type="submit" value="Update">
-                </td>
-            </tr>
-
-        </table>
-
-    </form>
-
-    <p>
-        <a href="kelola_tahun_ajaran.php">
-            Kembali ke Kelola Tahun Ajaran
-        </a>
-    </p>
-
-</body>
-</html>
+$_SESSION['pesan_sukses'] = $status_aktif === 1
+    ? 'Tahun ajaran berhasil diperbarui dan menjadi satu-satunya yang aktif.'
+    : 'Tahun ajaran berhasil diperbarui.';
+header('Location: kelola_tahun_ajaran.php');
+exit;

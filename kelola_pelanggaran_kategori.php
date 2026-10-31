@@ -74,13 +74,13 @@ $hasil = mysqli_query($koneksi, $sql);
 
                             <thead class="table-dark">
                                 <tr>
-                                    <th class="text-center" style="width: 50px;">No.</th>
+                                    <th class="text-center text-nowrap">No.</th>
                                     <th>Nama Kategori</th>
                                     <th>Deskripsi</th>
                                     <th class="text-center">Status Aktif</th>
                                     <th>Dibuat</th>
                                     <th>Diubah</th>
-                                    <th class="text-center" style="width: 120px;">Aksi</th>
+                                    <th class="text-center action-column">Aksi</th>
                                 </tr>
                             </thead>
 
@@ -116,15 +116,15 @@ $hasil = mysqli_query($koneksi, $sql);
                                         <?= htmlspecialchars($row['updated_at'] ?? '-') ?>
                                     </td>
 
-                                    <td class="text-center text-nowrap">
-                                        <a href="edit_pelanggaran_kategori.php?id=<?= urlencode($row['id']) ?>" class="btn btn-warning btn-sm me-1 fw-semibold text-white">
-                                            Edit
+                                    <td class="text-center text-nowrap action-column">
+                                        <a href="edit_pelanggaran_kategori.php?id=<?= urlencode($row['id']) ?>" class="btn btn-warning btn-sm me-1 fw-semibold text-white" title="Edit" aria-label="Edit kategori pelanggaran">
+                                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
                                         </a>
 
                                         <a href="hapus_pelanggaran_kategori.php?id=<?= urlencode($row['id']) ?>" 
-                                           class="btn btn-danger btn-sm fw-semibold"
+                                           class="btn btn-danger btn-sm fw-semibold" title="Hapus" aria-label="Hapus kategori pelanggaran"
                                            onclick="return confirm('Yakin ingin menghapus kategori pelanggaran ini?');">
-                                            Hapus
+                                            <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -160,7 +160,16 @@ $(document).ready(function () {
         pageLength: 10,
         lengthMenu: [5, 10, 25, 50, 100],
         order: [[1, 'asc']], // Urutkan berdasarkan Nama Kategori
-        scrollX: true,
+        autoWidth: false,
+        columnDefs: [
+            { targets: 0, width: '7%', orderable: false },
+            { targets: 1, width: '18%' },
+            { targets: 2, width: '23%' },
+            { targets: 3, width: '14%' },
+            { targets: 4, width: '13%' },
+            { targets: 5, width: '13%' },
+            { targets: 6, width: '12%', orderable: false }
+        ],
         language: {
             search: "Cari:",
             lengthMenu: "Tampilkan _MENU_ data",

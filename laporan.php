@@ -1,4 +1,5 @@
 <?php
+// laporan_pelanggaran.php (atau file laporan admin Anda)
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
 include 'includes/akses_pelanggaran.php';
@@ -69,15 +70,15 @@ if ($hasil && mysqli_num_rows($hasil) > 0) {
         <!-- KONTEN UTAMA -->
         <main class="col-md-9 ms-sm-auto col-lg-10 p-4">
 
-            <header class="admin-page-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <header class="admin-page-header d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
                 <div>
                     <h1>Laporan Pelanggaran</h1>
                     <p>Ringkasan catatan pelanggaran dan tindak lanjut siswa.</p>
                 </div>
                 <div>
-                    <button class="btn btn-outline-danger me-2 fw-semibold" onclick="window.print();">
+                    <a class="btn btn-outline-danger me-2 fw-semibold" href="cetak_laporan.php">
                         <i class="fa-solid fa-print me-1"></i> Cetak Laporan
-                    </button>
+                    </a>
                 </div>
             </header>
 
@@ -118,33 +119,38 @@ if ($hasil && mysqli_num_rows($hasil) > 0) {
                 </div>
                 <div class="card-body p-3">
                     <div class="table-responsive">
-                        <table id="tabelLaporan" class="table table-striped table-hover align-middle mb-0 w-100">
-                            <thead class="table-dark">
+                        <!-- Menggunakan table-sm agar lebih ringkas/padat -->
+                        <table id="tabelLaporan" class="table table-striped table-bordered table-hover table-sm align-middle mb-0 w-100" style="font-size: 0.9rem;">
+                            <thead class="table-dark text-center">
                                 <tr>
-                                    <th class="text-center py-3">Tanggal</th>
-                                    <th class="py-3">Nama Siswa</th>
-                                    <th class="py-3">Kelas</th>
-                                    <th class="py-3">Pelanggaran</th>
-                                    <th class="py-3">Guru Pelapor</th>
-                                    <th class="text-center py-3">Poin</th>
-                                    <th class="py-3">Tindakan</th>
-                                    <th class="text-center py-3">Status</th>
+                                    <th width="5%">No.</th>
+                                    <th>Tanggal</th>
+                                    <th>Nama Siswa</th>
+                                    <th>Kelas</th>
+                                    <th>Pelanggaran</th>
+                                    <th>Poin</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($data_laporan as $row): ?>
+                                <?php 
+                                $no = 1;
+                                foreach ($data_laporan as $row): 
+                                    $is_aktif = (strtolower($row['status']) == 'aktif' || $row['status'] == '1');
+                                ?>
                                     <tr>
-                                        <td class="text-center small"><?= htmlspecialchars($row['tanggal'] ?? '-') ?></td>
+                                        <td class="text-center"><?= $no++ ?></td>
+                                        <td class="text-center text-nowrap small"><?= htmlspecialchars($row['tanggal'] ?? '-') ?></td>
                                         <td class="fw-semibold text-dark"><?= htmlspecialchars($row['nama_siswa']) ?></td>
-                                        <td><?= htmlspecialchars($row['nama_kelas']) ?></td>
+                                        <td class="text-center"><?= htmlspecialchars($row['nama_kelas']) ?></td>
                                         <td><?= htmlspecialchars($row['nama_pelanggaran']) ?></td>
-                                        <td><?= htmlspecialchars($row['nama_guru']) ?></td>
                                         <td class="text-center fw-bold text-danger"><?= (int)$row['poin'] ?></td>
-                                        <td><?= htmlspecialchars($row['tindakan'] ?? '-') ?></td>
                                         <td class="text-center">
-                                            <span class="badge bg-secondary px-2 py-1">
-                                                <?= htmlspecialchars(ucfirst($row['status'] ?? '-')) ?>
-                                            </span>
+                                            <?php if ($is_aktif) { ?>
+                                                <span class="badge bg-success px-2 py-1">Aktif</span>
+                                            <?php } else { ?>
+                                                <span class="badge bg-secondary px-2 py-1">Nonaktif</span>
+                                            <?php } ?>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -169,6 +175,10 @@ if ($hasil && mysqli_num_rows($hasil) > 0) {
 <script>
     $(document).ready(function() {
         $('#tabelLaporan').DataTable({
+            "autoWidth": false,
+            "columnDefs": [
+                { "targets": [0], "orderable": false, "searchable": false }
+            ],
             "language": {
                 "lengthMenu": "Tampilkan _MENU_ data",
                 "zeroRecords": "Data tidak ditemukan",
@@ -184,7 +194,7 @@ if ($hasil && mysqli_num_rows($hasil) > 0) {
                 }
             },
             "pageLength": 10,
-            "order": []
+            "order": [[1, 'desc']]
         });
     });
 </script>

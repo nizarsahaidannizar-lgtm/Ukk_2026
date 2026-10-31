@@ -41,7 +41,7 @@ $hak_akses_halaman = [
     'proses_edit_siswa.php' => ['admin'],
     'penempatan_siswa.php' => ['admin'],
     'proses_simpan_penempatan.php' => ['admin'],
-    'cetak_laporan.php' => ['guru'],
+    'cetak_laporan.php' => ['admin', 'guru'],
 
     // Guru access sesuai use case
     'dashboard_guru.php' => ['guru'],

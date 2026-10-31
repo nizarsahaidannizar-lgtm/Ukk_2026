@@ -63,11 +63,12 @@ include 'config/koneksi.php';
                             <!-- Tingkat -->
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Tingkat</label>
-                                <input type="text" 
-                                       name="tingkat" 
-                                       class="form-control" 
-                                       placeholder="Contoh: X, XI, XII" 
-                                       required>
+                                <select name="tingkat" class="form-select" required>
+                                    <option value="" selected disabled>-- Pilih Tingkat --</option>
+                                    <option value="X">X</option>
+                                    <option value="XI">XI</option>
+                                    <option value="XII">XII</option>
+                                </select>
                             </div>
 
                             <!-- Jurusan -->

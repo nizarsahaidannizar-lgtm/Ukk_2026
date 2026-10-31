@@ -2,6 +2,7 @@
 // edit_walikelas.php
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
+require_once 'includes/tahun_ajaran.php';
 
 $id = (int) ($_GET['id'] ?? 0);
 
@@ -21,9 +22,24 @@ if (!$data) {
     exit();
 }
 
+if (!normalisasi_tahun_ajaran_aktif($koneksi)) {
+    error_log('Gagal menormalisasi tahun ajaran aktif pada form edit wali kelas.');
+}
+
+$tahun_aktif_stmt = mysqli_prepare(
+    $koneksi,
+    "SELECT id FROM t_tahun_ajaran WHERE id = ? AND status_aktif = 1"
+);
+mysqli_stmt_bind_param($tahun_aktif_stmt, 'i', $data['tahun_ajaran_id']);
+mysqli_stmt_execute($tahun_aktif_stmt);
+$tahun_saat_ini_aktif = mysqli_stmt_get_result($tahun_aktif_stmt)->num_rows > 0;
+mysqli_stmt_close($tahun_aktif_stmt);
+
 $tahun = mysqli_query(
     $koneksi,
-    "SELECT id, nama FROM t_tahun_ajaran ORDER BY id DESC"
+    "SELECT id, nama FROM t_tahun_ajaran
+     WHERE status_aktif = 1
+     ORDER BY tanggal_mulai DESC, id DESC"
 );
 $kelas = mysqli_query(
     $koneksi,
@@ -86,6 +102,9 @@ $guru = mysqli_query(
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Tahun Ajaran</label>
                                 <select name="tahun_ajaran_id" class="form-select" required>
+                                    <?php if (!$tahun_saat_ini_aktif) { ?>
+                                        <option value="" selected disabled>-- Pilih Tahun Ajaran Aktif --</option>
+                                    <?php } ?>
                                     <?php while ($row = mysqli_fetch_assoc($tahun)) { ?>
                                         <option value="<?= $row['id']; ?>" <?= ($row['id'] == $data['tahun_ajaran_id']) ? 'selected' : ''; ?>>
                                             <?= htmlspecialchars($row['nama']); ?>

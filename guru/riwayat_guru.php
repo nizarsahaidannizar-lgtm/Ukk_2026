@@ -68,24 +68,24 @@ $hasil = mysqli_query($koneksi, $sql);
                 </div>
                 <div class="card-body p-3">
                     <div class="table-responsive">
-                        <table id="tabelRiwayatSaya" class="table table-striped table-hover align-middle mb-0 w-100">
-                            <thead class="table-dark">
+                        <table id="tabelRiwayatSaya" class="table table-striped table-hover align-middle mb-0 w-100 history-table">
+                            <thead class="table-dark text-center">
                                 <tr>
-                                    <th class="text-center py-3">Tanggal</th>
-                                    <th class="py-3">Nama Siswa</th>
-                                    <th class="py-3">Kelas</th>
-                                    <th class="py-3">Pelanggaran</th>
-                                    <th class="text-center py-3">Poin</th>
-                                    <th class="py-3">Tindakan</th>
-                                    <th class="text-center py-3">Status</th>
-                                    <th class="text-center py-3">Terakhir Diubah</th>
+                                    <th>Tanggal</th>
+                                    <th>Nama Siswa</th>
+                                    <th>Kelas</th>
+                                    <th>Pelanggaran</th>
+                                    <th>Poin</th>
+                                    <th>Tindakan</th>
+                                    <th>Status</th>
+                                    <th>Terakhir Diubah</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php if ($hasil && mysqli_num_rows($hasil) > 0): ?>
                                     <?php while ($row = mysqli_fetch_assoc($hasil)): ?>
                                         <tr>
-                                            <td class="text-center small"><?= htmlspecialchars($row['tanggal'] ?? '-') ?></td>
+                                            <td class="text-center small text-nowrap"><?= htmlspecialchars($row['tanggal'] ?? '-') ?></td>
                                             <td class="fw-semibold text-dark"><?= htmlspecialchars($row['nama_siswa']) ?></td>
                                             <td><?= htmlspecialchars($row['nama_kelas']) ?></td>
                                             <td><?= htmlspecialchars($row['nama_pelanggaran']) ?></td>
@@ -121,6 +121,17 @@ $hasil = mysqli_query($koneksi, $sql);
 <script>
     $(document).ready(function() {
         $('#tabelRiwayatSaya').DataTable({
+            "autoWidth": false,
+            "columnDefs": [
+                { "targets": 0, "width": "10%" },
+                { "targets": 1, "width": "14%" },
+                { "targets": 2, "width": "9%" },
+                { "targets": 3, "width": "18%" },
+                { "targets": 4, "width": "6%", "className": "text-center" },
+                { "targets": 5, "width": "17%" },
+                { "targets": 6, "width": "12%", "className": "text-center" },
+                { "targets": 7, "width": "14%", "className": "text-center" }
+            ],
             "language": {
                 "lengthMenu": "Tampilkan _MENU_ data",
                 "zeroRecords": "Belum ada riwayat pelanggaran yang dicatat",

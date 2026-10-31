@@ -41,7 +41,7 @@ $hasil = mysqli_query($koneksi, $sql);
         <!-- KONTEN UTAMA -->
         <main class="col-md-9 ms-sm-auto col-lg-10 p-4 admin-guru-list">
 
-            <header class="admin-page-header">
+            <header class="admin-page-header mb-4">
                 <h1>Kelola Data Guru</h1>
                 <p>Kelola informasi, akun, dan status guru.</p>
             </header>
@@ -68,24 +68,23 @@ $hasil = mysqli_query($koneksi, $sql);
                 <div class="card-header bg-white py-3 d-flex flex-wrap gap-2 justify-content-between align-items-center">
                     <h5 class="card-title m-0 fw-bold">Data Guru</h5>
                     <a href="tambah_guru.php" class="btn btn-primary btn-sm fw-semibold text-nowrap">
-                        + Tambah Guru
+                        <i class="fas fa-plus me-1"></i> Tambah Guru
                     </a>
                 </div>
-                <div class="card-body p-4">
+                <div class="card-body p-3">
 
                     <div class="table-responsive">
-                        <table id="tabelGuru" class="table table-striped table-bordered table-hover align-middle w-100">
+                        <!-- Tambahkan kelas table-sm agar lebih ringkas -->
+                        <table id="tabelGuru" class="table table-striped table-bordered table-hover table-sm align-middle w-100" style="font-size: 0.9rem;">
 
-                            <thead class="table-dark">
+                            <thead class="table-dark text-center">
                                 <tr>
-                                    <th>No</th>
-                                    <th>NIP</th>
+                                    <th width="5%">No</th>
+                                    <th class="text-center">NIP</th>
                                     <th>Nama Guru</th>
                                     <th>Email</th>
-                                    <th>Status Aktif</th>
-                                    <th>Dibuat</th>
-                                    <th>Diubah</th>
-                                    <th class="action-column">Aksi</th>
+                                    <th>Status</th>
+                                    <th width="10%" class="action-column">Aksi</th>
                                 </tr>
                             </thead>
 
@@ -94,36 +93,29 @@ $hasil = mysqli_query($koneksi, $sql);
                                 $no = 1;
                                 while ($row = mysqli_fetch_assoc($hasil)) { ?>
                                     <tr>
-                                        <td><?= $no++ ?></td>
-
-                                        <td><?= htmlspecialchars($row['nip'] ?? '') ?></td>
-
-                                        <td><?= htmlspecialchars($row['nama'] ?? '') ?></td>
-
+                                        <td class="text-center"><?= $no++ ?></td>
+                                        <td class="text-center"><?= htmlspecialchars($row['nip'] ?? '') ?></td>
+                                        <td class="fw-semibold"><?= htmlspecialchars($row['nama'] ?? '') ?></td>
                                         <td><?= htmlspecialchars($row['email'] ?? '') ?></td>
-
-                                        <td>
+                                        <td class="text-center">
                                             <?php if ($row['status_aktif'] == 1) { ?>
                                                 <span class="badge bg-success">Aktif</span>
                                             <?php } else { ?>
-                                                <span class="badge bg-secondary">Tidak Aktif</span>
+                                                <span class="badge bg-secondary">Nonaktif</span>
                                             <?php } ?>
                                         </td>
-
-                                        <td class="text-nowrap"><?= htmlspecialchars(date('d-m-Y H:i', strtotime($row['created_at'] ?? ''))) ?></td>
-
-                                        <td class="text-nowrap"><?= htmlspecialchars(date('d-m-Y H:i', strtotime($row['updated_at'] ?? ''))) ?></td>
-
-                                        <td class="text-nowrap action-column">
+                                        <td class="text-center text-nowrap action-column">
+                                            <!-- Tombol Edit Berbentuk Ikon -->
                                             <a href="edit_guru.php?id=<?= urlencode($row['id']) ?>"
-                                               class="btn btn-warning btn-sm fw-semibold text-white">
-                                                Edit
+                                               class="btn btn-warning btn-sm text-white px-2 py-1" title="Edit" aria-label="Edit guru">
+                                                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
                                             </a>
 
+                                            <!-- Tombol Hapus Berbentuk Ikon -->
                                             <a href="hapus_guru.php?id=<?= urlencode($row['id']) ?>"
-                                               class="btn btn-danger btn-sm fw-semibold"
+                                               class="btn btn-danger btn-sm px-2 py-1" title="Hapus" aria-label="Hapus guru"
                                                onclick="return confirm('Yakin ingin menghapus data guru ini?');">
-                                                Hapus
+                                                <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
                                             </a>
                                         </td>
                                     </tr>
@@ -170,12 +162,12 @@ $(document).ready(function () {
             }
         },
         pageLength: 10,
-        lengthMenu: [5, 10, 25, 50, 100],
-        order: [[2, 'asc']],
         autoWidth: false,
+        lengthMenu: [5, 10, 25, 50, 100],
+        order: [[2, 'asc']], // Urutkan berdasarkan Nama Guru (indeks kolom ke-2)
         columnDefs: [
             {
-                targets: [7],
+                targets: [0, -1], // Kolom No dan Aksi tidak bisa di-sort dan di-search
                 orderable: false,
                 searchable: false
             }

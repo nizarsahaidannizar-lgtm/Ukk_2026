@@ -4,7 +4,7 @@ include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
 $id = (int) ($_POST['id'] ?? 0);
-$tahun_ajaran_id = (int) $_POST['tahun_ajaran_id'];
+$tahun_ajaran_id = (int) ($_POST['tahun_ajaran_id'] ?? 0);
 $kelas_id = (int) $_POST['kelas_id'];
 $guru_id = (int) $_POST['guru_id'];
 $tanggal_mulai = $_POST['tanggal_mulai'];
@@ -15,7 +15,22 @@ if ($tanggal_selesai < $tanggal_mulai) {
     exit('Tanggal selesai tidak boleh lebih awal dari tanggal mulai.');
 }
 
-$sql = "UPDATE t_walikelas SET
+$tahun_stmt = mysqli_prepare(
+    $koneksi,
+    "SELECT id FROM t_tahun_ajaran WHERE id = ? AND status_aktif = 1"
+);
+mysqli_stmt_bind_param($tahun_stmt, 'i', $tahun_ajaran_id);
+mysqli_stmt_execute($tahun_stmt);
+$tahun_aktif = mysqli_stmt_get_result($tahun_stmt)->num_rows > 0;
+mysqli_stmt_close($tahun_stmt);
+
+if (!$tahun_aktif) {
+    $_SESSION['pesan_error'] = 'Pilih tahun ajaran yang masih aktif.';
+    header('Location: edit_walikelas.php?id=' . $id);
+    exit;
+}
+
+$sql = "UPDATE t_wali_kelas SET
         tahun_ajaran_id = ?,
         kelas_id = ?,
         guru_id = ?,

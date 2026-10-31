@@ -147,6 +147,7 @@ $hasil = mysqli_query($koneksi, $sql);
 <script>
     $(document).ready(function() {
         $('#tabelTindakLanjut').DataTable({
+            autoWidth: false,
             "language": {
                 "lengthMenu": "Tampilkan _MENU_ data",
                 "zeroRecords": "Data tidak ditemukan",

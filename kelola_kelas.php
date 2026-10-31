@@ -109,19 +109,19 @@ $hasil = mysqli_query($koneksi, $sql);
                                         <?php } ?>
                                     </td>
 
-                                    <td class="text-nowrap"><?= htmlspecialchars(date('d-m-Y H:i', strtotime($row['created_at']))) ?></td>
+                                    <td><?= htmlspecialchars(date('d-m-Y H:i', strtotime($row['created_at']))) ?></td>
 
-                                    <td class="text-nowrap"><?= htmlspecialchars(date('d-m-Y H:i', strtotime($row['updated_at']))) ?></td>
+                                    <td><?= htmlspecialchars(date('d-m-Y H:i', strtotime($row['updated_at']))) ?></td>
 
                                     <td class="text-center text-nowrap action-column">
-                                        <a href="edit_kelas.php?id=<?= urlencode($row['id']) ?>" class="btn btn-warning btn-sm me-1 fw-semibold text-white">
-                                            Edit
+                                        <a href="edit_kelas.php?id=<?= urlencode($row['id']) ?>" class="btn btn-warning btn-sm me-1 fw-semibold text-white" title="Edit" aria-label="Edit kelas">
+                                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
                                         </a>
 
                                         <a href="hapus_kelas.php?id=<?= urlencode($row['id']) ?>" 
-                                           class="btn btn-danger btn-sm fw-semibold"
+                                           class="btn btn-danger btn-sm fw-semibold" title="Hapus" aria-label="Hapus kelas"
                                            onclick="return confirm('Yakin ingin menghapus data kelas ini?');">
-                                            Hapus
+                                            <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -157,7 +157,7 @@ $(document).ready(function () {
         pageLength: 10,
         lengthMenu: [5, 10, 25, 50, 100],
         order: [[1, 'asc']], // Urutkan berdasarkan kolom Nama Kelas
-        scrollX: true,
+        autoWidth: false,
         columnDefs: [
             { targets: [0, -1], orderable: false }
         ],

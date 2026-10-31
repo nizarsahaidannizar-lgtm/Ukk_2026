@@ -50,7 +50,7 @@ if (!$hasil) {
             <div class="card border-0 shadow-sm rounded-3 mb-5">
                 <div class="card-header bg-white py-3 d-flex flex-wrap gap-2 justify-content-between align-items-center">
                     <h5 class="card-title m-0 fw-bold">Data Jenis Pelanggaran</h5>
-                    <a href="tambah_jenis_pelanggaran.php" class="btn btn-primary btn-sm fw-semibold">Tambah Jenis Pelanggaran</a>
+                    <a href="tambah_jenis_pelanggaran.php" class="btn btn-primary btn-sm fw-semibold"><i class="fa-solid fa-plus me-1" aria-hidden="true"></i>Tambah Jenis Pelanggaran</a>
                 </div>
                 <div class="card-body p-3">
                     <?php if (!$hasil): ?>
@@ -58,7 +58,7 @@ if (!$hasil) {
                     <?php else: ?>
                         <div class="table-responsive">
                             <table id="tabelJenisPelanggaran" class="table table-striped table-hover align-middle w-100">
-                                <thead class="table-dark">
+                                <thead class="table-dark text-center">
                                     <tr>
                                         <th class="text-center">No.</th>
                                         <th>Kode</th>
@@ -66,7 +66,7 @@ if (!$hasil) {
                                         <th>Kategori</th>
                                         <th class="text-center">Poin</th>
                                         <th class="text-center">Status</th>
-                                        <th class="text-center">Aksi</th>
+                                        <th class="text-center action-column">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -88,13 +88,17 @@ if (!$hasil) {
                                                         <?= (int)$row['status_aktif'] === 1 ? 'Aktif' : 'Tidak Aktif' ?>
                                                     </span>
                                                 </td>
-                                                <td class="text-center text-nowrap">
-                                                    <a href="edit_jenis_pelanggaran.php?id=<?= (int)$row['id'] ?>" class="btn btn-warning btn-sm text-white">Edit</a>
+                                                <td class="text-center text-nowrap action-column">
+                                                    <a href="edit_jenis_pelanggaran.php?id=<?= (int)$row['id'] ?>" class="btn btn-warning btn-sm text-white" title="Edit" aria-label="Edit jenis pelanggaran">
+                                                        <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                                                    </a>
                                                     <?php if ((int)$row['status_aktif'] === 1): ?>
                                                         <form action="hapus_jenis_pelanggaran.php" method="POST" class="d-inline"
                                                               onsubmit="return confirm('Nonaktifkan jenis pelanggaran ini? Riwayat yang sudah tercatat tetap disimpan.');">
                                                             <input type="hidden" name="id" value="<?= (int)$row['id'] ?>">
-                                                            <button type="submit" class="btn btn-outline-danger btn-sm">Nonaktifkan</button>
+                                                            <button type="submit" class="btn btn-outline-danger btn-sm" title="Nonaktifkan" aria-label="Nonaktifkan jenis pelanggaran">
+                                                                <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+                                                            </button>
                                                         </form>
                                                     <?php endif; ?>
                                                 </td>
@@ -117,8 +121,18 @@ if (!$hasil) {
 <script>
 $(function () {
     $('#tabelJenisPelanggaran').DataTable({
+        autoWidth: false,
         pageLength: 10,
         order: [[2, 'asc']],
+        columnDefs: [
+            { targets: 0, width: '7%', orderable: false },
+            { targets: 1, width: '12%', className: 'text-center' },
+            { targets: 2, width: '21%' },
+            { targets: 3, width: '18%' },
+            { targets: 4, width: '10%', className: 'text-center' },
+            { targets: 5, width: '15%', className: 'text-center' },
+            { targets: 6, width: '17%', className: 'text-center', orderable: false }
+        ],
         language: {
             search: 'Cari:',
             lengthMenu: 'Tampilkan _MENU_ data',

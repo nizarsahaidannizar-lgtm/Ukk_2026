@@ -2,9 +2,14 @@
 // kelola_tahun_ajaran.php
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
+require_once 'includes/tahun_ajaran.php';
 
 // HANYA ROLE ADMIN YANG BISA AKSES
 batasi_akses(['admin']);
+
+if (!normalisasi_tahun_ajaran_aktif($koneksi)) {
+    $_SESSION['pesan_error'] = 'Gagal memeriksa status tahun ajaran aktif.';
+}
 
 // QUERY DATABASE
 $sql = "SELECT * FROM t_tahun_ajaran ORDER BY id DESC";
@@ -39,7 +44,7 @@ $hasil = mysqli_query($koneksi, $sql);
         <!-- KONTEN UTAMA -->
         <main class="col-md-9 ms-sm-auto col-lg-10 p-4">
 
-            <header class="admin-page-header">
+            <header class="admin-page-header mb-4">
                 <h1>Kelola Tahun Ajaran</h1>
                 <p>Atur periode tahun ajaran dan status berlakunya.</p>
             </header>
@@ -66,25 +71,23 @@ $hasil = mysqli_query($koneksi, $sql);
                 <div class="card-header bg-white py-3 d-flex flex-wrap gap-2 justify-content-between align-items-center">
                     <h5 class="card-title m-0 fw-bold">Data Tahun Ajaran</h5>
                     <a href="tambah_tahun_ajaran.php" class="btn btn-primary btn-sm fw-semibold text-nowrap">
-                        + Tambah Tahun Ajaran
+                        <i class="fas fa-plus me-1"></i> Tambah Tahun Ajaran
                     </a>
                 </div>
                 <div class="card-body p-3">
 
                     <div class="table-responsive">
-                        <!-- TABEL DENGAN DATATABLES -->
-                        <table id="tabelTahunAjaran" class="table table-striped table-hover align-middle m-0 w-100">
+                        <!-- Tambahkan kelas table-sm agar lebih ringkas -->
+                        <table id="tabelTahunAjaran" class="table table-striped table-bordered table-hover table-sm align-middle m-0 w-100 admin-year-table">
 
-                            <thead class="table-dark">
+                            <thead class="table-dark text-center">
                                 <tr>
-                                    <th class="text-center py-3" style="width: 50px;">No.</th>
-                                    <th class="py-3">Nama Tahun Ajaran</th>
-                                    <th class="text-center py-3">Tanggal Mulai</th>
-                                    <th class="text-center py-3">Tanggal Selesai</th>
-                                    <th class="text-center py-3">Status Aktif</th>
-                                    <th class="text-center py-3">Dibuat</th>
-                                    <th class="text-center py-3">Diubah</th>
-                                    <th class="text-center py-3" style="width: 140px;">Aksi</th>
+                                    <th style="width: 7%;">No.</th>
+                                    <th style="width: 22%;">Nama Tahun Ajaran</th>
+                                    <th style="width: 18%;">Tanggal Mulai</th>
+                                    <th style="width: 18%;">Tanggal Selesai</th>
+                                    <th style="width: 18%;">Status Aktif</th>
+                                    <th class="action-column" style="width: 17%;">Aksi</th>
                                 </tr>
                             </thead>
 
@@ -111,30 +114,24 @@ $hasil = mysqli_query($koneksi, $sql);
 
                                         <td class="text-center">
                                             <?php if ($row['status_aktif'] == 1) { ?>
-                                                <span class="badge bg-success px-3 py-2">Aktif</span>
+                                                <span class="badge bg-success px-2 py-1">Aktif</span>
                                             <?php } else { ?>
-                                                <span class="badge bg-danger px-3 py-2">Tidak Aktif</span>
+                                                <span class="badge bg-danger px-2 py-1">Tidak Aktif</span>
                                             <?php } ?>
                                         </td>
 
-                                        <td class="text-center small text-muted">
-                                            <?= htmlspecialchars($row['created_at'] ?? '-') ?>
-                                        </td>
-
-                                        <td class="text-center small text-muted">
-                                            <?= htmlspecialchars($row['updated_at'] ?? '-') ?>
-                                        </td>
-
-                                        <td class="text-center text-nowrap">
+                                        <td class="text-center text-nowrap action-column">
+                                            <!-- Tombol Edit Berbentuk Ikon -->
                                             <a href="edit_tahun_ajaran.php?id=<?= urlencode($row['id']) ?>" 
-                                               class="btn btn-warning btn-sm fw-semibold text-white me-1">
-                                                Edit
+                                               class="btn btn-warning btn-sm text-white px-2 py-1" title="Edit" aria-label="Edit tahun ajaran">
+                                                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
                                             </a>
 
+                                            <!-- Tombol Hapus Berbentuk Ikon -->
                                             <a href="hapus_tahun_ajaran.php?id=<?= urlencode($row['id']) ?>" 
-                                               class="btn btn-danger btn-sm fw-semibold"
+                                               class="btn btn-danger btn-sm px-2 py-1" title="Hapus" aria-label="Hapus tahun ajaran"
                                                onclick="return confirm('Yakin ingin menghapus tahun ajaran ini?');">
-                                                Hapus
+                                                <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
                                             </a>
                                         </td>
                                     </tr>
@@ -167,6 +164,10 @@ $hasil = mysqli_query($koneksi, $sql);
 <script>
     $(document).ready(function() {
         $('#tabelTahunAjaran').DataTable({
+            "autoWidth": false,
+            "columnDefs": [
+                { "targets": [0, -1], "orderable": false, "searchable": false }
+            ],
             "language": {
                 "lengthMenu": "Tampilkan _MENU_ data",
                 "zeroRecords": "Data tidak ditemukan",

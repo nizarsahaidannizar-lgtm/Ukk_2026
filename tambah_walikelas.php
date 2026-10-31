@@ -2,10 +2,17 @@
 // tambah_walikelas.php
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
+require_once 'includes/tahun_ajaran.php';
+
+if (!normalisasi_tahun_ajaran_aktif($koneksi)) {
+    error_log('Gagal menormalisasi tahun ajaran aktif pada form wali kelas.');
+}
 
 $tahun = mysqli_query(
     $koneksi,
-    "SELECT id, nama FROM t_tahun_ajaran ORDER BY id DESC"
+    "SELECT id, nama FROM t_tahun_ajaran
+     WHERE status_aktif = 1
+     ORDER BY tanggal_mulai DESC, id DESC"
 );
 
 $kelas = mysqli_query(

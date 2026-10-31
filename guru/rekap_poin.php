@@ -121,6 +121,7 @@ $hasil = mysqli_query($koneksi, $sql);
 <script>
     $(document).ready(function() {
         $('#tabelRekapPoin').DataTable({
+            "autoWidth": false,
             "language": {
                 "lengthMenu": "Tampilkan _MENU_ data",
                 "zeroRecords": "Belum ada data rekap poin siswa",

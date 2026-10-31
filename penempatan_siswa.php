@@ -1,10 +1,15 @@
 <?php
 // penempatan_siswa.php
-include 'includes/cek_session.php'; // Pakai '../includes/cek_session.php' jika di dalam folder guru/
+include 'includes/cek_session.php';
 include 'config/koneksi.php';
+require_once 'includes/tahun_ajaran.php';
 
 // HANYA ROLE ADMIN YANG BISA AKSES
 batasi_akses(['admin']);
+
+if (!normalisasi_tahun_ajaran_aktif($koneksi)) {
+    error_log('Gagal menormalisasi tahun ajaran aktif pada form penempatan siswa.');
+}
 
 // Ambil daftar siswa
 $siswa = mysqli_query(
@@ -42,8 +47,6 @@ $sql = "SELECT
             k.nama AS nama_kelas,
             k.tingkat,
             k.jurusan,
-            ks.tanggal_mulai,
-            ks.tanggal_selesai,
             ks.status_aktif
         FROM t_kelas_siswa ks
         LEFT JOIN t_siswa s ON ks.siswa_id = s.id
@@ -77,7 +80,7 @@ $hasil = mysqli_query($koneksi, $sql);
             <!-- KONTEN UTAMA -->
             <main class="col-md-9 ms-sm-auto col-lg-10 p-4">
                 
-                <header class="admin-page-header">
+                <header class="admin-page-header mb-4">
                     <h1>Penempatan Siswa</h1>
                     <p>Tetapkan siswa ke kelas pada tahun ajaran yang sesuai.</p>
                 </header>
@@ -182,21 +185,20 @@ $hasil = mysqli_query($koneksi, $sql);
                     <div class="card-header bg-white py-3">
                         <h5 class="card-title m-0 fw-bold">Data Penempatan Siswa</h5>
                     </div>
-                    <div class="card-body p-4">
+                    <div class="card-body p-3">
                         <div class="table-responsive">
-                            <table id="tabelPenempatan" class="table table-striped table-bordered table-hover align-middle w-100">
-                                <thead class="table-dark">
+                            <!-- Menggunakan table-sm agar lebih ringkas -->
+                            <table id="tabelPenempatan" class="table table-striped table-bordered table-hover table-sm align-middle w-100" style="font-size: 0.9rem;">
+                                <thead class="table-dark text-center">
                                     <tr>
-                                        <th>No.</th>
+                                        <th width="5%">No.</th>
                                         <th>NIS</th>
                                         <th>Nama Siswa</th>
                                         <th>Tahun Ajaran</th>
                                         <th>Kelas</th>
-                                        <th>Tingkat</th>
                                         <th>Jurusan</th>
-                                        <th>Tanggal Mulai</th>
-                                        <th>Tanggal Selesai</th>
                                         <th>Status</th>
+                                        <th width="15%" class="action-column">Aksi (Ubah Status)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -205,20 +207,34 @@ $hasil = mysqli_query($koneksi, $sql);
                                     while ($row = mysqli_fetch_assoc($hasil)) {
                                     ?>
                                         <tr>
-                                            <td><?php echo $no++; ?></td>
+                                            <td class="text-center"><?php echo $no++; ?></td>
                                             <td><?php echo htmlspecialchars($row['nis'] ?? '-'); ?></td>
-                                            <td><?php echo htmlspecialchars($row['nama_siswa'] ?? '-'); ?></td>
-                                            <td><?php echo htmlspecialchars($row['tahun_ajaran'] ?? '-'); ?></td>
-                                            <td><?php echo htmlspecialchars($row['nama_kelas'] ?? '-'); ?></td>
-                                            <td><?php echo htmlspecialchars($row['tingkat'] ?? '-'); ?></td>
+                                            <td class="fw-semibold"><?php echo htmlspecialchars($row['nama_siswa'] ?? '-'); ?></td>
+                                            <td class="text-center"><?php echo htmlspecialchars($row['tahun_ajaran'] ?? '-'); ?></td>
+                                            <td class="text-center"><?php echo htmlspecialchars($row['nama_kelas'] ?? '-'); ?></td>
                                             <td><?php echo htmlspecialchars($row['jurusan'] ?? '-'); ?></td>
-                                            <td><?php echo htmlspecialchars($row['tanggal_mulai'] ?? '-'); ?></td>
-                                            <td><?php echo htmlspecialchars($row['tanggal_selesai'] ?? '-'); ?></td>
-                                            <td>
+                                            <td class="text-center">
                                                 <?php if ($row['status_aktif'] == 1) { ?>
                                                     <span class="badge bg-success">Aktif</span>
                                                 <?php } else { ?>
-                                                    <span class="badge bg-danger">Tidak Aktif</span>
+                                                    <span class="badge bg-secondary">Nonaktif</span>
+                                                <?php } ?>
+                                            </td>
+                                            <td class="text-center text-nowrap action-column">
+                                                <?php if ($row['status_aktif'] == 1) { ?>
+                                                    <!-- Tombol Nonaktifkan jika status sedang Aktif -->
+                                                    <a href="ubah_status_penempatan.php?id=<?php echo urlencode($row['id']); ?>&status=0" 
+                                                       class="btn btn-outline-danger btn-sm px-2 py-1 fw-semibold" 
+                                                       onclick="return confirm('Yakin ingin menonaktifkan penempatan siswa ini?');">
+                                                        <i class="fas fa-ban me-1"></i> Nonaktifkan
+                                                    </a>
+                                                <?php } else { ?>
+                                                    <!-- Tombol Aktifkan jika status sedang Nonaktif -->
+                                                    <a href="ubah_status_penempatan.php?id=<?php echo urlencode($row['id']); ?>&status=1" 
+                                                       class="btn btn-outline-success btn-sm px-2 py-1 fw-semibold" 
+                                                       onclick="return confirm('Yakin ingin mengaktifkan kembali penempatan siswa ini?');">
+                                                        <i class="fas fa-check-circle me-1"></i> Aktifkan
+                                                    </a>
                                                 <?php } ?>
                                             </td>
                                         </tr>
@@ -251,7 +267,10 @@ $hasil = mysqli_query($koneksi, $sql);
             pageLength: 10,
             lengthMenu: [5, 10, 25, 50, 100],
             order: [[2, 'asc']], // Urutkan berdasarkan Nama Siswa
-            scrollX: true,
+            autoWidth: false,
+            columnDefs: [
+                { targets: [0, -1], orderable: false, searchable: false }
+            ],
             language: {
                 search: "Cari:",
                 lengthMenu: "Tampilkan _MENU_ data",
