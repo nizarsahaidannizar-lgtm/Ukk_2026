@@ -36,7 +36,7 @@ include 'config/koneksi.php';
             <!-- TOMBOL KEMBALI -->
             <div class="mb-4">
                 <a href="kelola_kelas.php" class="btn btn-secondary fw-semibold">
-                    Kembali ke Kelola Kelas
+                    Kembali
                 </a>
             </div>
 
@@ -92,10 +92,10 @@ include 'config/koneksi.php';
                             <!-- Tombol Aksi -->
                             <div class="col-12 mt-4">
                                 <button type="submit" class="btn btn-primary px-4 fw-semibold">
-                                    Simpan Kelas
+                                    Simpan
                                 </button>
                                 <a href="kelola_kelas.php" class="btn btn-outline-secondary px-4 ms-2">
-                                    Batal
+                                    Kembali
                                 </a>
                             </div>
 

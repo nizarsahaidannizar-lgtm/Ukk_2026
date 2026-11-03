@@ -77,23 +77,10 @@ $hasil = mysqli_query($koneksi, $sql);
             <!-- KONTEN UTAMA -->
             <main class="col-md-9 ms-sm-auto col-lg-10 p-4">
                 
-                <!-- HEADER BRANDING SIP & LOGO SEKOLAH -->
-                <div class="d-flex align-items-center mb-4 pb-3 border-bottom">
-                    <div class="bg-white p-3 rounded-3 shadow-sm me-3 border">
-                        <i class="fa-solid fa-school fs-2 text-dark"></i>
-                    </div>
-                    <div>
-                        <h1 class="h2 fw-bold text-dark m-0">SIP</h1>
-                        <p class="text-muted m-0 small">Sistem Informasi Pelanggaran Siswa</p>
-                    </div>
-                </div>
-
-                <!-- TOMBOL KEMBALI KE DASHBOARD -->
-                <div class="mb-3">
-                    <a href="dashboard.php" class="btn btn-secondary fw-semibold">
-                        Kembali ke Dashboard
-                    </a>
-                </div>
+                <header class="admin-page-header">
+                    <h1>Penempatan Siswa</h1>
+                    <p>Tetapkan siswa ke kelas pada tahun ajaran yang sesuai.</p>
+                </header>
 
                 <!-- ALERT NOTIFIKASI SUKSES / ERROR -->
                 <?php if (isset($_SESSION['pesan_sukses'])) { ?>

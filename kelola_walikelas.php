@@ -46,26 +46,10 @@ $hasil = mysqli_query($koneksi, $sql);
         <!-- KONTEN UTAMA -->
         <main class="col-md-9 ms-sm-auto col-lg-10 p-4">
 
-            <!-- HEADER BRANDING SIP & LOGO SEKOLAH -->
-            <div class="d-flex align-items-center mb-4 pb-3 border-bottom">
-                <div class="bg-white p-3 rounded-3 shadow-sm me-3 border">
-                    <i class="fa-solid fa-school fs-2 text-dark"></i>
-                </div>
-                <div>
-                    <h1 class="h2 fw-bold text-dark m-0">SIP</h1>
-                    <p class="text-muted m-0 small">Sistem Informasi Pelanggaran Siswa</p>
-                </div>
-            </div>
-
-            <!-- TOMBOL KEMBALI & TAMBAH WALI KELAS -->
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <a href="dashboard.php" class="btn btn-secondary fw-semibold">
-                    Kembali ke Dashboard
-                </a>
-                <a href="tambah_walikelas.php" class="btn btn-primary fw-semibold">
-                    + Tambah Wali Kelas
-                </a>
-            </div>
+            <header class="admin-page-header">
+                <h1>Kelola Data Wali Kelas</h1>
+                <p>Atur penugasan wali kelas berdasarkan kelas dan tahun ajaran.</p>
+            </header>
 
             <!-- ALERT NOTIFIKASI SUKSES / ERROR -->
             <?php if (isset($_SESSION['pesan_sukses'])) { ?>
@@ -86,8 +70,11 @@ $hasil = mysqli_query($koneksi, $sql);
 
             <!-- CARD TABEL WALI KELAS -->
             <div class="card shadow-sm border-0 rounded-3 mb-5">
-                <div class="card-header bg-white py-3">
+                <div class="card-header bg-white py-3 d-flex flex-wrap gap-2 justify-content-between align-items-center">
                     <h5 class="card-title m-0 fw-bold">Data Wali Kelas</h5>
+                    <a href="tambah_walikelas.php" class="btn btn-primary btn-sm fw-semibold text-nowrap">
+                        + Tambah Wali Kelas
+                    </a>
                 </div>
                 <div class="card-body p-4">
 

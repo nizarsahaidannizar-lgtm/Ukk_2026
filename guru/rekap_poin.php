@@ -6,6 +6,9 @@ include '../includes/akses_pelanggaran.php';
 batasi_akses(['guru']);
 $konteks = konteks_akses_pelanggaran($koneksi);
 $lingkup = lingkup_sql_pelanggaran($konteks, 'ps');
+$deskripsi_lingkup_guru = $konteks['is_wali']
+    ? 'Ringkasan akumulasi poin siswa pada kelas yang Anda walikan.'
+    : 'Ringkasan akumulasi poin dari pelanggaran yang Anda catat.';
 
 // Gunakan WHERE 1=1 jika $lingkup kosong
 $where_clause = (!empty($lingkup) && trim($lingkup) != '') ? $lingkup : "1=1";
@@ -51,13 +54,15 @@ $hasil = mysqli_query($koneksi, $sql);
         <?php include '../layout/sidebar.php'; ?>
 
         <!-- KONTEN UTAMA -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 p-4">
-
-            <?php include '../layout/brand_header.php'; ?>
-
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h3 class="fw-bold text-dark m-0">Rekap Poin Siswa</h3>
-            </div>
+        <main class="col-md-9 ms-sm-auto col-lg-10 p-4 guru-content">
+            <header class="admin-page-header">
+                <div class="admin-page-heading">
+                    <div>
+                        <h1>Rekap Poin Siswa</h1>
+                        <p>SIP · <?= htmlspecialchars($deskripsi_lingkup_guru) ?></p>
+                    </div>
+                </div>
+            </header>
 
             <!-- CARD TABLE DATA -->
             <div class="card border-0 shadow-sm rounded-3 mb-5">

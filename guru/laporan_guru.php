@@ -98,17 +98,19 @@ if ($hasil && mysqli_num_rows($hasil) > 0) {
         <?php include '../layout/sidebar.php'; ?>
 
         <!-- KONTEN UTAMA -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 p-4">
+        <main class="col-md-9 ms-sm-auto col-lg-10 p-4 guru-content">
 
-            <!-- HEADER BRANDING -->
-            <?php include '../layout/brand_header.php'; ?>
-
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h3 class="fw-bold text-dark m-0">Laporan Pelanggaran Guru</h3>
+            <header class="admin-page-header">
+                <div class="admin-page-heading">
+                    <div>
+                        <h1>Laporan Pelanggaran</h1>
+                        <p>SIP · Tinjau dan cetak laporan sesuai periode dan status.</p>
+                    </div>
+                </div>
                 <a class="btn btn-outline-primary fw-semibold shadow-sm" href="../cetak_laporan.php?<?= htmlspecialchars(http_build_query(['mulai' => $mulai, 'sampai' => $sampai, 'status' => $status])) ?>" target="_blank">
                     <i class="fa-solid fa-print me-1"></i> Cetak Laporan
                 </a>
-            </div>
+            </header>
 
             <!-- CARD FORM FILTER LAPORAN -->
             <div class="card border-0 shadow-sm rounded-3 mb-4">

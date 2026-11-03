@@ -65,6 +65,7 @@ $hasil = mysqli_query($koneksi, $sql);
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../layout/style.css">
     <!-- DataTables Bootstrap 5 CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
 </head>
@@ -73,9 +74,15 @@ $hasil = mysqli_query($koneksi, $sql);
     <div class="row">
         <?php include '../layout/sidebar.php'; ?>
 
-        <main class="col-md-9 ms-sm-auto col-lg-10 p-4">
-            <?php include '../layout/brand_header.php'; ?>
-            <h2 class="mb-4">Catat Pelanggaran Siswa</h2>
+        <main class="col-md-9 ms-sm-auto col-lg-10 p-4 guru-content">
+            <header class="admin-page-header">
+                <div class="admin-page-heading">
+                    <div>
+                        <h1>Catat Pelanggaran</h1>
+                        <p>SIP · Catat pelanggaran dan tindak lanjut siswa.</p>
+                    </div>
+                </div>
+            </header>
 
             <?php if (isset($_SESSION['pesan_sukses'])) { ?>
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -197,6 +204,7 @@ $hasil = mysqli_query($koneksi, $sql);
                                     <th class="text-center py-3">Poin</th>
                                     <th class="py-3">Tindakan</th>
                                     <th class="text-center py-3">Status</th>
+                                    <th class="text-center py-3">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -218,6 +226,18 @@ $hasil = mysqli_query($koneksi, $sql);
                                                 <span class="badge bg-secondary px-2 py-1">
                                                     <?= htmlspecialchars($row['status'] ?? '-') ?>
                                                 </span>
+                                            </td>
+                                            <td class="text-center text-nowrap">
+                                                <a href="edit_catatan_pelanggaran.php?id=<?= (int)$row['id'] ?>"
+                                                   class="btn btn-warning btn-sm text-white me-1"
+                                                   aria-label="Edit catatan pelanggaran">
+                                                    Edit
+                                                </a>
+                                                <form action="proses_hapus_catatan_pelanggaran.php" method="POST" class="d-inline"
+                                                      onsubmit="return confirm('Yakin ingin menghapus catatan pelanggaran ini?');">
+                                                    <input type="hidden" name="id" value="<?= (int)$row['id'] ?>">
+                                                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                                </form>
                                             </td>
                                         </tr>
                                     <?php } 

@@ -47,6 +47,9 @@ $hak_akses_halaman = [
     'dashboard_guru.php' => ['guru'],
     'catat_pelanggaran.php' => ['guru'],
     'proses_simpan_pelanggaran.php' => ['guru'],
+    'edit_catatan_pelanggaran.php' => ['guru'],
+    'proses_edit_catatan_pelanggaran.php' => ['guru'],
+    'proses_hapus_catatan_pelanggaran.php' => ['guru'],
     'tindakan_guru.php' => ['guru'],
     'proses_tindakan.php' => ['admin', 'guru'],
     'laporan.php' => ['admin'],
@@ -80,6 +83,12 @@ $hak_akses_halaman = [
     'hapus_pelanggaran_kategori.php' => ['admin'],
     'proses_tambah_pelanggaran_kategori.php' => ['admin'],
     'proses_edit_pelanggaran.php' => ['admin'],
+    'kelola_jenis_pelanggaran.php' => ['admin'],
+    'tambah_jenis_pelanggaran.php' => ['admin'],
+    'proses_tambah_jenis_pelanggaran.php' => ['admin'],
+    'edit_jenis_pelanggaran.php' => ['admin'],
+    'proses_edit_jenis_pelanggaran.php' => ['admin'],
+    'hapus_jenis_pelanggaran.php' => ['admin'],
     'kelola_guru.php' => ['admin'],
     'tambah_guru.php' => ['admin'],
     'edit_guru.php' => ['admin'],
@@ -99,27 +108,31 @@ if ($halaman === 'proses_simpan_pelanggaran.php' && $is_guru_subdir) {
 batasi_akses($izin_halaman);
 
 $aturan_batas_input = [
-    'tambah_siswa.php' => ['nis' => ['max' => 30], 'nisn' => ['min' => 10, 'max' => 10], 'nama' => ['max' => 150], 'alamat' => ['max' => 1000], 'tanggal_lahir' => ['max' => 10]],
-    'edit_siswa.php' => ['nis' => ['max' => 30], 'nisn' => ['min' => 10, 'max' => 10], 'nama' => ['max' => 150], 'alamat' => ['max' => 1000], 'tanggal_lahir' => ['max' => 10]],
-    'proses_tambah_siswa.php' => ['nis' => ['max' => 30], 'nisn' => ['min' => 10, 'max' => 10], 'nama' => ['max' => 150], 'alamat' => ['max' => 1000], 'tanggal_lahir' => ['max' => 10]],
-    'proses_edit_siswa.php' => ['nis' => ['max' => 30], 'nisn' => ['min' => 10, 'max' => 10], 'nama' => ['max' => 150], 'alamat' => ['max' => 1000], 'tanggal_lahir' => ['max' => 10]],
-    'tambah_guru.php' => ['nip' => ['max' => 30], 'nama' => ['max' => 150], 'email' => ['max' => 150], 'password' => ['min' => 8, 'max' => 72]],
-    'edit_guru.php' => ['nip' => ['max' => 30], 'nama' => ['max' => 150], 'email' => ['max' => 150]],
-    'proses_tambah_guru.php' => ['nip' => ['max' => 30], 'nama' => ['max' => 150], 'email' => ['max' => 150], 'password' => ['min' => 8, 'max' => 72]],
-    'proses_edit_guru.php' => ['nip' => ['max' => 30], 'nama' => ['max' => 150], 'email' => ['max' => 150]],
+    'tambah_siswa.php' => ['nis' => ['min' => 1, 'max' => 8, 'digits' => true], 'nisn' => ['min' => 10, 'max' => 10], 'nama' => ['max' => 150, 'no_digits' => true], 'alamat' => ['max' => 1000], 'tanggal_lahir' => ['max' => 10]],
+    'edit_siswa.php' => ['nis' => ['min' => 1, 'max' => 8, 'digits' => true], 'nisn' => ['min' => 10, 'max' => 10], 'nama' => ['max' => 150, 'no_digits' => true], 'alamat' => ['max' => 1000], 'tanggal_lahir' => ['max' => 10]],
+    'proses_tambah_siswa.php' => ['nis' => ['min' => 1, 'max' => 8, 'digits' => true], 'nisn' => ['min' => 10, 'max' => 10], 'nama' => ['max' => 150, 'no_digits' => true], 'alamat' => ['max' => 1000], 'tanggal_lahir' => ['max' => 10]],
+    'proses_edit_siswa.php' => ['nis' => ['min' => 1, 'max' => 8, 'digits' => true], 'nisn' => ['min' => 10, 'max' => 10], 'nama' => ['max' => 150, 'no_digits' => true], 'alamat' => ['max' => 1000], 'tanggal_lahir' => ['max' => 10]],
+    'tambah_guru.php' => ['nip' => ['min' => 1, 'max' => 30, 'digits' => true], 'nama' => ['max' => 150, 'no_digits' => true], 'email' => ['max' => 150], 'password' => ['min' => 8, 'max' => 72]],
+    'edit_guru.php' => ['nip' => ['min' => 1, 'max' => 30, 'digits' => true], 'nama' => ['max' => 150, 'no_digits' => true], 'email' => ['max' => 150]],
+    'proses_tambah_guru.php' => ['nip' => ['min' => 1, 'max' => 30, 'digits' => true], 'nama' => ['max' => 150, 'no_digits' => true], 'email' => ['max' => 150], 'password' => ['min' => 8, 'max' => 72]],
+    'proses_edit_guru.php' => ['nip' => ['min' => 1, 'max' => 30, 'digits' => true], 'nama' => ['max' => 150, 'no_digits' => true], 'email' => ['max' => 150]],
     'tambah_kelas.php' => ['nama' => ['max' => 100], 'tingkat' => ['max' => 20], 'jurusan' => ['max' => 100]],
     'edit_kelas.php' => ['nama' => ['max' => 100], 'tingkat' => ['max' => 20], 'jurusan' => ['max' => 100]],
     'proses_tambah_kelas.php' => ['nama' => ['max' => 100], 'tingkat' => ['max' => 20], 'jurusan' => ['max' => 100]],
     'proses_edit_kelas.php' => ['nama' => ['max' => 100], 'tingkat' => ['max' => 20], 'jurusan' => ['max' => 100]],
-    'tambah_tahun_ajaran.php' => ['nama' => ['max' => 20], 'tanggal_mulai' => ['max' => 10], 'tanggal_selesai' => ['max' => 10]],
-    'edit_tahun_ajaran.php' => ['nama' => ['max' => 20], 'tanggal_mulai' => ['max' => 10], 'tanggal_selesai' => ['max' => 10]],
-    'proses_tambah_tahun_ajaran.php' => ['nama' => ['max' => 20], 'tanggal_mulai' => ['max' => 10], 'tanggal_selesai' => ['max' => 10]],
-    'proses_edit_tahun_ajaran.php' => ['nama' => ['max' => 20], 'tanggal_mulai' => ['max' => 10], 'tanggal_selesai' => ['max' => 10]],
-    'tambah_pelanggaran_kategori.php' => ['nama' => ['max' => 100], 'deskripsi' => ['max' => 1000]],
-    'edit_pelanggaran_kategori.php' => ['nama' => ['max' => 100], 'deskripsi' => ['max' => 1000]],
-    'proses_tambah_pelanggaran_kategori.php' => ['nama' => ['max' => 100], 'deskripsi' => ['max' => 1000]],
-    'proses_edit_pelanggaran.php' => ['nama' => ['max' => 100], 'deskripsi' => ['max' => 1000]],
-    'proses_tambah_kategori.php' => ['nama' => ['max' => 100], 'deskripsi' => ['max' => 1000]],
+    'tambah_tahun_ajaran.php' => ['nama' => ['max' => 9, 'academic_year' => true], 'tanggal_mulai' => ['max' => 10], 'tanggal_selesai' => ['max' => 10]],
+    'edit_tahun_ajaran.php' => ['nama' => ['max' => 9, 'academic_year' => true], 'tanggal_mulai' => ['max' => 10], 'tanggal_selesai' => ['max' => 10]],
+    'proses_tambah_tahun_ajaran.php' => ['nama' => ['max' => 9, 'academic_year' => true], 'tanggal_mulai' => ['max' => 10], 'tanggal_selesai' => ['max' => 10]],
+    'proses_edit_tahun_ajaran.php' => ['nama' => ['max' => 9, 'academic_year' => true], 'tanggal_mulai' => ['max' => 10], 'tanggal_selesai' => ['max' => 10]],
+    'tambah_pelanggaran_kategori.php' => ['nama' => ['max' => 100, 'no_digits' => true], 'deskripsi' => ['max' => 1000]],
+    'edit_pelanggaran_kategori.php' => ['nama' => ['max' => 100, 'no_digits' => true], 'deskripsi' => ['max' => 1000]],
+    'proses_tambah_pelanggaran_kategori.php' => ['nama' => ['max' => 100, 'no_digits' => true], 'deskripsi' => ['max' => 1000]],
+    'proses_edit_pelanggaran.php' => ['nama' => ['max' => 100, 'no_digits' => true], 'deskripsi' => ['max' => 1000]],
+    'proses_tambah_kategori.php' => ['nama' => ['max' => 100, 'no_digits' => true], 'deskripsi' => ['max' => 1000]],
+    'tambah_jenis_pelanggaran.php' => ['kode' => ['max' => 8, 'digits' => true], 'nama' => ['min' => 1, 'max' => 150, 'no_digits' => true], 'deskripsi' => ['max' => 1000]],
+    'proses_tambah_jenis_pelanggaran.php' => ['kode' => ['max' => 8, 'digits' => true], 'nama' => ['min' => 1, 'max' => 150, 'no_digits' => true], 'deskripsi' => ['max' => 1000]],
+    'edit_jenis_pelanggaran.php' => ['kode' => ['max' => 8, 'digits' => true], 'nama' => ['min' => 1, 'max' => 150, 'no_digits' => true], 'deskripsi' => ['max' => 1000]],
+    'proses_edit_jenis_pelanggaran.php' => ['kode' => ['max' => 8, 'digits' => true], 'nama' => ['min' => 1, 'max' => 150, 'no_digits' => true], 'deskripsi' => ['max' => 1000]],
     'tambah_walikelas.php' => ['tanggal_mulai' => ['max' => 10], 'tanggal_selesai' => ['max' => 10]],
     'edit_walikelas.php' => ['tanggal_mulai' => ['max' => 10], 'tanggal_selesai' => ['max' => 10]],
     'proses_tambah_walikelas.php' => ['tanggal_mulai' => ['max' => 10], 'tanggal_selesai' => ['max' => 10]],
@@ -128,6 +141,8 @@ $aturan_batas_input = [
     'proses_simpan_penempatan.php' => ['tanggal_mulai' => ['max' => 10], 'tanggal_selesai' => ['max' => 10]],
     'catat_pelanggaran.php' => ['tanggal' => ['max' => 10], 'keterangan' => ['max' => 1000], 'tindakan' => ['max' => 1000], 'status' => ['max' => 30]],
     'proses_simpan_pelanggaran.php' => ['tanggal' => ['max' => 10], 'keterangan' => ['max' => 1000], 'tindakan' => ['max' => 1000], 'status' => ['max' => 30]],
+    'edit_catatan_pelanggaran.php' => ['tanggal' => ['max' => 10], 'keterangan' => ['max' => 1000], 'tindakan' => ['max' => 1000], 'status' => ['max' => 30]],
+    'proses_edit_catatan_pelanggaran.php' => ['tanggal' => ['max' => 10], 'keterangan' => ['max' => 1000], 'tindakan' => ['max' => 1000], 'status' => ['max' => 30]],
     'tindakan_guru.php' => ['tindakan' => ['max' => 1000], 'status' => ['max' => 30]],
     'proses_tindakan.php' => ['tindakan' => ['max' => 1000], 'status' => ['max' => 30]],
     'laporan.php' => ['mulai' => ['max' => 10], 'sampai' => ['max' => 10], 'status' => ['max' => 30]],
@@ -157,6 +172,10 @@ $aturan_batas_angka = [
     'proses_tambah_pelanggaran_kategori.php' => ['status_aktif' => ['min' => 0, 'max' => 1]],
     'proses_edit_pelanggaran.php' => ['id' => ['min' => 1, 'max' => 2147483647], 'status_aktif' => ['min' => 0, 'max' => 1]],
     'proses_tambah_kategori.php' => ['status_aktif' => ['min' => 0, 'max' => 1]],
+    'edit_jenis_pelanggaran.php' => ['id' => ['min' => 1, 'max' => 2147483647]],
+    'proses_tambah_jenis_pelanggaran.php' => ['pelanggaran_kategori_id' => ['min' => 1, 'max' => 2147483647], 'poin' => ['min' => 0, 'max' => 2147483647], 'status_aktif' => ['min' => 0, 'max' => 1]],
+    'proses_edit_jenis_pelanggaran.php' => ['id' => ['min' => 1, 'max' => 2147483647], 'pelanggaran_kategori_id' => ['min' => 1, 'max' => 2147483647], 'poin' => ['min' => 0, 'max' => 2147483647], 'status_aktif' => ['min' => 0, 'max' => 1]],
+    'hapus_jenis_pelanggaran.php' => ['id' => ['min' => 1, 'max' => 2147483647]],
     'tambah_walikelas.php' => ['tahun_ajaran_id' => ['min' => 1, 'max' => 2147483647], 'kelas_id' => ['min' => 1, 'max' => 2147483647], 'guru_id' => ['min' => 1, 'max' => 2147483647], 'status_aktif' => ['min' => 0, 'max' => 1]],
     'edit_walikelas.php' => ['tahun_ajaran_id' => ['min' => 1, 'max' => 2147483647], 'kelas_id' => ['min' => 1, 'max' => 2147483647], 'guru_id' => ['min' => 1, 'max' => 2147483647], 'status_aktif' => ['min' => 0, 'max' => 1]],
     'proses_tambah_walikelas.php' => ['tahun_ajaran_id' => ['min' => 1, 'max' => 2147483647], 'kelas_id' => ['min' => 1, 'max' => 2147483647], 'guru_id' => ['min' => 1, 'max' => 2147483647], 'status_aktif' => ['min' => 0, 'max' => 1]],
@@ -165,6 +184,9 @@ $aturan_batas_angka = [
     'proses_simpan_penempatan.php' => ['siswa_id' => ['min' => 1, 'max' => 2147483647], 'tahun_ajaran_id' => ['min' => 1, 'max' => 2147483647], 'kelas_id' => ['min' => 1, 'max' => 2147483647], 'status_aktif' => ['min' => 0, 'max' => 1]],
     'catat_pelanggaran.php' => ['siswa_id' => ['min' => 1, 'max' => 2147483647], 'tahun_ajaran_id' => ['min' => 1, 'max' => 2147483647], 'kelas_id' => ['min' => 1, 'max' => 2147483647], 'pelanggaran_id' => ['min' => 1, 'max' => 2147483647], 'pelanggaran_kategori_id' => ['min' => 1, 'max' => 2147483647], 'poin' => ['min' => 0, 'max' => 2147483647]],
     'proses_simpan_pelanggaran.php' => ['siswa_id' => ['min' => 1, 'max' => 2147483647], 'tahun_ajaran_id' => ['min' => 1, 'max' => 2147483647], 'kelas_id' => ['min' => 1, 'max' => 2147483647], 'pelanggaran_id' => ['min' => 1, 'max' => 2147483647], 'pelanggaran_kategori_id' => ['min' => 1, 'max' => 2147483647], 'poin' => ['min' => 0, 'max' => 2147483647]],
+    'edit_catatan_pelanggaran.php' => ['id' => ['min' => 1, 'max' => 2147483647]],
+    'proses_edit_catatan_pelanggaran.php' => ['id' => ['min' => 1, 'max' => 2147483647], 'siswa_id' => ['min' => 1, 'max' => 2147483647], 'tahun_ajaran_id' => ['min' => 1, 'max' => 2147483647], 'kelas_id' => ['min' => 1, 'max' => 2147483647], 'pelanggaran_id' => ['min' => 1, 'max' => 2147483647]],
+    'proses_hapus_catatan_pelanggaran.php' => ['id' => ['min' => 1, 'max' => 2147483647]],
     'tindakan_guru.php' => [],
     'proses_tindakan.php' => ['id' => ['min' => 1, 'max' => 2147483647]],
 ];
@@ -194,6 +216,18 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         }
         if (isset($rule['max']) && $character_count > $rule['max']) {
             $pesan_batas = 'Kolom ' . $field . ' maksimal ' . $rule['max'] . ' karakter.';
+            break;
+        }
+        if (!empty($rule['digits']) && $value !== '' && !preg_match('/\A[0-9]+\z/', $value)) {
+            $pesan_batas = 'Kolom ' . $field . ' hanya boleh berisi angka.';
+            break;
+        }
+        if (!empty($rule['no_digits']) && preg_match('/[0-9]/', $value)) {
+            $pesan_batas = 'Nama siswa tidak boleh mengandung angka.';
+            break;
+        }
+        if (!empty($rule['academic_year']) && !preg_match('/\A[0-9]{4}\/[0-9]{4}\z/', $value)) {
+            $pesan_batas = 'Nama tahun ajaran harus berformat angka seperti 2026/2027.';
             break;
         }
     }

@@ -36,7 +36,7 @@ include 'config/koneksi.php';
             <!-- TOMBOL KEMBALI -->
             <div class="mb-4">
                 <a href="kelola_pelanggaran_kategori.php" class="btn btn-secondary fw-semibold">
-                    Kembali ke Kelola Kategori Pelanggaran
+                    Kembali
                 </a>
             </div>
 
@@ -58,6 +58,9 @@ include 'config/koneksi.php';
                                        class="form-control" 
                                        placeholder="Contoh: Pelanggaran Ringan" 
                                        maxlength="100" 
+                                       pattern="[^0-9]+"
+                                       oninput="this.value = this.value.replace(/[0-9]/g, '');"
+                                       title="Nama kategori tidak boleh mengandung angka"
                                        required>
                             </div>
 
@@ -82,7 +85,7 @@ include 'config/koneksi.php';
                             <!-- Tombol Aksi -->
                             <div class="col-12 mt-4">
                                 <button type="submit" class="btn btn-primary px-4 fw-semibold">
-                                    Simpan Kategori Pelanggaran
+                                    Simpan
                                 </button>
                                 <a href="kelola_pelanggaran_kategori.php" class="btn btn-outline-secondary px-4 ms-2">
                                     Batal

@@ -51,14 +51,15 @@ $hasil = mysqli_query($koneksi, $sql);
         <?php include '../layout/sidebar.php'; ?>
 
         <!-- KONTEN UTAMA -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 p-4">
-
-            <!-- HEADER BRANDING -->
-            <?php include '../layout/brand_header.php'; ?>
-
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h3 class="fw-bold text-dark m-0">Riwayat Pelanggaran Saya</h3>
-            </div>
+        <main class="col-md-9 ms-sm-auto col-lg-10 p-4 guru-content">
+            <header class="admin-page-header">
+                <div class="admin-page-heading">
+                    <div>
+                        <h1>Riwayat Pelanggaran</h1>
+                        <p>SIP · Lihat kembali pelanggaran yang pernah Anda catat.</p>
+                    </div>
+                </div>
+            </header>
 
             <!-- CARD TABLE DATA -->
             <div class="card border-0 shadow-sm rounded-3 mb-5">

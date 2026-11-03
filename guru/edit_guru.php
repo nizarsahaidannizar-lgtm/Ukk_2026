@@ -38,7 +38,7 @@ $data = mysqli_fetch_assoc($hasil);
         <?php include '../layout/sidebar.php'; ?>
 
         <!-- KONTEN UTAMA -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 p-4">
+        <main class="col-md-9 ms-sm-auto col-lg-10 p-4 guru-content">
 
             <!-- HEADER HALAMAN -->
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -48,7 +48,7 @@ $data = mysqli_fetch_assoc($hasil);
             <!-- TOMBOL KEMBALI -->
             <div class="mb-4">
                 <a href="kelola_guru.php" class="btn btn-secondary fw-semibold">
-                    Kembali ke Kelola Guru
+                    Kembali
                 </a>
             </div>
 
@@ -71,6 +71,11 @@ $data = mysqli_fetch_assoc($hasil);
                                        name="nip" 
                                        class="form-control" 
                                        value="<?= htmlspecialchars($data['nip']); ?>" 
+                                       maxlength="30"
+                                       pattern="[0-9]+"
+                                       inputmode="numeric"
+                                       oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                       title="NIP hanya boleh berisi angka"
                                        required>
                             </div>
 
@@ -81,6 +86,10 @@ $data = mysqli_fetch_assoc($hasil);
                                        name="nama" 
                                        class="form-control" 
                                        value="<?= htmlspecialchars($data['nama']); ?>" 
+                                       maxlength="150"
+                                       pattern="[^0-9]+"
+                                       oninput="this.value = this.value.replace(/[0-9]/g, '');"
+                                       title="Nama guru tidak boleh mengandung angka"
                                        required>
                             </div>
 
@@ -120,10 +129,10 @@ $data = mysqli_fetch_assoc($hasil);
                             <!-- Tombol Aksi -->
                             <div class="col-12 mt-4">
                                 <button type="submit" class="btn btn-warning px-4 fw-semibold text-white">
-                                    Update Data Guru
+                                    Simpan
                                 </button>
                                 <a href="kelola_guru.php" class="btn btn-outline-secondary px-4 ms-2">
-                                    Batal
+                                    Kembali
                                 </a>
                             </div>
 

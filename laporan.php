@@ -69,28 +69,17 @@ if ($hasil && mysqli_num_rows($hasil) > 0) {
         <!-- KONTEN UTAMA -->
         <main class="col-md-9 ms-sm-auto col-lg-10 p-4">
 
-            <!-- HEADER BRANDING SIP -->
-            <div class="d-flex align-items-center mb-4 pb-3 border-bottom">
-                <div class="bg-white p-3 rounded-3 shadow-sm me-3 border">
-                    <i class="fa-solid fa-school fs-2 text-dark"></i>
+            <header class="admin-page-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div>
+                    <h1>Laporan Pelanggaran</h1>
+                    <p>Ringkasan catatan pelanggaran dan tindak lanjut siswa.</p>
                 </div>
                 <div>
-                    <h1 class="h2 fw-bold text-dark m-0">SIP</h1>
-                    <p class="text-muted m-0 small">Sistem Informasi Pelanggaran Siswa</p>
-                </div>
-            </div>
-
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h3 class="fw-bold text-dark m-0">Laporan Pelanggaran Admin</h3>
-                <div>
-                    <a href="dashboard.php" class="btn btn-secondary me-2 fw-semibold">
-                        <i class="fa-solid fa-arrow-left me-1"></i> Kembali ke Dashboard
-                    </a>
                     <button class="btn btn-outline-danger me-2 fw-semibold" onclick="window.print();">
                         <i class="fa-solid fa-print me-1"></i> Cetak Laporan
                     </button>
                 </div>
-            </div>
+            </header>
 
             <!-- CARDS RINGKASAN DATA -->
             <div class="row g-3 mb-4">

@@ -35,28 +35,12 @@ $hasil = mysqli_query($koneksi, $sql);
         <?php include 'layout/sidebar.php'; ?>
 
         <!-- KONTEN UTAMA -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 p-4">
+        <main class="col-md-9 ms-sm-auto col-lg-10 p-4 admin-siswa-list">
 
-            <!-- HEADER BRANDING SIP & LOGO SEKOLAH -->
-            <div class="d-flex align-items-center mb-4 pb-3 border-bottom">
-                <div class="bg-white p-3 rounded-3 shadow-sm me-3 border">
-                    <i class="fa-solid fa-school fs-2 text-dark"></i>
-                </div>
-                <div>
-                    <h1 class="h2 fw-bold text-dark m-0">SIP</h1>
-                    <p class="text-muted m-0 small">Sistem Informasi Pelanggaran Siswa</p>
-                </div>
-            </div>
-
-            <!-- TOMBOL KEMBALI & TAMBAH SISWA -->
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <a href="dashboard.php" class="btn btn-secondary fw-semibold">
-                    Kembali ke Dashboard
-                </a>
-                <a href="tambah_siswa.php" class="btn btn-primary fw-semibold">
-                    + Tambah Siswa
-                </a>
-            </div>
+            <header class="admin-page-header">
+                <h1>Kelola Data Siswa</h1>
+                <p>Kelola informasi, status, dan data siswa.</p>
+            </header>
 
             <!-- ALERT NOTIFIKASI SUKSES / ERROR -->
             <?php if (isset($_SESSION['pesan_sukses'])) { ?>
@@ -77,8 +61,11 @@ $hasil = mysqli_query($koneksi, $sql);
 
             <!-- CARD TABEL SISWA -->
             <div class="card shadow-sm border-0 rounded-3 mb-5">
-                <div class="card-header bg-white py-3">
+                <div class="card-header bg-white py-3 d-flex flex-wrap gap-2 justify-content-between align-items-center">
                     <h5 class="card-title m-0 fw-bold">Data Siswa</h5>
+                    <a href="tambah_siswa.php" class="btn btn-primary btn-sm fw-semibold text-nowrap">
+                        + Tambah Siswa
+                    </a>
                 </div>
                 <div class="card-body p-4">
 
@@ -87,7 +74,7 @@ $hasil = mysqli_query($koneksi, $sql);
 
                             <thead class="table-dark">
                                 <tr>
-                                    <th>No.</th>
+                                    <th class="text-center">No.</th>
                                     <th>NIS</th>
                                     <th>NISN</th>
                                     <th>Nama Siswa</th>
@@ -95,7 +82,7 @@ $hasil = mysqli_query($koneksi, $sql);
                                     <th>Tanggal Lahir</th>
                                     <th>Alamat</th>
                                     <th>Status Aktif</th>
-                                    <th>Aksi</th>
+                                    <th class="action-column">Aksi</th>
                                 </tr>
                             </thead>
 
@@ -125,7 +112,7 @@ $hasil = mysqli_query($koneksi, $sql);
                                         ?>
                                     </td>
 
-                                    <td><?= htmlspecialchars($row['tanggal_lahir'] ?? '') ?></td>
+                                    <td class="text-nowrap"><?= htmlspecialchars(date('d-m-Y', strtotime($row['tanggal_lahir'] ?? ''))) ?></td>
 
                                     <td><?= htmlspecialchars($row['alamat'] ?? '') ?></td>
 
@@ -137,7 +124,7 @@ $hasil = mysqli_query($koneksi, $sql);
                                         <?php } ?>
                                     </td>
 
-                                    <td class="text-nowrap">
+                                    <td class="text-nowrap action-column">
                                         <a href="edit_siswa.php?id=<?= urlencode($row['id']) ?>"
                                            class="btn btn-warning btn-sm fw-semibold text-white">
                                             Edit
@@ -178,11 +165,15 @@ $hasil = mysqli_query($koneksi, $sql);
 
 <script>
 $(document).ready(function () {
-    $('#tabelSiswa').DataTable({
+    const tabelSiswa = $('#tabelSiswa').DataTable({
         pageLength: 10,
         lengthMenu: [5, 10, 25, 50, 100],
         order: [[3, 'asc']],
         scrollX: true,
+        autoWidth: false,
+        columnDefs: [
+            { targets: [0, -1], orderable: false, searchable: false }
+        ],
         language: {
             search: "Cari:",
             lengthMenu: "Tampilkan _MENU_ data",
@@ -199,6 +190,11 @@ $(document).ready(function () {
             }
         }
     });
+
+    const inputCari = $('#tabelSiswa_wrapper input[type="search"]');
+    inputCari.val('');
+    tabelSiswa.search('').columns().search('').draw();
+
 });
 </script>
 

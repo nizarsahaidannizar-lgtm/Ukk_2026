@@ -35,9 +35,17 @@ include 'config/koneksi.php';
             <!-- TOMBOL KEMBALI -->
             <div class="mb-4">
                 <a href="kelola_siswa.php" class="btn btn-secondary fw-semibold">
-                    Kembali ke Kelola Siswa
+                    Kembali
                 </a>
             </div>
+
+            <?php if (!empty($_SESSION['pesan_error'])): ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <?= htmlspecialchars($_SESSION['pesan_error'], ENT_QUOTES, 'UTF-8') ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
+                </div>
+                <?php unset($_SESSION['pesan_error']); ?>
+            <?php endif; ?>
 
             <!-- CARD FORM TAMBAH SISWA -->
             <div class="card shadow-sm border-0 rounded-3 mb-5">
@@ -56,6 +64,11 @@ include 'config/koneksi.php';
                                        name="nis" 
                                        class="form-control" 
                                        placeholder="Masukkan NIS" 
+                                       maxlength="8"
+                                       pattern="[0-9]{1,8}"
+                                       inputmode="numeric"
+                                       oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 8);"
+                                       title="NIS hanya boleh berisi angka, maksimal 8 digit"
                                        required>
                             </div>
 
@@ -81,6 +94,10 @@ include 'config/koneksi.php';
                                        name="nama" 
                                        class="form-control" 
                                        placeholder="Masukkan Nama Lengkap" 
+                                       maxlength="150"
+                                       pattern="[^0-9]+"
+                                       oninput="this.value = this.value.replace(/[0-9]/g, '');"
+                                       title="Nama siswa tidak boleh mengandung angka"
                                        required>
                             </div>
 
@@ -125,10 +142,10 @@ include 'config/koneksi.php';
                             <!-- Tombol Aksi -->
                             <div class="col-12 mt-4">
                                 <button type="submit" class="btn btn-primary px-4 fw-semibold">
-                                    Simpan Data Siswa
+                                    Simpan
                                 </button>
                                 <a href="kelola_siswa.php" class="btn btn-outline-secondary px-4 ms-2">
-                                    Batal
+                                    Kembali
                                 </a>
                             </div>
 

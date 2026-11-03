@@ -48,7 +48,7 @@ $data = mysqli_fetch_assoc($hasil);
             <!-- TOMBOL KEMBALI -->
             <div class="mb-4">
                 <a href="kelola_siswa.php" class="btn btn-secondary fw-semibold">
-                    Kembali ke Kelola Siswa
+                    Kembali
                 </a>
             </div>
 
@@ -71,6 +71,11 @@ $data = mysqli_fetch_assoc($hasil);
                                        name="nis" 
                                        class="form-control" 
                                        value="<?= htmlspecialchars($data['nis']); ?>" 
+                                       maxlength="8"
+                                       pattern="[0-9]{1,8}"
+                                       inputmode="numeric"
+                                       oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 8);"
+                                       title="NIS hanya boleh berisi angka, maksimal 8 digit"
                                        required>
                             </div>
 
@@ -91,6 +96,10 @@ $data = mysqli_fetch_assoc($hasil);
                                        name="nama" 
                                        class="form-control" 
                                        value="<?= htmlspecialchars($data['nama']); ?>" 
+                                       maxlength="150"
+                                       pattern="[^0-9]+"
+                                       oninput="this.value = this.value.replace(/[0-9]/g, '');"
+                                       title="Nama siswa tidak boleh mengandung angka"
                                        required>
                             </div>
 
@@ -142,10 +151,10 @@ $data = mysqli_fetch_assoc($hasil);
                             <!-- Tombol Submit -->
                             <div class="col-12 mt-4">
                                 <button type="submit" class="btn btn-warning px-4 fw-semibold text-white">
-                                    Update Data Siswa
+                                    Simpan
                                 </button>
                                 <a href="kelola_siswa.php" class="btn btn-outline-secondary px-4 ms-2">
-                                    Batal
+                                    Kembali
                                 </a>
                             </div>
 

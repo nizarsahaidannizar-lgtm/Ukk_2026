@@ -54,7 +54,7 @@ if (!$data) {
             <!-- TOMBOL KEMBALI -->
             <div class="mb-4">
                 <a href="kelola_pelanggaran_kategori.php" class="btn btn-secondary fw-semibold">
-                    Kembali ke Kelola Kategori Pelanggaran
+                    Kembali
                 </a>
             </div>
 
@@ -77,7 +77,11 @@ if (!$data) {
                                        name="nama" 
                                        class="form-control" 
                                        value="<?= htmlspecialchars($data['nama']); ?>" 
+                                       maxlength="100"
+                                       pattern="[^0-9]+"
+                                       oninput="this.value = this.value.replace(/[0-9]/g, '');"
                                        placeholder="Contoh: Pelanggaran Ringan" 
+                                       title="Nama kategori tidak boleh mengandung angka"
                                        required>
                             </div>
 

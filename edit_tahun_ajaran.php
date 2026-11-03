@@ -54,7 +54,7 @@ if (!$data) {
             <!-- TOMBOL KEMBALI -->
             <div class="mb-4">
                 <a href="kelola_tahun_ajaran.php" class="btn btn-secondary fw-semibold">
-                    Kembali ke Kelola Tahun Ajaran
+                    Kembali
                 </a>
             </div>
 
@@ -77,7 +77,12 @@ if (!$data) {
                                        name="nama" 
                                        class="form-control" 
                                        value="<?= htmlspecialchars($data['nama']); ?>" 
+                                       maxlength="9"
+                                       pattern="[0-9]{4}/[0-9]{4}"
+                                       inputmode="numeric"
+                                       oninput="this.value = this.value.replace(/[^0-9/]/g, '').slice(0, 9);"
                                        placeholder="Contoh: 2026/2027" 
+                                       title="Nama tahun ajaran harus berformat angka seperti 2026/2027"
                                        required>
                             </div>
 
@@ -117,10 +122,10 @@ if (!$data) {
                             <!-- Tombol Aksi -->
                             <div class="col-12 mt-4">
                                 <button type="submit" class="btn btn-warning px-4 fw-semibold text-white">
-                                    Update Tahun Ajaran
+                                    Simpan
                                 </button>
                                 <a href="kelola_tahun_ajaran.php" class="btn btn-outline-secondary px-4 ms-2">
-                                    Batal
+                                    Kembali
                                 </a>
                             </div>
 

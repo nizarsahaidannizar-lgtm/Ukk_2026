@@ -39,26 +39,10 @@ $hasil = mysqli_query($koneksi, $sql);
         <!-- KONTEN UTAMA -->
         <main class="col-md-9 ms-sm-auto col-lg-10 p-4">
 
-            <!-- HEADER BRANDING SIP & LOGO SEKOLAH -->
-            <div class="d-flex align-items-center mb-4 pb-3 border-bottom">
-                <div class="bg-white p-3 rounded-3 shadow-sm me-3 border">
-                    <i class="fa-solid fa-school fs-2 text-dark"></i>
-                </div>
-                <div>
-                    <h1 class="h2 fw-bold text-dark m-0">SIP</h1>
-                    <p class="text-muted m-0 small">Sistem Informasi Pelanggaran Siswa</p>
-                </div>
-            </div>
-
-            <!-- TOMBOL KEMBALI KE DASHBOARD & TAMBAH KELAS -->
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <a href="dashboard.php" class="btn btn-secondary fw-semibold">
-                    Kembali ke Dashboard
-                </a>
-                <a href="tambah_kelas.php" class="btn btn-primary fw-semibold">
-                    + Tambah Kelas
-                </a>
-            </div>
+            <header class="admin-page-header">
+                <h1>Kelola Data Kelas</h1>
+                <p>Atur daftar kelas, tingkat, jurusan, dan statusnya.</p>
+            </header>
 
             <!-- ALERT NOTIFIKASI SUKSES / ERROR -->
             <?php if (isset($_SESSION['pesan_sukses'])) { ?>
@@ -79,8 +63,11 @@ $hasil = mysqli_query($koneksi, $sql);
 
             <!-- CARD TABEL KELAS -->
             <div class="card shadow-sm border-0 rounded-3 mb-5">
-                <div class="card-header bg-white py-3">
+                <div class="card-header bg-white py-3 d-flex flex-wrap gap-2 justify-content-between align-items-center">
                     <h5 class="card-title m-0 fw-bold">Data Kelas</h5>
+                    <a href="tambah_kelas.php" class="btn btn-primary btn-sm fw-semibold text-nowrap">
+                        + Tambah Kelas
+                    </a>
                 </div>
                 <div class="card-body p-4">
 
@@ -96,7 +83,7 @@ $hasil = mysqli_query($koneksi, $sql);
                                     <th>Status Aktif</th>
                                     <th>Dibuat</th>
                                     <th>Diubah</th>
-                                    <th class="text-center">Aksi</th>
+                                    <th class="text-center action-column">Aksi</th>
                                 </tr>
                             </thead>
 
@@ -122,11 +109,11 @@ $hasil = mysqli_query($koneksi, $sql);
                                         <?php } ?>
                                     </td>
 
-                                    <td><?= htmlspecialchars($row['created_at']) ?></td>
+                                    <td class="text-nowrap"><?= htmlspecialchars(date('d-m-Y H:i', strtotime($row['created_at']))) ?></td>
 
-                                    <td><?= htmlspecialchars($row['updated_at']) ?></td>
+                                    <td class="text-nowrap"><?= htmlspecialchars(date('d-m-Y H:i', strtotime($row['updated_at']))) ?></td>
 
-                                    <td class="text-center text-nowrap">
+                                    <td class="text-center text-nowrap action-column">
                                         <a href="edit_kelas.php?id=<?= urlencode($row['id']) ?>" class="btn btn-warning btn-sm me-1 fw-semibold text-white">
                                             Edit
                                         </a>
@@ -171,6 +158,9 @@ $(document).ready(function () {
         lengthMenu: [5, 10, 25, 50, 100],
         order: [[1, 'asc']], // Urutkan berdasarkan kolom Nama Kelas
         scrollX: true,
+        columnDefs: [
+            { targets: [0, -1], orderable: false }
+        ],
         language: {
             search: "Cari:",
             lengthMenu: "Tampilkan _MENU_ data",

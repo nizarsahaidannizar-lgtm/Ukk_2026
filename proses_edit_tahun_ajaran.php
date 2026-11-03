@@ -44,9 +44,13 @@ if (!$data) {
                 <td>:</td>
                 <td>
                     <input type="text" name="nama"
-                              maxlength="20"
+                           maxlength="9"
+                           pattern="[0-9]{4}/[0-9]{4}"
+                           inputmode="numeric"
+                           oninput="this.value = this.value.replace(/[^0-9/]/g, '').slice(0, 9);"
                            value="<?php echo htmlspecialchars($data['nama']); ?>"
                            placeholder="Contoh: 2026/2027"
+                           title="Nama tahun ajaran harus berformat angka seperti 2026/2027"
                            required>
                 </td>
             </tr>
@@ -117,4 +121,3 @@ if (!$data) {
 
 </body>
 </html>
-

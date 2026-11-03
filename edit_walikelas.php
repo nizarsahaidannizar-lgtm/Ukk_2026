@@ -66,7 +66,7 @@ $guru = mysqli_query(
             <!-- TOMBOL KEMBALI -->
             <div class="mb-4">
                 <a href="kelola_walikelas.php" class="btn btn-secondary fw-semibold">
-                    Kembali ke Kelola Wali Kelas
+                    Kembali
                 </a>
             </div>
 
@@ -150,10 +150,10 @@ $guru = mysqli_query(
                             <!-- Tombol Aksi -->
                             <div class="col-12 mt-4">
                                 <button type="submit" class="btn btn-warning px-4 fw-semibold text-white">
-                                    Update Wali Kelas
+                                    Simpan
                                 </button>
                                 <a href="kelola_walikelas.php" class="btn btn-outline-secondary px-4 ms-2">
-                                    Batal
+                                    Kembali
                                 </a>
                             </div>
 

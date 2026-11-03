@@ -77,21 +77,12 @@ $total_poin = $q_poin ? (int)mysqli_fetch_assoc($q_poin)['total'] : 0;
 
 $chart_labels = [];
 $chart_data = [];
-$chart_title = 'Statistik Pelanggaran';
+$chart_title = 'Tren pelanggaran';
+$chart_description = '';
+$chart_selected_index = null;
+$chart_error = '';
 
-if (!empty($filter_hari)) {
-    $chart_query = mysqli_query(
-        $koneksi,
-        "SELECT DATE(ps.tanggal) AS label, COUNT(*) AS total
-         FROM t_pelanggaran_siswa ps
-         WHERE $lingkup AND YEAR(ps.tanggal) = " . (int)$filter_tahun . "
-           AND MONTH(ps.tanggal) = " . (int)$filter_bulan . "
-           AND DAY(ps.tanggal) = " . (int)$filter_hari . "
-         GROUP BY DATE(ps.tanggal)
-         ORDER BY DATE(ps.tanggal)"
-    );
-    $chart_title = 'Rekap pelanggaran berdasarkan tanggal';
-} elseif (!empty($filter_bulan)) {
+if (!empty($filter_bulan)) {
     $chart_query = mysqli_query(
         $koneksi,
         "SELECT DAY(ps.tanggal) AS label, COUNT(*) AS total
@@ -101,7 +92,31 @@ if (!empty($filter_hari)) {
          GROUP BY DAY(ps.tanggal)
          ORDER BY DAY(ps.tanggal)"
     );
-    $chart_title = 'Rekap pelanggaran per hari - ' . $nama_bulan[(int)$filter_bulan] . ' ' . $filter_tahun;
+    $chart_title = 'Tren pelanggaran harian';
+    $jumlah_hari = cal_days_in_month(CAL_GREGORIAN, (int)$filter_bulan, (int)$filter_tahun);
+    if ($filter_hari && (int)$filter_hari <= $jumlah_hari) {
+        $chart_selected_index = (int)$filter_hari - 1;
+        $chart_description = 'Konteks bulan ' . $nama_bulan[(int)$filter_bulan] . ' ' . $filter_tahun . '; tanggal ' . $filter_hari . ' ditandai.';
+    } elseif ($filter_hari) {
+        $chart_description = 'Tanggal ' . $filter_hari . ' tidak tersedia pada bulan ' . $nama_bulan[(int)$filter_bulan] . ' ' . $filter_tahun . '.';
+    } else {
+        $chart_description = 'Jumlah kasus setiap tanggal pada ' . $nama_bulan[(int)$filter_bulan] . ' ' . $filter_tahun . '.';
+    }
+
+    $jumlah_per_hari = array_fill(1, $jumlah_hari, 0);
+    if ($chart_query) {
+        while ($row = mysqli_fetch_assoc($chart_query)) {
+            $jumlah_per_hari[(int)$row['label']] = (int)$row['total'];
+        }
+    } else {
+        $chart_error = 'Statistik belum dapat dimuat. Silakan coba kembali.';
+        error_log('Gagal mengambil statistik dashboard guru: ' . mysqli_error($koneksi));
+    }
+
+    for ($hari = 1; $hari <= $jumlah_hari; $hari++) {
+        $chart_labels[] = (string)$hari;
+        $chart_data[] = $jumlah_per_hari[$hari];
+    }
 } else {
     $chart_query = mysqli_query(
         $koneksi,
@@ -111,21 +126,24 @@ if (!empty($filter_hari)) {
          GROUP BY MONTH(ps.tanggal)
          ORDER BY MONTH(ps.tanggal)"
     );
-    $chart_title = 'Rekap pelanggaran per bulan - ' . $filter_tahun;
-}
-
-if ($chart_query) {
-    while ($row = mysqli_fetch_assoc($chart_query)) {
-        if (!empty($filter_hari)) {
-            $chart_labels[] = date('d-m-Y', strtotime($row['label']));
-        } elseif (!empty($filter_bulan)) {
-            $chart_labels[] = 'Hari ' . (int)$row['label'];
-        } else {
-            $chart_labels[] = $nama_bulan[(int)$row['label']];
+    $chart_title = 'Tren pelanggaran bulanan';
+    $chart_description = 'Jumlah kasus setiap bulan pada tahun ' . $filter_tahun . '.';
+    $jumlah_per_bulan = array_fill(1, 12, 0);
+    if ($chart_query) {
+        while ($row = mysqli_fetch_assoc($chart_query)) {
+            $jumlah_per_bulan[(int)$row['label']] = (int)$row['total'];
         }
-        $chart_data[] = (int)$row['total'];
+    } else {
+        $chart_error = 'Statistik belum dapat dimuat. Silakan coba kembali.';
+        error_log('Gagal mengambil statistik dashboard guru: ' . mysqli_error($koneksi));
+    }
+
+    foreach ($nama_bulan as $nomor_bulan => $nama) {
+        $chart_labels[] = $nama;
+        $chart_data[] = $jumlah_per_bulan[$nomor_bulan];
     }
 }
+$chart_has_data = array_sum($chart_data) > 0;
 
 $rekap_poin = mysqli_query(
     $koneksi,
@@ -157,11 +175,19 @@ $rekap_poin = mysqli_query(
     <div class="row">
         <?php include '../layout/sidebar.php'; ?>
 
-        <main class="col-md-9 ms-sm-auto col-lg-10 p-4">
-            <?php include '../layout/brand_header.php'; ?>
+        <main class="col-md-9 ms-sm-auto col-lg-10 p-4 guru-content">
+            <header class="admin-page-header">
+                <div class="admin-page-heading">
+                    <div>
+                        <h1>Dashboard Guru</h1>
+                        <p>SIP · Ringkasan pelanggaran dan rekap poin siswa.</p>
+                    </div>
+                </div>
+            </header>
 
-            <div class="alert alert-primary alert-dismissible fade show mb-4 shadow-sm" role="alert">
-                Selamat datang, <strong><?= htmlspecialchars($_SESSION['nama'] ?? 'Guru'); ?></strong>. Berikut ringkasan pelanggaran dan rekap poin Anda.
+            <div class="alert alert-primary alert-dismissible fade show mb-4 shadow-sm border-0" role="alert">
+                <i class="fa-solid fa-circle-info me-2"></i> Selamat Datang di <strong>SIP (Sistem Informasi Pelanggaran)</strong>,
+                Anda login sebagai <strong><?= htmlspecialchars($_SESSION['nama'] ?? 'Guru'); ?></strong>.
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
 
@@ -268,18 +294,24 @@ $rekap_poin = mysqli_query(
             </div>
 
             <div class="card border-0 shadow-sm rounded-3 mb-4">
-                <div class="card-header bg-white border-0 p-3">
-                    <h5 class="fw-bold mb-1">
-                        <i class="fa-solid fa-chart-column text-primary me-2"></i>
-                        <?= htmlspecialchars($chart_title) ?>
-                    </h5>
+                <div class="card-header bg-white border-0 px-4 pt-4 pb-2">
+                    <h5 class="fw-bold mb-1 text-dark"><?= htmlspecialchars($chart_title) ?></h5>
+                    <p class="text-muted small mb-0"><?= htmlspecialchars($chart_description) ?></p>
                 </div>
-                <div class="card-body">
-                    <div style="position: relative; height: 340px;">
-                        <canvas id="grafikGuru"></canvas>
-                    </div>
-                    <?php if (empty($chart_data)): ?>
-                        <p class="text-muted text-center mt-3 mb-0">Belum ada data yang cocok dengan filter saat ini.</p>
+                <div class="card-body px-4 pt-3 pb-4">
+                    <?php if ($chart_error !== ''): ?>
+                        <div class="alert alert-warning mb-0" role="status">
+                            <?= htmlspecialchars($chart_error) ?>
+                        </div>
+                    <?php elseif (!$chart_has_data): ?>
+                        <div class="admin-chart-empty" role="status">
+                            <strong>Belum ada data pelanggaran.</strong>
+                            <span>Grafik akan tampil setelah ada catatan pada periode yang dipilih.</span>
+                        </div>
+                    <?php else: ?>
+                        <div class="admin-chart-wrap">
+                            <canvas id="grafikGuru" role="img" aria-label="<?= htmlspecialchars($chart_title . '. ' . $chart_description) ?>"></canvas>
+                        </div>
                     <?php endif; ?>
                 </div>
             </div>
@@ -326,8 +358,12 @@ $rekap_poin = mysqli_query(
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+<?php if ($chart_error === '' && $chart_has_data): ?>
 const labelsGuru = <?= json_encode($chart_labels) ?>;
 const dataGuru = <?= json_encode($chart_data) ?>;
+const selectedIndexGuru = <?= json_encode($chart_selected_index) ?>;
+const maxValueGuru = Math.max(...dataGuru);
+const tickStepGuru = Math.max(1, Math.ceil(maxValueGuru / 5));
 
 new Chart(document.getElementById('grafikGuru'), {
     type: 'bar',
@@ -336,30 +372,76 @@ new Chart(document.getElementById('grafikGuru'), {
         datasets: [{
             label: 'Jumlah Pelanggaran',
             data: dataGuru,
-            backgroundColor: 'rgba(13, 110, 253, 0.7)',
-            borderColor: 'rgba(13, 110, 253, 1)',
-            borderWidth: 1,
-            borderRadius: 6
+            backgroundColor: (context) => context.dataIndex === selectedIndexGuru
+                ? 'rgba(13, 110, 253, 0.95)'
+                : 'rgba(13, 110, 253, 0.58)',
+            hoverBackgroundColor: 'rgba(13, 110, 253, 0.9)',
+            borderRadius: 7,
+            borderSkipped: false,
+            maxBarThickness: 28,
+            categoryPercentage: 0.78,
+            barPercentage: 0.82
         }]
     },
     options: {
         responsive: true,
         maintainAspectRatio: false,
+        interaction: {
+            intersect: false,
+            mode: 'index'
+        },
         scales: {
+            x: {
+                grid: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: <?= json_encode($filter_bulan ? 'Tanggal' : 'Bulan') ?>,
+                    color: '#667085',
+                    font: { weight: '600' },
+                    padding: { top: 10 }
+                },
+                ticks: {
+                    color: '#667085',
+                    autoSkip: true,
+                    maxTicksLimit: 12,
+                    maxRotation: 0
+                },
+                border: { display: false }
+            },
             y: {
                 beginAtZero: true,
+                suggestedMax: maxValueGuru + tickStepGuru,
+                grid: {
+                    color: 'rgba(148, 163, 184, 0.18)',
+                    drawTicks: false
+                },
                 ticks: {
-                    precision: 0
-                }
+                    precision: 0,
+                    stepSize: tickStepGuru,
+                    color: '#667085',
+                    padding: 10
+                },
+                border: { display: false }
             }
         },
         plugins: {
             legend: {
-                position: 'bottom'
+                display: false
+            },
+            tooltip: {
+                backgroundColor: '#17233f',
+                padding: 12,
+                displayColors: false,
+                callbacks: {
+                    label: (context) => `${context.parsed.y} kasus`
+                }
             }
         }
     }
 });
+<?php endif; ?>
 </script>
 </body>
 </html>

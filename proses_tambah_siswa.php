@@ -1,188 +1,118 @@
 <?php
-// kelola_tahun_ajaran.php
-
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
-$sql = "SELECT * FROM t_tahun_ajaran ORDER BY tanggal_mulai DESC";
-$hasil = mysqli_query($koneksi, $sql);
-?>
+if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+    header('Location: tambah_siswa.php');
+    exit;
+}
 
-<!DOCTYPE html>
-<html lang="id">
+$post_string = static function (string $key): ?string {
+    $value = $_POST[$key] ?? null;
+    return is_string($value) ? trim($value) : null;
+};
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelola Tahun Ajaran</title>
+$nis = $post_string('nis');
+$nisn = $post_string('nisn');
+$nama = $post_string('nama');
+$jenis_kelamin = $post_string('jenis_kelamin');
+$tanggal_lahir = $post_string('tanggal_lahir');
+$alamat = $post_string('alamat');
+$status_aktif = $post_string('status_aktif');
 
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+$tanggal_valid = false;
+if (is_string($tanggal_lahir)) {
+    $tanggal = DateTime::createFromFormat('!Y-m-d', $tanggal_lahir);
+    $tanggal_valid = $tanggal && $tanggal->format('Y-m-d') === $tanggal_lahir;
+}
+$panjang_teks = static function (string $value): int {
+    return function_exists('mb_strlen') ? mb_strlen($value, 'UTF-8') : strlen($value);
+};
+$data_valid = is_string($nis)
+    && preg_match('/\A[0-9]{1,8}\z/', $nis)
+    && is_string($nisn)
+    && preg_match('/\A[0-9]{10}\z/', $nisn)
+    && is_string($nama)
+    && $nama !== ''
+    && $panjang_teks($nama) <= 150
+    && !preg_match('/[0-9]/', $nama)
+    && in_array($jenis_kelamin, ['L', 'P'], true)
+    && $tanggal_valid
+    && is_string($alamat)
+    && $alamat !== ''
+    && $panjang_teks($alamat) <= 1000
+    && in_array($status_aktif, ['0', '1'], true);
 
-    <!-- DataTables Bootstrap 5 CSS -->
-    <link href="https://cdn.datatables.net/2.3.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-    
-    <link rel="stylesheet" href="layout/style.css">
+if (!$data_valid) {
+    $_SESSION['pesan_error'] = 'Data siswa tidak valid. Periksa kembali isian formulir.';
+    header('Location: tambah_siswa.php');
+    exit;
+}
 
-    <!-- CSS Paksa (Override) agar teks header hitam pas dan tidak membesar -->
-    <style>
-        table.dataTable thead th {
-            font-size: 13px !important;
-            font-weight: 600 !important;
-            padding: 8px 10px !important;
-            white-space: nowrap !important;
-            vertical-align: middle !important;
-        }
-        table.dataTable tbody td {
-            font-size: 13px !important;
-            padding: 6px 10px !important;
-        }
-    </style>
-</head>
+$stmt = mysqli_prepare(
+    $koneksi,
+    'SELECT id FROM t_siswa WHERE nis = ? OR nisn = ? LIMIT 1'
+);
+if (!$stmt) {
+    error_log('Gagal menyiapkan pemeriksaan duplikasi siswa: ' . mysqli_error($koneksi));
+    $_SESSION['pesan_error'] = 'Data siswa gagal diperiksa. Silakan coba kembali.';
+    header('Location: tambah_siswa.php');
+    exit;
+}
 
-<body class="bg-light">
+mysqli_stmt_bind_param($stmt, 'ss', $nis, $nisn);
+if (!mysqli_stmt_execute($stmt)) {
+    error_log('Gagal memeriksa duplikasi siswa: ' . mysqli_stmt_error($stmt));
+    mysqli_stmt_close($stmt);
+    $_SESSION['pesan_error'] = 'Data siswa gagal diperiksa. Silakan coba kembali.';
+    header('Location: tambah_siswa.php');
+    exit;
+}
 
-<div class="container-fluid">
-    <div class="row">
+$siswa_ada = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+mysqli_stmt_close($stmt);
 
-        <?php include 'layout/sidebar.php'; ?>
+if ($siswa_ada) {
+    $_SESSION['pesan_error'] = 'NIS atau NISN sudah terdaftar.';
+    header('Location: tambah_siswa.php');
+    exit;
+}
 
-        <!-- KONTEN UTAMA -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 p-4">
+$stmt = mysqli_prepare(
+    $koneksi,
+    'INSERT INTO t_siswa
+        (nis, nisn, nama, jenis_kelamin, tanggal_lahir, alamat, status_aktif)
+     VALUES (?, ?, ?, ?, ?, ?, ?)'
+);
+if (!$stmt) {
+    error_log('Gagal menyiapkan penyimpanan siswa: ' . mysqli_error($koneksi));
+    $_SESSION['pesan_error'] = 'Data siswa gagal disimpan. Silakan coba kembali.';
+    header('Location: tambah_siswa.php');
+    exit;
+}
 
-            <!-- HEADER & TOMBOL TAMBAH TAHUN AJARAN -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h2 m-0">Kelola Tahun Ajaran</h1>
+$status_integer = (int)$status_aktif;
+mysqli_stmt_bind_param(
+    $stmt,
+    'ssssssi',
+    $nis,
+    $nisn,
+    $nama,
+    $jenis_kelamin,
+    $tanggal_lahir,
+    $alamat,
+    $status_integer
+);
 
-                <a href="tambah_tahun_ajaran.php" class="btn btn-primary fw-semibold">
-                    + Tambah Tahun Ajaran
-                </a>
-            </div>
+if (mysqli_stmt_execute($stmt)) {
+    mysqli_stmt_close($stmt);
+    $_SESSION['pesan_sukses'] = 'Data siswa berhasil ditambahkan.';
+    header('Location: kelola_siswa.php');
+    exit;
+}
 
-            <!-- TOMBOL KEMBALI KE DASHBOARD -->
-            <a href="dashboard.php" class="btn btn-secondary mb-3">
-                Kembali ke Dashboard
-            </a>
-
-            <!-- CARD TABEL DATA TAHUN AJARAN -->
-            <div class="card shadow-sm border-0 rounded-3">
-                <div class="card-body">
-
-                    <div class="table-responsive">
-                        <table id="tabelTahunAjaran" class="table table-sm table-striped table-bordered table-hover align-middle w-100">
-
-                            <thead class="table-dark">
-                                <tr>
-                                    <th class="text-center" style="width: 40px !important;">No.</th>
-                                    <th>Nama Tahun Ajaran</th>
-                                    <th class="text-center">Tanggal Mulai</th>
-                                    <th class="text-center">Tanggal Selesai</th>
-                                    <th class="text-center">Status Aktif</th>
-                                    <th class="text-center">Dibuat</th>
-                                    <th class="text-center">Diubah</th>
-                                    <th class="text-center" style="width: 100px !important;">Aksi</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                <?php
-                                $no = 1;
-                                while ($row = mysqli_fetch_assoc($hasil)) { ?>
-
-                                <tr>
-                                    <td class="text-center"><?= $no++ ?></td>
-
-                                    <td>
-                                        <?= htmlspecialchars($row['nama']) ?>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <?= htmlspecialchars($row['tanggal_mulai']) ?>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <?= htmlspecialchars($row['tanggal_selesai']) ?>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <?php if ($row['status_aktif'] == 1) { ?>
-                                            <span class="badge bg-success">Aktif</span>
-                                        <?php } else { ?>
-                                            <span class="badge bg-danger">Tidak Aktif</span>
-                                        <?php } ?>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <?= htmlspecialchars($row['created_at']) ?>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <?= htmlspecialchars($row['updated_at']) ?>
-                                    </td>
-
-                                    <td class="text-center text-nowrap">
-                                        <a href="edit_tahun_ajaran.php?id=<?= urlencode($row['id']) ?>" class="btn btn-warning btn-sm me-1 py-0 px-2 fs-7">
-                                            Edit
-                                        </a>
-
-                                        <a href="hapus_tahun_ajaran.php?id=<?= urlencode($row['id']) ?>" 
-                                           class="btn btn-danger btn-sm py-0 px-2 fs-7"
-                                           onclick="return confirm('Yakin ingin menghapus tahun ajaran ini?');">
-                                            Hapus
-                                        </a>
-                                    </td>
-                                </tr>
-
-                                <?php } ?>
-                            </tbody>
-
-                        </table>
-                    </div>
-
-                </div>
-            </div>
-
-        </main>
-    </div>
-</div>
-
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-<!-- DataTables JS -->
-<script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
-
-<!-- DataTables Bootstrap 5 JS -->
-<script src="https://cdn.datatables.net/2.3.4/js/dataTables.bootstrap5.min.js"></script>
-
-<!-- Bootstrap 5 JS Bundle -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/bootstrap.bundle.min.js"></script>
-
-<script>
-$(document).ready(function () {
-    $('#tabelTahunAjaran').DataTable({
-        pageLength: 10,
-        lengthMenu: [5, 10, 25, 50, 100],
-        order: [[2, 'desc']],
-        scrollX: true,
-        language: {
-            search: "Cari:",
-            lengthMenu: "Tampilkan _MENU_ data",
-            info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data tahun ajaran",
-            infoEmpty: "Tidak ada data tahun ajaran",
-            infoFiltered: "(difilter dari _MAX_ total data)",
-            zeroRecords: "Data tahun ajaran tidak ditemukan",
-            emptyTable: "Belum ada data tahun ajaran",
-            paginate: {
-                first: "Pertama",
-                last: "Terakhir",
-                next: "Berikutnya",
-                previous: "Sebelumnya"
-            }
-        }
-    });
-});
-</script>
-
-</body>
-</html>
+error_log('Gagal menyimpan data siswa: ' . mysqli_stmt_error($stmt));
+mysqli_stmt_close($stmt);
+$_SESSION['pesan_error'] = 'Data siswa gagal disimpan. Silakan periksa data dan coba kembali.';
+header('Location: tambah_siswa.php');
+exit;

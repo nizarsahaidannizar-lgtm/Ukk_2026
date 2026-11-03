@@ -77,12 +77,6 @@ $hobi = "FootBall";
                     responsif, dan mudah digunakan.
                 </p>
 
-                <hr class="profile-divider">
-
-                <a href="dashboard.php" class="back-button">
-                    Kembali ke Dashboard
-                </a>
-
             </section>
 
             <!-- INFORMASI PERSONAL -->

@@ -52,11 +52,15 @@ $hasil = mysqli_query($koneksi, $sql);
         <?php include '../layout/sidebar.php'; ?>
 
         <!-- KONTEN UTAMA -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 p-4">
-            
-            <?php include '../layout/brand_header.php'; ?>
-
-            <h3 class="fw-bold text-dark mb-4">Tindak Lanjut Pelanggaran</h3>
+        <main class="col-md-9 ms-sm-auto col-lg-10 p-4 guru-content">
+            <header class="admin-page-header">
+                <div class="admin-page-heading">
+                    <div>
+                        <h1>Tindakan Pelanggaran</h1>
+                        <p>SIP · Catat tindak lanjut dan status pelanggaran siswa.</p>
+                    </div>
+                </div>
+            </header>
 
             <!-- ALERT NOTIFIKASI -->
             <?php if (isset($_SESSION['pesan_sukses'])): ?>
@@ -78,7 +82,7 @@ $hasil = mysqli_query($koneksi, $sql);
             <!-- CARD TABLE DATA -->
             <div class="card border-0 shadow-sm rounded-3 mb-5">
                 <div class="card-header bg-white py-3">
-                    <h5 class="card-title m-0 fw-bold">Daftar Catatan Pelanggaran Siswa</h5>
+                    <h5 class="card-title menu-page-title m-0 fw-bold">Daftar Catatan Pelanggaran Siswa</h5>
                 </div>
                 <div class="card-body p-3">
                     <div class="table-responsive">

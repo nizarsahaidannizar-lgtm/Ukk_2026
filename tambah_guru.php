@@ -39,7 +39,7 @@ include 'config/koneksi.php';
             <!-- TOMBOL KEMBALI -->
             <div class="mb-4">
                 <a href="guru/kelola_guru.php" class="btn btn-secondary fw-semibold">
-                    Kembali ke Kelola Guru
+                    Kembali
                 </a>
             </div>
 
@@ -60,6 +60,11 @@ include 'config/koneksi.php';
                                        name="nip" 
                                        class="form-control" 
                                        placeholder="Masukkan NIP Guru" 
+                                       maxlength="30"
+                                       pattern="[0-9]+"
+                                       inputmode="numeric"
+                                       oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                       title="NIP hanya boleh berisi angka"
                                        required>
                             </div>
 
@@ -70,6 +75,10 @@ include 'config/koneksi.php';
                                        name="nama" 
                                        class="form-control" 
                                        placeholder="Masukkan Nama Lengkap" 
+                                       maxlength="150"
+                                       pattern="[^0-9]+"
+                                       oninput="this.value = this.value.replace(/[0-9]/g, '');"
+                                       title="Nama guru tidak boleh mengandung angka"
                                        required>
                             </div>
 
@@ -101,10 +110,10 @@ include 'config/koneksi.php';
                             <!-- Tombol Aksi -->
                             <div class="col-12 mt-4">
                                 <button type="submit" class="btn btn-primary px-4 fw-semibold">
-                                    Simpan Data Guru
+                                    Simpan
                                 </button>
                                 <a href="guru/kelola_guru.php" class="btn btn-outline-secondary px-4 ms-2">
-                                    Batal
+                                    Kembali
                                 </a>
                             </div>
 

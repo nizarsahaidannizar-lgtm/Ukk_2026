@@ -4,13 +4,24 @@ include 'config/koneksi.php';
 
 batasi_akses(['admin']);
 
-$hasil = mysqli_query(
-    $koneksi,
-    "SELECT ps.id, ps.nama_siswa, ps.nama_kelas, ps.nama_pelanggaran,
-            ps.tanggal, ps.poin, ps.tindakan, ps.status, ps.updated_at
-     FROM t_pelanggaran_siswa ps
-     ORDER BY ps.updated_at DESC, ps.id DESC"
-);
+// QUERY REVISI: Menggunakan LEFT JOIN agar nama siswa, kelas, dan pelanggaran selalu terambil lengkap
+$sql = "SELECT 
+            ps.id, 
+            ps.tanggal, 
+            ps.poin, 
+            ps.tindakan, 
+            ps.status, 
+            ps.updated_at,
+            COALESCE(s.nama, ps.nama_siswa, 'Siswa Tidak Ditemukan') AS nama_siswa,
+            COALESCE(k.nama, ps.nama_kelas, '-') AS nama_kelas,
+            COALESCE(p.nama, ps.nama_pelanggaran, '-') AS nama_pelanggaran
+        FROM t_pelanggaran_siswa ps
+        LEFT JOIN t_siswa s ON ps.siswa_id = s.id
+        LEFT JOIN t_kelas k ON ps.kelas_id = k.id
+        LEFT JOIN t_pelanggaran p ON ps.pelanggaran_id = p.id
+        ORDER BY ps.updated_at DESC, ps.id DESC";
+
+$hasil = mysqli_query($koneksi, $sql);
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -18,36 +29,113 @@ $hasil = mysqli_query(
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Riwayat Pelanggaran - SIP</title>
+
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- DataTables Bootstrap 5 CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="layout/style.css">
 </head>
 <body class="bg-light">
-<div class="container-fluid"><div class="row">
-    <?php include 'layout/sidebar.php'; ?>
-    <main class="col-md-9 col-lg-10 p-4">
-        <?php include 'layout/brand_header.php'; ?>
-        <h1 class="h3 mb-4">Riwayat Pelanggaran</h1>
-        <div class="table-responsive bg-white border rounded p-3">
-            <table class="table table-striped align-middle">
-                <thead><tr><th>Tanggal</th><th>Siswa</th><th>Kelas</th><th>Pelanggaran</th><th>Poin</th><th>Tindakan</th><th>Status</th><th>Terakhir Diubah</th></tr></thead>
-                <tbody>
-                <?php while ($row = mysqli_fetch_assoc($hasil)): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($row['tanggal'] ?? '-') ?></td>
-                        <td><?= htmlspecialchars($row['nama_siswa']) ?></td>
-                        <td><?= htmlspecialchars($row['nama_kelas']) ?></td>
-                        <td><?= htmlspecialchars($row['nama_pelanggaran']) ?></td>
-                        <td><?= (int)$row['poin'] ?></td>
-                        <td><?= htmlspecialchars($row['tindakan']) ?></td>
-                        <td><?= htmlspecialchars($row['status']) ?></td>
-                        <td><?= htmlspecialchars($row['updated_at']) ?></td>
-                    </tr>
-                <?php endwhile; ?>
-                </tbody>
-            </table>
-        </div>
-    </main>
-</div></div>
+
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- SIDEBAR NAVIGASI -->
+        <?php include 'layout/sidebar.php'; ?>
+
+        <!-- KONTEN UTAMA -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 p-4">
+
+            <header class="admin-page-header">
+                <h1>Riwayat Pelanggaran</h1>
+                <p>Telusuri catatan pelanggaran siswa yang telah tersimpan.</p>
+            </header>
+
+            <!-- CARD TABEL BOOTSTRAP DENGAN DATATABLES -->
+            <div class="card border-0 shadow-sm rounded-3 mb-5">
+                <div class="card-header bg-white py-3">
+                    <h5 class="card-title m-0 fw-bold text-dark">Data Catatan Riwayat Pelanggaran</h5>
+                </div>
+                <div class="card-body p-3">
+                    <div class="table-responsive">
+                        <table id="tabelRiwayat" class="table table-striped table-hover align-middle mb-0 w-100">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th class="py-3">Tanggal</th>
+                                    <th class="py-3">Siswa</th>
+                                    <th class="py-3">Kelas</th>
+                                    <th class="py-3">Pelanggaran</th>
+                                    <th class="text-center py-3">Poin</th>
+                                    <th class="py-3">Tindakan</th>
+                                    <th class="text-center py-3">Status</th>
+                                    <th class="text-center py-3">Terakhir Diubah</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if ($hasil && mysqli_num_rows($hasil) > 0): ?>
+                                    <?php while ($row = mysqli_fetch_assoc($hasil)): ?>
+                                        <tr>
+                                            <td class="text-nowrap"><?= htmlspecialchars($row['tanggal'] ?? '-') ?></td>
+                                            <td class="fw-semibold text-dark"><?= htmlspecialchars($row['nama_siswa']) ?></td>
+                                            <td><?= htmlspecialchars($row['nama_kelas']) ?></td>
+                                            <td><?= htmlspecialchars($row['nama_pelanggaran']) ?></td>
+                                            <td class="text-center fw-bold"><?= (int)$row['poin'] ?></td>
+                                            <td><?= htmlspecialchars($row['tindakan'] ?? '-') ?></td>
+                                            <td class="text-center">
+                                                <span class="badge bg-secondary px-2 py-1">
+                                                    <?= htmlspecialchars($row['status'] ?? '-') ?>
+                                                </span>
+                                            </td>
+                                            <td class="text-center small text-muted text-nowrap"><?= htmlspecialchars($row['updated_at'] ?? '-') ?></td>
+                                        </tr>
+                                    <?php endwhile; ?>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<!-- jQuery & Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- DataTables JS & Bootstrap 5 Integration -->
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#tabelRiwayat').DataTable({
+            // Hanya menampilkan "Show Entries" (l) dan "Search" (f) di atas tabel
+            "dom": "<'row mb-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                   "<'row'<'col-sm-12'tr>>" +
+                   "<'row mt-3'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+            "language": {
+                "lengthMenu": "Tampilkan _MENU_ data",
+                "zeroRecords": "Data riwayat tidak ditemukan",
+                "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                "infoEmpty": "Menampilkan 0 sampai 0 dari 0 data",
+                "infoFiltered": "(disaring dari total _MAX_ data)",
+                "search": "Cari:",
+                "paginate": {
+                    "first": "Pertama",
+                    "last": "Terakhir",
+                    "next": "Selanjutnya",
+                    "previous": "Sebelumnya"
+                }
+            },
+            "pageLength": 10,
+            "order": []
+        });
+    });
+</script>
 </body>
 </html>

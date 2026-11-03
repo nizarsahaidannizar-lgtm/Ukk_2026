@@ -35,10 +35,31 @@
             text-transform: uppercase;
         }
 
+        .page-title,
+        main[class*="col-"] h1.h2:not(.fw-bold),
+        main[class*="col-"] h2.mb-4,
+        main[class*="col-"] h3.fw-bold.text-dark.m-0,
+        main[class*="col-"] .menu-page-title {
+            color: var(--navy) !important;
+            font-size: 2rem;
+            font-weight: 500 !important;
+            line-height: 1.2;
+        }
+
         .page-title {
-            font-size: 27px;
-            font-weight: 700;
             margin-top: 7px;
+        }
+
+        main.guru-content h1.h2,
+        main.guru-content h2.mb-4,
+        main.guru-content h3.fw-bold.text-dark.m-0,
+        main.guru-content .card-header h5,
+        main.guru-content .card-header .card-title,
+        main.guru-content .menu-page-title {
+            color: var(--navy) !important;
+            font-size: 1.25rem !important;
+            font-weight: 400 !important;
+            line-height: 1.4;
         }
 
         /* KARTU PROFIL */
@@ -199,11 +220,387 @@
             color: #fff;
         }
 
+        .sidebar-sticky .sidebar-brand-title {
+            font-size: 1rem;
+            line-height: 1.35;
+        }
+
+        .sidebar-sticky {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            min-height: 100vh;
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        .sidebar-sticky .sidebar-brand {
+            flex: 0 0 auto;
+            padding-top: 0.25rem;
+        }
+
+        .sidebar-sticky .sidebar-menu {
+            flex: 1 1 auto;
+            min-height: 0;
+            width: 100%;
+            margin-bottom: 0;
+            overflow-x: hidden;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+        }
+
+        .sidebar-sticky .sidebar-menu > .nav-item {
+            width: 100%;
+        }
+
+        .sidebar-sticky .sidebar-footer {
+            flex: 0 0 auto;
+            padding-top: 0.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .sidebar-sticky .sidebar-logo {
+            display: block;
+            width: 28px;
+            height: 28px;
+            color: var(--navy);
+        }
+
+        .sidebar-icon-definitions {
+            position: absolute;
+            width: 0;
+            height: 0;
+            overflow: hidden;
+        }
+
+        .sidebar-sticky .nav-link {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.55rem;
+            padding: 0.55rem 0.65rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            line-height: 1.4;
+            white-space: normal;
+        }
+
+        .sidebar-sticky .nav-link .sidebar-menu-icon {
+            flex: 0 0 1.15rem;
+            width: 1.15rem;
+            height: 1.15rem;
+            margin-top: 0.12rem;
+            fill: none;
+            stroke: currentColor;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-width: 1.8;
+        }
+
+        .sidebar-sticky .nav-link span {
+            min-width: 0;
+            overflow-wrap: normal;
+        }
+
+        main[class*="col-"] {
+            min-width: 0;
+        }
+
+        main[class*="col-"] {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        main[class*="col-"] .card {
+            border-radius: 12px;
+        }
+
+        main[class*="col-"] .card-header {
+            padding: 14px 18px;
+        }
+
+        main[class*="col-"] .card-header h5,
+        main[class*="col-"] .card-header .card-title {
+            font-size: 1.2rem;
+            line-height: 1.45;
+        }
+
+        main[class*="col-"] .card-header .btn {
+            min-height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: normal;
+            font-size: 1rem;
+        }
+
+        main[class*="col-"] label,
+        main[class*="col-"] .form-label,
+        main[class*="col-"] .form-text,
+        main[class*="col-"] .alert,
+        main[class*="col-"] .btn,
+        main[class*="col-"] .form-control,
+        main[class*="col-"] .form-select {
+            font-size: 1rem;
+        }
+
+        main[class*="col-"] .form-control,
+        main[class*="col-"] .form-select {
+            min-height: 44px;
+        }
+
+        main[class*="col-"] .table {
+            font-size: 0.875rem;
+            line-height: 1.4;
+            width: max-content !important;
+            min-width: 100% !important;
+            table-layout: auto;
+        }
+
+        main[class*="col-"] .table th,
+        main[class*="col-"] .table td {
+            padding: 0.55rem 0.75rem;
+            vertical-align: middle;
+            overflow-wrap: anywhere;
+        }
+
+        main[class*="col-"] .table thead th {
+            font-weight: 600;
+            position: relative;
+            white-space: nowrap;
+            padding: 0.7rem 2rem 0.7rem 0.75rem;
+            vertical-align: middle;
+        }
+
+        main[class*="col-"] .table td .btn {
+            white-space: nowrap;
+            font-size: 0.8125rem;
+            padding: 0.3rem 0.5rem;
+        }
+
+        main[class*="col-"] .table-responsive,
+        main[class*="col-"] .dt-scroll-body {
+            max-width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        main[class*="col-"] .dt-scroll-head,
+        main[class*="col-"] .dt-scroll-body {
+            width: 100%;
+        }
+
+        main[class*="col-"] .table thead .dt-column-order {
+            right: 0.55rem;
+        }
+
+        main[class*="col-"] .table thead th.sorting::before,
+        main[class*="col-"] .table thead th.sorting::after,
+        main[class*="col-"] .table thead th.sorting_asc::before,
+        main[class*="col-"] .table thead th.sorting_asc::after,
+        main[class*="col-"] .table thead th.sorting_desc::before,
+        main[class*="col-"] .table thead th.sorting_desc::after {
+            right: 0.45rem;
+        }
+
+        main[class*="col-"] .table .action-column {
+            min-width: 150px;
+            white-space: nowrap;
+        }
+
+        .sidebar-admin + main .table {
+            width: 100% !important;
+            min-width: 100% !important;
+        }
+
+        .sidebar-admin + main .table thead th {
+            padding-right: 2.5rem;
+        }
+
+        .sidebar-admin + main .table .action-column {
+            min-width: 160px;
+        }
+
+        .admin-guru-list .table-responsive {
+            overflow-x: auto;
+        }
+
+        .admin-guru-list .table {
+            width: max-content !important;
+            min-width: 1120px !important;
+            table-layout: auto;
+        }
+
+        .admin-guru-list .table th:nth-child(1),
+        .admin-guru-list .table td:nth-child(1) {
+            min-width: 64px;
+            text-align: center;
+        }
+
+        .admin-guru-list .table th:nth-child(2),
+        .admin-guru-list .table td:nth-child(2) {
+            min-width: 140px;
+        }
+
+        .admin-guru-list .table th:nth-child(3),
+        .admin-guru-list .table td:nth-child(3) {
+            min-width: 175px;
+        }
+
+        .admin-guru-list .table th:nth-child(4),
+        .admin-guru-list .table td:nth-child(4) {
+            min-width: 220px;
+        }
+
+        .admin-guru-list .table th:nth-child(6),
+        .admin-guru-list .table td:nth-child(6),
+        .admin-guru-list .table th:nth-child(7),
+        .admin-guru-list .table td:nth-child(7) {
+            min-width: 160px;
+            white-space: nowrap;
+        }
+
+        .admin-guru-list .table thead th.action-column {
+            min-width: 155px;
+        }
+
+        .admin-guru-list .table td.action-column {
+            min-width: 155px;
+            white-space: nowrap;
+        }
+
+        .admin-guru-list .table td.action-column .btn + .btn {
+            margin-left: 0.25rem;
+        }
+
+        .admin-siswa-list .table-responsive {
+            overflow-x: auto;
+        }
+
+        .admin-siswa-list .table {
+            width: max-content !important;
+            min-width: 1280px !important;
+            table-layout: auto;
+        }
+
+        .admin-siswa-list .table th:nth-child(1),
+        .admin-siswa-list .table td:nth-child(1) {
+            min-width: 64px;
+            text-align: center;
+        }
+
+        .admin-siswa-list .table th:nth-child(2),
+        .admin-siswa-list .table td:nth-child(2),
+        .admin-siswa-list .table th:nth-child(3),
+        .admin-siswa-list .table td:nth-child(3) {
+            min-width: 112px;
+            white-space: nowrap;
+        }
+
+        .admin-siswa-list .table th:nth-child(4),
+        .admin-siswa-list .table td:nth-child(4) {
+            min-width: 170px;
+        }
+
+        .admin-siswa-list .table th:nth-child(5),
+        .admin-siswa-list .table td:nth-child(5),
+        .admin-siswa-list .table th:nth-child(6),
+        .admin-siswa-list .table td:nth-child(6) {
+            min-width: 140px;
+        }
+
+        .admin-siswa-list .table th:nth-child(7),
+        .admin-siswa-list .table td:nth-child(7) {
+            min-width: 250px;
+            max-width: 300px;
+        }
+
+        .admin-siswa-list .table th:nth-child(8),
+        .admin-siswa-list .table td:nth-child(8) {
+            min-width: 120px;
+        }
+
+        .admin-siswa-list .table thead th.action-column {
+            min-width: 155px;
+        }
+
+        .admin-siswa-list .table td.action-column {
+            min-width: 155px;
+            white-space: nowrap;
+        }
+
+        .admin-siswa-list .table td.action-column .btn + .btn {
+            margin-left: 0.25rem;
+        }
+
+        .sidebar-admin + main .dt-container .dt-scroll-body {
+            scrollbar-width: thin;
+            scrollbar-color: #9aa4b2 #eef1f5;
+        }
+
+        .sidebar-admin + main .dt-container .dt-scroll-body::-webkit-scrollbar {
+            height: 10px;
+        }
+
+        .sidebar-admin + main .dt-container .dt-scroll-body::-webkit-scrollbar-thumb {
+            background: #9aa4b2;
+            border: 2px solid #eef1f5;
+            border-radius: 8px;
+        }
+
+        main[class*="col-"] .dataTables_wrapper .row,
+        main[class*="col-"] .dt-container .dt-layout-row {
+            align-items: center;
+            row-gap: 0.75rem;
+        }
+
+        main[class*="col-"] .dataTables_filter label,
+        main[class*="col-"] .dt-search {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        main[class*="col-"] .dataTables_filter input,
+        main[class*="col-"] .dt-search input {
+            width: min(16rem, 100%);
+            min-height: 42px;
+            margin-left: 0 !important;
+            font-size: 1rem;
+        }
+
+        main[class*="col-"] .dataTables_length select,
+        main[class*="col-"] .dt-length select {
+            min-height: 42px;
+            margin: 0 0.35rem;
+            font-size: 1rem;
+        }
+
+        main[class*="col-"] .dataTables_info,
+        main[class*="col-"] .dataTables_paginate,
+        main[class*="col-"] .dt-info,
+        main[class*="col-"] .dt-paging {
+            font-size: 1rem;
+        }
+
+        main[class*="col-"] .dataTables_wrapper,
+        main[class*="col-"] .dt-container {
+            width: 100%;
+        }
+
         @media (min-width: 768px) {
             .sidebar-sticky {
                 position: sticky;
                 top: 0;
                 align-self: flex-start;
+            }
+
+            .sidebar-guru-fixed {
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                z-index: 1030;
                 height: 100vh;
                 min-height: 100vh;
                 overflow-y: auto;
@@ -211,12 +608,12 @@
         }
 
         @media (max-width: 767px) {
-            .main-content {
-                padding: 23px 15px;
+            main[class*="col-"] {
+                padding: 1rem !important;
             }
 
-            .page-title {
-                font-size: 23px;
+            .main-content {
+                padding: 23px 15px;
             }
 
             .profile-card {
@@ -235,5 +632,163 @@
             .info-card,
             .description-card {
                 padding: 20px;
+            }
+        }
+
+        @media (max-width: 575px) {
+            .page-title,
+            main[class*="col-"] h1.h2:not(.fw-bold),
+            main[class*="col-"] h2.mb-4,
+            main[class*="col-"] h3.fw-bold.text-dark.m-0,
+            main[class*="col-"] .menu-page-title {
+                font-size: 1.5rem;
+            }
+
+            main[class*="col-"] .card-body.p-4 {
+                padding: 1rem !important;
+            }
+
+            main[class*="col-"] .card-header {
+                padding: 12px 14px;
+            }
+
+            main[class*="col-"] .card-header h5,
+            main[class*="col-"] .card-header .card-title {
+                font-size: 1.1rem;
+            }
+
+            main[class*="col-"] .table th,
+            main[class*="col-"] .table td {
+                padding: 0.5rem;
+            }
+
+            main[class*="col-"] .table thead th {
+                padding: 0.6rem 1.75rem 0.6rem 0.6rem;
+            }
+
+            .sidebar-admin + main .table thead th {
+                padding-right: 2.25rem;
+            }
+
+            main[class*="col-"] .dataTables_filter label,
+            main[class*="col-"] .dt-search {
+                justify-content: flex-start;
+                width: 100%;
+            }
+
+            main[class*="col-"] .dataTables_filter input,
+            main[class*="col-"] .dt-search input {
+                flex: 1;
+                min-width: 0;
+            }
+        }
+
+        .sidebar-admin + main .admin-page-header,
+        main.guru-content .admin-page-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-admin + main .admin-page-header h1,
+        main.guru-content .admin-page-header h1 {
+            margin: 0;
+            color: var(--navy);
+            font-size: 2.5rem;
+            font-weight: 500;
+            line-height: 1.2;
+        }
+
+        .sidebar-admin + main .admin-page-heading,
+        main.guru-content .admin-page-heading {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .sidebar-admin + main .admin-page-header p,
+        main.guru-content .admin-page-header p {
+            margin: 0.4rem 0 0;
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .sidebar-admin + main h1.h2 {
+            color: var(--navy) !important;
+            font-size: 1.65rem;
+            font-weight: 650 !important;
+            line-height: 1.3;
+        }
+
+        .sidebar-admin + main .card-header h5,
+        .sidebar-admin + main .card-header .card-title {
+            color: var(--navy);
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+
+        @media (max-width: 575px) {
+            .sidebar-admin + main .admin-page-header,
+            main.guru-content .admin-page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .sidebar-admin + main .admin-page-header h1,
+            .sidebar-admin + main h1.h2,
+            main.guru-content .admin-page-header h1 {
+                font-size: 1.75rem;
+            }
+
+        }
+
+        .sidebar-admin + main .admin-chart-wrap,
+        main.guru-content .admin-chart-wrap {
+            position: relative;
+            height: 330px;
+            width: 100%;
+        }
+
+        .sidebar-admin + main .admin-chart-empty,
+        main.guru-content .admin-chart-empty {
+            display: flex;
+            min-height: 220px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            padding: 1.5rem;
+            border: 1px dashed #d9e0ed;
+            border-radius: 0.75rem;
+            background: #f8faff;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .sidebar-admin + main .admin-chart-empty strong,
+        main.guru-content .admin-chart-empty strong {
+            color: var(--navy);
+            font-size: 1rem;
+        }
+
+        .sidebar-admin + main .admin-chart-empty span,
+        main.guru-content .admin-chart-empty span {
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 575px) {
+            .sidebar-admin + main .admin-chart-wrap,
+            main.guru-content .admin-chart-wrap {
+                height: 270px;
+            }
+
+            .sidebar-admin + main .admin-chart-empty,
+            main.guru-content .admin-chart-empty {
+                min-height: 190px;
             }
         }
