@@ -8,6 +8,25 @@ include_once '../includes/akses_pelanggaran.php';
 $konteks = konteks_akses_pelanggaran($koneksi);
 $lingkup = lingkup_sql_pelanggaran($konteks, 'ps');
 
+// --- CEK APAKAH GURU ADALAH WALI KELAS PADA TAHUN AJARAN AKTIF ---
+$user_id_login = $_SESSION['id_user'] ?? 0;
+$q_guru_login = mysqli_query($koneksi, "SELECT id FROM t_guru WHERE user_id = '$user_id_login' LIMIT 1");
+$data_guru_login = mysqli_fetch_assoc($q_guru_login);
+$current_guru_id = $data_guru_login['id'] ?? 0;
+
+$q_cek_walas = mysqli_query($koneksi, "
+    SELECT tw.*, k.nama AS nama_kelas 
+    FROM t_wali_kelas tw 
+    JOIN t_kelas k ON k.id = tw.kelas_id
+    JOIN t_tahun_ajaran ta ON ta.id = tw.tahun_ajaran_id
+    WHERE tw.guru_id = '$current_guru_id' AND ta.status_aktif = 1 
+    LIMIT 1
+");
+$data_walas = mysqli_fetch_assoc($q_cek_walas);
+$is_wali_kelas = ($data_walas) ? true : false;
+$nama_kelas_binaan = $data_walas['nama_kelas'] ?? '';
+// ----------------------------------------------------------------
+
 $hari_input = filter_input(INPUT_GET, 'hari', FILTER_VALIDATE_INT);
 $bulan_input = filter_input(INPUT_GET, 'bulan', FILTER_VALIDATE_INT);
 $tahun_input = filter_input(INPUT_GET, 'tahun', FILTER_VALIDATE_INT);
@@ -176,11 +195,22 @@ $rekap_poin = mysqli_query(
         <?php include '../layout/sidebar.php'; ?>
 
         <main class="col-md-9 ms-sm-auto col-lg-10 p-4 guru-content">
-            <header class="admin-page-header">
-                <div class="admin-page-heading">
+            <header class="admin-page-header mb-3">
+                <div class="admin-page-heading d-flex justify-content-between align-items-center">
                     <div>
                         <h1>Dashboard Guru</h1>
-                        <p>SIP · Ringkasan pelanggaran dan rekap poin siswa.</p>
+                        <p class="text-muted">SIP · Ringkasan pelanggaran dan rekap poin siswa.</p>
+                    </div>
+                    <div>
+                        <?php if ($is_wali_kelas): ?>
+                            <span class="badge bg-success px-3 py-2 fs-6">
+                                <i class="fa-solid fa-chalkboard-user me-1"></i> Wali Kelas: <?= htmlspecialchars($nama_kelas_binaan) ?>
+                            </span>
+                        <?php else: ?>
+                            <span class="badge bg-secondary px-3 py-2 fs-6">
+                                <i class="fa-solid fa-user-tie me-1"></i> Guru Mata Pelajaran
+                            </span>
+                        <?php endif; ?>
                     </div>
                 </div>
             </header>
@@ -190,6 +220,27 @@ $rekap_poin = mysqli_query(
                 Anda login sebagai <strong><?= htmlspecialchars($_SESSION['nama'] ?? 'Guru'); ?></strong>.
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
+
+            <!-- TOMBOL / MENU KHUSUS WALI KELAS (Hanya muncul jika berstatus wali kelas) -->
+            <?php if ($is_wali_kelas): ?>
+            <div class="row g-3 mb-4">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm rounded-3 bg-white border-start border-success border-4 p-3">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <div>
+                                <h5 class="fw-bold mb-1 text-success"><i class="fa-solid fa-file-lines me-2"></i>Menu Laporan Kelas Binaan</h5>
+                                <p class="text-secondary small mb-0">Anda bertindak sebagai Wali Kelas <?= htmlspecialchars($nama_kelas_binaan) ?>. Akses rekapitulasi dan cetak laporan kelas Anda di sini.</p>
+                            </div>
+                            <div>
+                                <a href="laporan_walas.php" class="btn btn-success btn-sm px-4 fw-semibold">
+                                    <i class="fa-solid fa-print me-1"></i> Buka Laporan Kelas
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
 
             <div class="card border-0 shadow-sm rounded-3 mb-4">
                 <div class="card-body py-3">
@@ -218,8 +269,10 @@ $rekap_poin = mysqli_query(
 
                         <div class="col-md-2">
                             <select name="tahun" class="form-select form-select-sm">
-                                <?php $tahun_sekarang = (int)date('Y');
-                                for ($t = $tahun_sekarang; $t >= $tahun_sekarang - 4; $t--): ?>
+                                <?php 
+                                $tahun_sekarang = (int)date('Y');
+                                for ($t = $tahun_sekarang; $t >= $tahun_sekarang - 4; $t--): 
+                                ?>
                                     <option value="<?= $t ?>" <?= ((int)$filter_tahun === $t) ? 'selected' : '' ?>>Tahun <?= $t ?></option>
                                 <?php endfor; ?>
                             </select>
@@ -309,7 +362,7 @@ $rekap_poin = mysqli_query(
                             <span>Grafik akan tampil setelah ada catatan pada periode yang dipilih.</span>
                         </div>
                     <?php else: ?>
-                        <div class="admin-chart-wrap">
+                        <div class="admin-chart-wrap" style="position: relative; height: 320px;">
                             <canvas id="grafikGuru" role="img" aria-label="<?= htmlspecialchars($chart_title . '. ' . $chart_description) ?>"></canvas>
                         </div>
                     <?php endif; ?>
@@ -392,9 +445,7 @@ new Chart(document.getElementById('grafikGuru'), {
         },
         scales: {
             x: {
-                grid: {
-                    display: false
-                },
+                grid: { display: false },
                 title: {
                     display: true,
                     text: <?= json_encode($filter_bulan ? 'Tanggal' : 'Bulan') ?>,
@@ -427,9 +478,7 @@ new Chart(document.getElementById('grafikGuru'), {
             }
         },
         plugins: {
-            legend: {
-                display: false
-            },
+            legend: { display: false },
             tooltip: {
                 backgroundColor: '#17233f',
                 padding: 12,

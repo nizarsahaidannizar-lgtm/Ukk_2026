@@ -79,7 +79,7 @@ function tolak_akses_pelanggaran(string $pesan): void
     echo '<!DOCTYPE html><html lang="id"><meta charset="UTF-8"><title>Akses Ditolak</title>';
     echo '<body style="font-family: sans-serif; padding: 2rem"><h1>Akses ditolak</h1><p>';
     echo htmlspecialchars($pesan, ENT_QUOTES, 'UTF-8');
-    echo '</p><a href="login.php">Kembali ke login</a></body></html>';
+    echo '</p><a href="../login.php">Kembali ke login</a></body></html>';
     exit;
 }
 ?>

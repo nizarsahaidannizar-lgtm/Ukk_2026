@@ -1,6 +1,6 @@
-
 <?php
 // proses_tambah_tahun_ajaran.php
+session_start();
 
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
@@ -8,7 +8,7 @@ require_once 'includes/tahun_ajaran.php';
 
 // Pastikan data dikirim menggunakan POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: tambah_tahun_ajaran.php");
+    header('Location: kelola_tahun_ajaran.php');
     exit;
 }
 
@@ -18,15 +18,17 @@ $tanggal_mulai = $_POST['tanggal_mulai'] ?? '';
 $tanggal_selesai = $_POST['tanggal_selesai'] ?? '';
 $status_aktif = $_POST['status_aktif'] ?? '';
 
-// Validasi data
+// Validasi data (Memastikan format nama sesuai pola tahun ajaran YYYY/YYYY)
 if (
     $nama === '' ||
-    strlen($nama) > 20 ||
+    !preg_match('/^[0-9]{4}\/[0-9]{4}$/', $nama) ||
     $tanggal_mulai === '' ||
     $tanggal_selesai === '' ||
     !in_array($status_aktif, ['0', '1'], true)
 ) {
-    die("Data tidak valid. Silakan periksa kembali form.");
+    $_SESSION['pesan_error'] = 'Data tahun ajaran tidak valid. Pastikan format tahun ajaran benar.';
+    header('Location: kelola_tahun_ajaran.php');
+    exit;
 }
 
 // Validasi tanggal
@@ -39,11 +41,15 @@ if (
     $mulai->format('Y-m-d') !== $tanggal_mulai ||
     $selesai->format('Y-m-d') !== $tanggal_selesai
 ) {
-    die("Format tanggal tidak valid.");
+    $_SESSION['pesan_error'] = 'Format tanggal tidak valid.';
+    header('Location: kelola_tahun_ajaran.php');
+    exit;
 }
 
 if ($tanggal_mulai > $tanggal_selesai) {
-    die("Tanggal mulai tidak boleh melebihi tanggal selesai.");
+    $_SESSION['pesan_error'] = 'Tanggal mulai tidak boleh melebihi tanggal selesai.';
+    header('Location: kelola_tahun_ajaran.php');
+    exit;
 }
 
 $status_aktif = (int) $status_aktif;
@@ -100,4 +106,3 @@ $_SESSION['pesan_sukses'] = $status_aktif === 1
 header('Location: kelola_tahun_ajaran.php');
 exit;
 ?>
-

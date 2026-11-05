@@ -45,7 +45,7 @@ include '../config/koneksi.php';
                 </div>
                 <div class="card-body p-4">
 
-                    <form action="../proses_tambah_guru.php" method="POST">
+                    <form action="proses_tambah_guru.php" method="POST">
                         <div class="row g-3">
 
                             <div class="col-md-6">
