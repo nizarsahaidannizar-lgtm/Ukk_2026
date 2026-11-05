@@ -220,7 +220,7 @@ $rekap_poin = mysqli_query(
                             <select name="tahun" class="form-select form-select-sm" aria-label="Filter tahun">
                                 <?php
                                 $tahun_sekarang = (int)date('Y');
-                                for ($tahun = $tahun_sekarang; $tahun >= $tahun_sekarang - 4; $tahun--):
+                                for ($tahun = $tahun_sekarang; $tahun >= $tahun_sekarang - 5; $tahun--):
                                 ?>
                                     <option value="<?= $tahun ?>" <?= ((int)$filter_tahun === $tahun) ? 'selected' : '' ?>>Tahun <?= $tahun ?></option>
                                 <?php endfor; ?>

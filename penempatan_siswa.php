@@ -26,7 +26,7 @@ $tahun = mysqli_query(
     "SELECT id, nama
      FROM t_tahun_ajaran
      WHERE status_aktif = 1
-     ORDER BY id DESC"
+     ORDER BY CAST(SUBSTRING_INDEX(nama, '/', 1) AS UNSIGNED) ASC"
 );
 
 // Ambil daftar kelas

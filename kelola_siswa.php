@@ -70,13 +70,13 @@ $hasil = mysqli_query($koneksi, $sql);
                 <div class="card-body p-3">
 
                     <div class="table-responsive">
-                        <!-- Tambahkan kelas table-sm agar lebih ringkas/padat -->
                         <table id="tabelSiswa" class="table table-striped table-bordered table-hover table-sm align-middle w-100" style="font-size: 0.9rem;">
 
                             <thead class="table-dark text-center">
                                 <tr>
                                     <th class="text-nowrap">No.</th>
                                     <th class="text-center">NIS</th>
+                                    <th class="text-center">NISN</th> <!-- KOLOM NISN DITAMBAHKAN -->
                                     <th>Nama Siswa</th>
                                     <th>L/P</th>
                                     <th>Tgl Lahir</th>
@@ -92,6 +92,7 @@ $hasil = mysqli_query($koneksi, $sql);
                                 <tr>
                                     <td class="text-center"><?= $no++ ?></td>
                                     <td class="text-center"><?= htmlspecialchars($row['nis']) ?></td>
+                                    <td class="text-center"><?= htmlspecialchars($row['nisn']) ?></td> <!-- DATA NISN DITAMPILKAN -->
                                     <td class="fw-semibold"><?= htmlspecialchars($row['nama']) ?></td>
                                     <td class="text-center">
                                         <?php 
@@ -113,13 +114,13 @@ $hasil = mysqli_query($koneksi, $sql);
                                         <?php } ?>
                                     </td>
                                     <td class="text-center text-nowrap action-column">
-                                        <!-- Tombol Edit Berbentuk Ikon -->
+                                        <!-- Tombol Edit -->
                                         <a href="edit_siswa.php?id=<?= urlencode($row['id']) ?>"
                                            class="btn btn-warning btn-sm text-white px-2 py-1" title="Edit" aria-label="Edit siswa">
                                             <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
                                         </a>
 
-                                        <!-- Tombol Hapus Berbentuk Ikon -->
+                                        <!-- Tombol Hapus -->
                                         <a href="hapus_siswa.php?id=<?= urlencode($row['id']) ?>"
                                            class="btn btn-danger btn-sm px-2 py-1" title="Hapus" aria-label="Hapus siswa"
                                            onclick="return confirm('Yakin ingin menghapus data siswa ini?');">
@@ -153,16 +154,17 @@ $(document).ready(function () {
     const tabelSiswa = $('#tabelSiswa').DataTable({
         pageLength: 10,
         lengthMenu: [5, 10, 25, 50, 100],
-        order: [[2, 'asc']], // Urutkan berdasarkan Nama Siswa (indeks kolom ke-2)
+        order: [[3, 'asc']], // Urutkan berdasarkan Nama Siswa (indeks kolom ke-3 karena ada penambahan NISN)
         autoWidth: false,
         columnDefs: [
-            { targets: 0, width: '8%' },
-            { targets: 1, width: '15%' },
-            { targets: 2, width: '25%' },
-            { targets: 3, width: '9%' },
-            { targets: 4, width: '17%' },
+            { targets: 0, width: '6%' },
+            { targets: 1, width: '12%' },
+            { targets: 2, width: '13%' }, // Lebar kolom NISN
+            { targets: 3, width: '22%' }, // Lebar kolom Nama Siswa
+            { targets: 4, width: '7%' },
             { targets: 5, width: '14%' },
-            { targets: 6, width: '12%' },
+            { targets: 6, width: '13%' },
+            { targets: 7, width: '13%' },
             { targets: [0, -1], orderable: false, searchable: false }
         ],
         language: {

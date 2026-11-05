@@ -3,24 +3,27 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Tentukan base URL path root project Anda secara dinamis agar aman dari error Not Found
+$base_url_path = '/Ukk_2026/'; 
+
 if (!isset($_SESSION['status']) || $_SESSION['status'] !== "login") {
-    header("Location: " . (strpos($_SERVER['PHP_SELF'], '/guru/') !== false ? '../login.php' : 'login.php'));
+    header("Location: " . $base_url_path . "login.php");
     exit();
 }
 
 function batasi_akses(array $roles_diizinkan) {
+    global $base_url_path;
     $role_aktif = strtolower(trim($_SESSION['role'] ?? ''));
     $roles_diizinkan = array_map('strtolower', $roles_diizinkan);
 
     if (!in_array($role_aktif, $roles_diizinkan, true)) {
         $_SESSION['pesan_error'] = 'Akses ditolak. Anda tidak memiliki izin ke halaman ini.';
-        $prefix = strpos($_SERVER['PHP_SELF'], '/guru/') !== false ? '../' : '';
         if ($role_aktif === 'admin') {
-            header('Location: ' . $prefix . 'dashboard.php');
+            header('Location: ' . $base_url_path . 'dashboard.php');
         } elseif ($role_aktif === 'guru') {
-            header('Location: ' . $prefix . 'guru/dashboard_guru.php');
+            header('Location: ' . $base_url_path . 'guru/dashboard_guru.php');
         } else {
-            header('Location: ' . $prefix . 'login.php');
+            header('Location: ' . $base_url_path . 'login.php');
         }
         exit();
     }

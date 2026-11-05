@@ -4,7 +4,7 @@ include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: guru/tambah_guru.php');
+    header('Location: tambah_guru.php');
     exit;
 }
 
@@ -14,24 +14,27 @@ $email = trim($_POST['email'] ?? '');
 $password = (string)($_POST['password'] ?? '');
 $status_aktif = (string)($_POST['status_aktif'] ?? '');
 
+// VALIDASI: NIP wajib angka dan harus TEPAT 18 digit
 if (
-    $nip === '' || strlen($nip) > 30 ||
+    $nip === '' || !preg_match('/^[0-9]{18}$/', $nip) ||
     $nama === '' || strlen($nama) > 150 ||
     !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 150 ||
     strlen($password) < 8 ||
     !in_array($status_aktif, ['0', '1'], true)
 ) {
-    $_SESSION['pesan_error'] = 'Data guru tidak valid. Periksa kembali semua isian.';
-    header('Location: guru/tambah_guru.php');
+    $_SESSION['pesan_error'] = 'Data guru tidak valid. NIP wajib berupa angka dan harus tepat 18 digit.';
+    header('Location: tambah_guru.php');
     exit;
 }
 
+// Cek duplikasi email
 $cek_email = mysqli_prepare($koneksi, 'SELECT id FROM t_users WHERE email = ? LIMIT 1');
 mysqli_stmt_bind_param($cek_email, 's', $email);
 mysqli_stmt_execute($cek_email);
 $email_sudah_digunakan = mysqli_fetch_assoc(mysqli_stmt_get_result($cek_email));
 mysqli_stmt_close($cek_email);
 
+// Cek duplikasi NIP
 $cek_nip = mysqli_prepare($koneksi, 'SELECT id FROM t_guru WHERE nip = ? LIMIT 1');
 mysqli_stmt_bind_param($cek_nip, 's', $nip);
 mysqli_stmt_execute($cek_nip);
@@ -40,9 +43,9 @@ mysqli_stmt_close($cek_nip);
 
 if ($email_sudah_digunakan || $nip_sudah_digunakan) {
     $_SESSION['pesan_error'] = $email_sudah_digunakan
-        ? 'Email sudah digunakan akun lain.'
+        ? 'Email sudah digunakan oleh akun lain.'
         : 'NIP sudah terdaftar.';
-    header('Location: guru/tambah_guru.php');
+    header('Location: tambah_guru.php');
     exit;
 }
 
@@ -83,11 +86,12 @@ try {
     $_SESSION['pesan_sukses'] = 'Akun dan data guru berhasil ditambahkan.';
     header('Location: guru/kelola_guru.php');
     exit;
+
 } catch (Throwable $e) {
     mysqli_rollback($koneksi);
     error_log($e->getMessage());
     $_SESSION['pesan_error'] = 'Data guru gagal disimpan. Periksa data dan coba kembali.';
-    header('Location: guru/tambah_guru.php');
+    header('Location: tambah_guru.php');
     exit;
 }
 ?>

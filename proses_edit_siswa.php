@@ -3,14 +3,19 @@
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
-$id = $_POST['id'];
-$nis = $_POST['nis'];
-$nisn = $_POST['nisn'];
-$nama = $_POST['nama'];
-$jenis_kelamin = $_POST['jenis_kelamin'];
-$tanggal_lahir = $_POST['tanggal_lahir'];
-$alamat = $_POST['alamat'];
-$status_aktif = $_POST['status_aktif'];
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header("Location: kelola_siswa.php");
+    exit;
+}
+
+$id = mysqli_real_escape_string($koneksi, $_POST['id'] ?? '');
+$nis = mysqli_real_escape_string($koneksi, $_POST['nis'] ?? '');
+$nisn = mysqli_real_escape_string($koneksi, $_POST['nisn'] ?? '');
+$nama = mysqli_real_escape_string($koneksi, $_POST['nama'] ?? '');
+$jenis_kelamin = mysqli_real_escape_string($koneksi, $_POST['jenis_kelamin'] ?? '');
+$tanggal_lahir = mysqli_real_escape_string($koneksi, $_POST['tanggal_lahir'] ?? '');
+$alamat = mysqli_real_escape_string($koneksi, $_POST['alamat'] ?? '');
+$status_aktif = mysqli_real_escape_string($koneksi, $_POST['status_aktif'] ?? '');
 
 $sql = "UPDATE t_siswa SET
         nis = '$nis',
@@ -24,13 +29,14 @@ $sql = "UPDATE t_siswa SET
         WHERE id = '$id'";
 
 if (mysqli_query($koneksi, $sql)) {
-
+    // Set pesan sukses sebelum redirect ke halaman kelola siswa
+    $_SESSION['pesan_sukses'] = 'Data siswa berhasil diperbarui.';
     header("Location: kelola_siswa.php");
     exit;
-
 } else {
-
-    echo "Gagal mengubah data siswa: " . mysqli_error($koneksi);
-
+    // Set pesan error jika gagal
+    $_SESSION['pesan_error'] = 'Gagal mengubah data siswa: ' . mysqli_error($koneksi);
+    header("Location: edit_siswa.php?id=" . urlencode($id));
+    exit;
 }
 ?>

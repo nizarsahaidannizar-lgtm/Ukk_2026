@@ -42,8 +42,8 @@ session_start();
                     <?php unset($_SESSION['pesan_error']); ?>
                 <?php endif; ?>
 
-                <!-- Form Login -->
-                <form action="proses_login.php" method="POST">
+                <!-- Form Login (Action diubah menggunakan root path absolut agar tidak error Not Found) -->
+                <form action="/Ukk_2026/proses_login.php" method="POST">
 
                     <div class="mb-3 text-start">
                         <label for="email" class="form-label text-muted small fw-semibold mb-1 ms-1">Email</label>
