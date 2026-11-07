@@ -10,7 +10,7 @@ include 'config/koneksi.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Siswa</title>
+    <title>Tambah Siswa - SIP</title>
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -57,19 +57,20 @@ include 'config/koneksi.php';
                     <form action="proses_tambah_siswa.php" method="POST">
                         <div class="row g-3">
                             
-                            <!-- NIS (Maksimal 9 Digit) -->
+                            <!-- NIS (Maksimal 8 Karakter Angka) -->
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">NIS</label>
                                 <input type="text" 
                                        name="nis" 
                                        class="form-control" 
-                                       placeholder="Masukkan NIS (maks 9 digit)" 
-                                       maxlength="9"
-                                       pattern="[0-9]{1,9}"
+                                       placeholder="Masukkan NIS (maks 8 digit)" 
+                                       maxlength="8"
+                                       pattern="[0-9]{1,8}"
                                        inputmode="numeric"
-                                       oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 9);"
-                                       title="NIS hanya boleh berisi angka, maksimal 9 digit"
+                                       oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 8);"
+                                       title="NIS hanya boleh berisi angka, maksimal 8 digit"
                                        required>
+                                <small class="text-muted">Maksimal 8 karakter angka.</small>
                             </div>
 
                             <!-- NISN -->
@@ -82,7 +83,7 @@ include 'config/koneksi.php';
                                        maxlength="10"
                                        minlength="10"
                                        pattern="[0-9]{10}"
-                                       oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                       oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"
                                        title="NISN harus berupa 10 digit angka"
                                        required>
                             </div>
@@ -160,7 +161,7 @@ include 'config/koneksi.php';
 </div>
 
 <!-- Bootstrap 5 JS Bundle -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
