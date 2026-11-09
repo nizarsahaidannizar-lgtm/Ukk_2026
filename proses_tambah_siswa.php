@@ -31,11 +31,11 @@ $panjang_teks = static function (string $value): int {
     return function_exists('mb_strlen') ? mb_strlen($value, 'UTF-8') : strlen($value);
 };
 
-// VALIDASI DATA INPUT
+// VALIDASI DATA INPUT (NIS diubah batas maksimalnya jadi 9 digit)
 $data_valid = is_string($nis)
-    && preg_match('/\A[0-9]{1,8}\z/', $nis)
+    && preg_match('/\A[0-9]{1,9}\z/', $nis) // Mengizinkan 1 hingga 9 digit angka
     && is_string($nisn)
-    && preg_match('/\A[0-9]{8,10}\z/', $nisn) // Diperlonggar jadi 8-10 digit agar lebih fleksibel
+    && preg_match('/\A[0-9]{8,10}\z/', $nisn)
     && is_string($nama)
     && $nama !== ''
     && $panjang_teks($nama) <= 150
