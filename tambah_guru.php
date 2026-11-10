@@ -53,19 +53,20 @@ include 'config/koneksi.php';
                     <form action="proses_tambah_guru.php" method="POST">
                         <div class="row g-3">
                             
-                            <!-- NIP -->
+                            <!-- NIP (Dibatasi Maksimal 18 Karakter Angka) -->
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">NIP</label>
                                 <input type="text" 
                                        name="nip" 
                                        class="form-control" 
-                                       placeholder="Masukkan NIP Guru" 
-                                       maxlength="30"
-                                       pattern="[0-9]+"
+                                       placeholder="Masukkan NIP Guru (18 angka)" 
+                                       maxlength="18"
+                                       pattern="[0-9]{18}"
                                        inputmode="numeric"
-                                       oninput="this.value = this.value.replace(/[^0-9]/g, '');"
-                                       title="NIP hanya boleh berisi angka"
+                                       oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 18);"
+                                       title="NIP harus berisi maksimal 18 angka"
                                        required>
+                                <small class="text-muted">Maksimal 18 digit angka.</small>
                             </div>
 
                             <!-- Nama Guru -->

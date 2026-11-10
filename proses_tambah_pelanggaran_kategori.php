@@ -23,15 +23,5 @@ if (mysqli_query($koneksi, $sql)) {
     echo "Gagal menambahkan data kategori pelanggaran: "
          . mysqli_error($koneksi);
 
-         <div class="mb-3">
-    <label class="form-label fw-semibold">Nama Kategori</label>
-    <input type="text" 
-           name="nama" 
-           class="form-control" 
-           placeholder="Masukkan nama kategori (boleh huruf & angka)" 
-           maxlength="150"
-           required>
-</div>
-
 }
 ?>

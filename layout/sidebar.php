@@ -24,6 +24,7 @@ $prefix = (strpos($_SERVER['PHP_SELF'], '/guru/') !== false) ? '../' : '';
     <symbol id="sidebar-icon-warning" viewBox="0 0 24 24"><path d="M10.3 4.3 2.8 18a2 2 0 0 0 1.8 3h14.8a2 2 0 0 0 1.8-3L13.7 4.3a2 2 0 0 0-3.4 0Z"/><path d="M12 9v5M12 17h.01"/></symbol>
     <symbol id="sidebar-icon-report" viewBox="0 0 24 24"><path d="M4 20V4M4 20h17M8 17v-5M12 17V8M16 17v-7M20 17V5"/></symbol>
     <symbol id="sidebar-icon-history" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8M3 4v4h4M12 7v5l3 2"/></symbol>
+    <symbol id="sidebar-icon-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
     <symbol id="sidebar-icon-logout" viewBox="0 0 24 24"><path d="M10 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h5M15 16l4-4-4-4M19 12H9"/></symbol>
 </svg>
 <?php
@@ -33,7 +34,6 @@ if ($role === "admin") {
     <div class="col-md-3 col-lg-2 bg-dark min-vh-100 p-3 sidebar-sticky sidebar-admin">
         <div class="sidebar-brand d-flex align-items-center gap-2 mb-4">
             <div class="bg-white rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px;">
-                <!-- Font Awesome Free school icon; CC BY 4.0, https://fontawesome.com/license/free -->
                 <svg class="sidebar-logo" viewBox="0 0 640 512" role="img" aria-label="Logo sekolah">
                     <path fill="currentColor" d="M337.8 5.4C327-1.8 313-1.8 302.2 5.4L166.3 96H48C21.5 96 0 117.5 0 144V464c0 26.5 21.5 48 48 48h208v-96c0-35.3 28.7-64 64-64s64 28.7 64 64v96h208c26.5 0 48-21.5 48-48V144c0-26.5-21.5-48-48-48H473.7L337.8 5.4zM96 192h32c8.8 0 16 7.2 16 16v64c0 8.8-7.2 16-16 16H96c-8.8 0-16-7.2-16-16v-64c0-8.8 7.2-16 16-16zm400 16c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v64c0 8.8-7.2 16-16 16h-32c-8.8 0-16-7.2-16-16v-64zM96 320h32c8.8 0 16 7.2 16 16v64c0 8.8-7.2 16-16 16H96c-8.8 0-16-7.2-16-16v-64c0-8.8 7.2-16 16-16zm400 16c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v64c0 8.8-7.2 16-16 16h-32c-8.8 0-16-7.2-16-16v-64zM232 176a88 88 0 1 1 176 0 88 88 0 1 1-176 0zm88-48c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16s-7.2-16-16-16h-16v-16c0-8.8-7.2-16-16-16z"/>
                 </svg>
@@ -66,13 +66,14 @@ if ($role === "admin") {
                 <a href="<?= $prefix ?>kelola_pelanggaran_kategori.php" class="nav-link <?= $is_admin_menu_active(['kelola_pelanggaran_kategori.php', 'tambah_pelanggaran_kategori.php', 'edit_pelanggaran_kategori.php', 'hapus_pelanggaran_kategori.php', 'proses_tambah_pelanggaran_kategori.php', 'proses_edit_pelanggaran.php']) ?>"><svg class="sidebar-menu-icon" aria-hidden="true"><use href="#sidebar-icon-warning"/></svg><span>Kategori Pelanggaran</span></a>
             </li>
             <li class="nav-item mb-2">
-                <a href="<?= $prefix ?>laporan.php" class="nav-link <?= $is_admin_menu_active(['laporan.php', 'cetak_laporan.php']) ?>"><svg class="sidebar-menu-icon" aria-hidden="true"><use href="#sidebar-icon-report"/></svg><span>Laporan</span></a>
+                <a href="<?= $prefix ?>kelola_jenis_pelanggaran.php" class="nav-link <?= $is_admin_menu_active(['kelola_jenis_pelanggaran.php', 'tambah_jenis_pelanggaran.php', 'proses_tambah_jenis_pelanggaran.php', 'edit_jenis_pelanggaran.php', 'proses_edit_jenis_pelanggaran.php', 'hapus_jenis_pelanggaran.php']) ?>"><svg class="sidebar-menu-icon" aria-hidden="true"><use href="#sidebar-icon-warning"/></svg><span>Jenis Pelanggaran</span></a>
             </li>
             <li class="nav-item mb-2">
-                <a href="<?= $prefix ?>kelola_jenis_pelanggaran.php" class="nav-link <?= $is_admin_menu_active(['kelola_jenis_pelanggaran.php', 'tambah_jenis_pelanggaran.php', 'proses_tambah_jenis_pelanggaran.php', 'edit_jenis_pelanggaran.php', 'proses_edit_jenis_pelanggaran.php', 'hapus_jenis_pelanggaran.php']) ?>"><svg class="sidebar-menu-icon" aria-hidden="true"><use href="#sidebar-icon-warning"/></svg><span>Jenis Pelanggaran</span></a>
+                <a href="<?= $prefix ?>laporan.php" class="nav-link <?= $is_admin_menu_active(['laporan.php', 'cetak_laporan.php']) ?>"><svg class="sidebar-menu-icon" aria-hidden="true"><use href="#sidebar-icon-report"/></svg><span>Laporan</span></a>
             </li>
         </ul>
         <div class="sidebar-footer">
+            <a href="<?= $prefix ?>about_me.php" class="nav-link <?= $is_admin_menu_active(['about_me.php', 'about.php']) ?> mb-2"><svg class="sidebar-menu-icon" aria-hidden="true"><use href="#sidebar-icon-user"/></svg><span>About Me</span></a>
             <a href="<?= $prefix ?>logout.php" class="nav-link text-danger" onclick="return confirm('Yakin ingin keluar?');"><svg class="sidebar-menu-icon" aria-hidden="true"><use href="#sidebar-icon-logout"/></svg><span>Logout</span></a>
         </div>
     </div>
@@ -111,6 +112,7 @@ if ($role === "admin") {
             </li>
         </ul>
         <div class="sidebar-footer">
+            <a href="<?= $prefix ?>about_me.php" class="nav-link <?= in_array($current_page, ['about_me.php', 'about.php'], true) ? 'active' : 'text-white' ?> mb-2"><svg class="sidebar-menu-icon" aria-hidden="true"><use href="#sidebar-icon-user"/></svg><span>About Me</span></a>
             <a href="<?= $prefix ?>logout.php" class="nav-link text-danger" onclick="return confirm('Yakin ingin keluar?');"><svg class="sidebar-menu-icon" aria-hidden="true"><use href="#sidebar-icon-logout"/></svg><span>Logout</span></a>
         </div>
     </div>
