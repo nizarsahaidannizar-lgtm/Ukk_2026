@@ -161,6 +161,46 @@ $rekap_poin = mysqli_query(
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="layout/style.css">
+
+    <!-- PERBAIKAN POSISI KONTEN AGAR TIDAK TERTUTUP SIDEBAR -->
+    <style>
+        html, body {
+            margin: 0;
+            min-height: 100%;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar menggunakan position: fixed dengan lebar 240px */
+        .layout-row {
+            display: block !important;
+            width: 100%;
+            margin: 0 !important;
+        }
+
+        .main-content {
+            display: block;
+            width: calc(100% - 240px);
+            max-width: calc(100% - 240px);
+            min-width: 0;
+            margin-left: 240px;
+            padding: 24px !important;
+            box-sizing: border-box;
+        }
+
+        .main-content .card,
+        .main-content .table-responsive {
+            max-width: 100%;
+        }
+
+        @media (max-width: 767.98px) {
+            .main-content {
+                width: calc(100% - 240px);
+                max-width: calc(100% - 240px);
+                margin-left: 240px;
+                padding: 15px !important;
+            }
+        }
+    </style>
     
     <!-- Chart.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -175,7 +215,7 @@ $rekap_poin = mysqli_query(
         <?php include 'layout/sidebar.php'; ?>
 
         <!-- KONTEN UTAMA BOOTSTRAP -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 p-4">
+        <main class="main-content">
 
             <header class="admin-page-header">
                 <div class="admin-page-heading">
