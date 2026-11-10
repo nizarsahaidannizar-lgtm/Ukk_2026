@@ -71,11 +71,10 @@ $data = mysqli_fetch_assoc($hasil);
                                        name="nip" 
                                        class="form-control" 
                                        value="<?= htmlspecialchars($data['nip']); ?>" 
-                                       maxlength="30"
-                                       pattern="[0-9]+"
+                                       maxlength="18"
                                        inputmode="numeric"
-                                       oninput="this.value = this.value.replace(/[^0-9]/g, '');"
-                                       title="NIP hanya boleh berisi angka"
+                                       oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 18);"
+                                       title="NIP hanya boleh berisi angka dan maksimal 18 digit"
                                        required>
                             </div>
 
@@ -87,7 +86,6 @@ $data = mysqli_fetch_assoc($hasil);
                                        class="form-control" 
                                        value="<?= htmlspecialchars($data['nama']); ?>" 
                                        maxlength="150"
-                                       pattern="[^0-9]+"
                                        oninput="this.value = this.value.replace(/[0-9]/g, '');"
                                        title="Nama guru tidak boleh mengandung angka"
                                        required>
@@ -147,7 +145,7 @@ $data = mysqli_fetch_assoc($hasil);
 </div>
 
 <!-- Bootstrap 5 JS Bundle -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

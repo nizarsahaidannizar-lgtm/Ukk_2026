@@ -95,7 +95,7 @@ if ($hasil && mysqli_num_rows($hasil) > 0) {
                                 <h3 class="fw-bold mb-0"><?= number_format($jumlah_catatan) ?></h3>
                             </div>
                         </div>
-                    </div>
+                   </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
                     <div class="card border-0 shadow-sm rounded-3 h-100">

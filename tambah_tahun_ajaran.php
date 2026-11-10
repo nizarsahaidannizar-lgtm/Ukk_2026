@@ -49,19 +49,24 @@ include 'config/koneksi.php';
                     <form action="proses_tambah_tahun_ajaran.php" method="POST">
                         <div class="row g-3">
                             
-                            <!-- Nama Tahun Ajaran -->
+                            <!-- Tahun Ajaran (Dropdown) -->
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold">Nama Tahun Ajaran</label>
-                                <input type="text" 
-                                       name="nama" 
-                                       class="form-control" 
-                                       placeholder="Contoh: 2026/2027" 
-                                       maxlength="9"
-                                       pattern="[0-9]{4}/[0-9]{4}"
-                                       inputmode="numeric"
-                                       oninput="this.value = this.value.replace(/[^0-9/]/g, '').slice(0, 9);"
-                                       title="Nama tahun ajaran harus berformat angka seperti 2026/2027"
-                                       required>
+                                <label class="form-label fw-semibold">Tahun Ajaran</label>
+                                <select name="nama" class="form-select" required>
+                                    <option value="" disabled selected>Pilih Tahun Ajaran</option>
+                                    <?php
+                                    // Menentukan tahun mulai dari 2023 hingga beberapa tahun ke depan secara dinamis
+                                    $tahun_mulai = 2023;
+                                    $tahun_sekarang = (int) date('Y');
+                                    $tahun_maksimal = max($tahun_sekarang + 4, 2030); // Otomatis bertambah ke tahun-tahun berikutnya
+
+                                    for ($tahun = $tahun_mulai; $tahun <= $tahun_maksimal; $tahun++) {
+                                        $tahun_berikutnya = $tahun + 1;
+                                        $format_tahun = $tahun . '/' . $tahun_berikutnya;
+                                        echo "<option value=\"{$format_tahun}\">{$format_tahun}</option>";
+                                    }
+                                    ?>
+                                </select>
                             </div>
 
                             <!-- Status Aktif -->
@@ -112,7 +117,7 @@ include 'config/koneksi.php';
 </div>
 
 <!-- Bootstrap 5 JS Bundle -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
