@@ -64,18 +64,18 @@ $data = mysqli_fetch_assoc($hasil);
 
                         <div class="row g-3">
                             
-                            <!-- NIS -->
+                            <!-- NIS (Diperbaiki: Maksimal 9 Digit) -->
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">NIS</label>
                                 <input type="text" 
                                        name="nis" 
                                        class="form-control" 
                                        value="<?= htmlspecialchars($data['nis']); ?>" 
-                                       maxlength="8"
-                                       pattern="[0-9]{1,8}"
+                                       maxlength="9"
+                                       pattern="[0-9]{1,9}"
                                        inputmode="numeric"
-                                       oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 8);"
-                                       title="NIS hanya boleh berisi angka, maksimal 8 digit"
+                                       oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 9);"
+                                       title="NIS hanya boleh berisi angka, maksimal 9 digit"
                                        required>
                             </div>
 
