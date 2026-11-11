@@ -4,7 +4,7 @@
 $host ='localhost';
 $user = 'root';
 $password = '';
-$database = 'db_ukk_2026_nizz';
+$database = 'db_ukk_2026_nizar';
 
 if (!isset($koneksi) || !($koneksi instanceof mysqli)) {
     $koneksi = mysqli_connect($host,$user,$password,$database);

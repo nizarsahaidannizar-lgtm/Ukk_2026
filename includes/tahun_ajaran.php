@@ -1,18 +1,17 @@
+
 <?php
+// includes/tahun_ajaran.php
+
 function normalisasi_tahun_ajaran_aktif($koneksi): bool
 {
+    // Mengaktifkan seluruh tahun ajaran
     $sql = "UPDATE t_tahun_ajaran
-            SET status_aktif = 0, updated_at = CURRENT_TIMESTAMP
-            WHERE status_aktif = 1
-              AND id <> (
-                  SELECT id FROM (
-                      SELECT id
-                      FROM t_tahun_ajaran
-                      WHERE status_aktif = 1
-                      ORDER BY tanggal_mulai DESC, id DESC
-                      LIMIT 1
-                  ) AS tahun_aktif
-              )";
+            SET status_aktif = 1,
+                updated_at = CURRENT_TIMESTAMP";
 
-    return mysqli_query($koneksi, $sql) !== false;
+    if (mysqli_query($koneksi, $sql)) {
+        return true;
+    }
+
+    return false;
 }
