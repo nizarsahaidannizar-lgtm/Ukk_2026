@@ -9,7 +9,19 @@ function konteks_akses_pelanggaran(mysqli $koneksi, bool $wali_saja = false): ar
 {
     $role = strtolower(trim($_SESSION['role'] ?? ''));
 
+    // NORMALISASI ROLE
+    if (function_exists('normalisasi_role')) {
+        $role = normalisasi_role($role);
+    } else {
+        if (in_array($role, ['wali_kelas', 'walikelas', 'guru wali kelas'], true)) {
+            $role = 'guru_wali_kelas';
+        }
+    }
+
+    // ==================================================
     // ADMIN BISA MELIHAT SEMUA DATA
+    // ==================================================
+
     if ($role === 'admin') {
         return [
             'role' => 'admin',
@@ -19,14 +31,20 @@ function konteks_akses_pelanggaran(mysqli $koneksi, bool $wali_saja = false): ar
         ];
     }
 
-    // HANYA ADMIN DAN GURU YANG BOLEH MASUK
-    if ($role !== 'guru') {
+    // ==================================================
+    // IZINKAN GURU DAN WALI KELAS
+    // ==================================================
+
+    if (!in_array($role, ['guru', 'guru_wali_kelas'], true)) {
         tolak_akses_pelanggaran(
-            'Halaman ini hanya untuk admin atau guru.'
+            'Halaman ini hanya untuk admin, guru, atau wali kelas.'
         );
     }
 
-    // ID USER YANG LOGIN
+    // ==================================================
+    // ID USER LOGIN
+    // ==================================================
+
     $user_id = (int)($_SESSION['id_user'] ?? 0);
 
     if ($user_id <= 0) {
@@ -35,7 +53,10 @@ function konteks_akses_pelanggaran(mysqli $koneksi, bool $wali_saja = false): ar
         );
     }
 
+    // ==================================================
     // CARI ID GURU
+    // ==================================================
+
     $stmt = mysqli_prepare(
         $koneksi,
         "SELECT id
@@ -68,7 +89,10 @@ function konteks_akses_pelanggaran(mysqli $koneksi, bool $wali_saja = false): ar
 
     $guru_id = (int)$guru['id'];
 
-    // AMBIL KELAS WALI
+    // ==================================================
+    // AMBIL KELAS YANG DIWALIKAN
+    // ==================================================
+
     $stmt = mysqli_prepare(
         $koneksi,
         "SELECT DISTINCT kelas_id
@@ -97,24 +121,37 @@ function konteks_akses_pelanggaran(mysqli $koneksi, bool $wali_saja = false): ar
 
     mysqli_stmt_close($stmt);
 
-    if ($wali_saja && empty($kelas_ids)) {
+    // ==================================================
+    // HALAMAN KHUSUS WALI KELAS
+    // HARUS ROLE WALI KELAS DAN MEMILIKI KELAS AKTIF
+    // ==================================================
+
+    if (
+        $wali_saja &&
+        ($role !== 'guru_wali_kelas' || empty($kelas_ids))
+    ) {
         tolak_akses_pelanggaran(
-            'Laporan hanya tersedia untuk guru yang ditugaskan sebagai wali kelas.'
+            'Halaman ini hanya tersedia untuk guru yang ditugaskan sebagai wali kelas.'
         );
     }
 
+    // ==================================================
+    // HASIL KONTEKS AKSES
+    // ==================================================
+
     return [
-        'role' => 'guru',
+        'role' => $role,
         'guru_id' => $guru_id,
         'kelas_ids' => $kelas_ids,
-        'is_wali' => !empty($kelas_ids),
+
+        // HANYA ROLE GURU_WALI_KELAS YANG DIANGGAP WALI
+        'is_wali' => ($role === 'guru_wali_kelas'),
     ];
 }
 
 
 // ==================================================
-// AKSES DATA BERSAMA
-// SEMUA GURU BISA MELIHAT SELURUH REKAP PELANGGARAN
+// AKSES REKAP SEMUA PELANGGARAN
 // ==================================================
 
 function lingkup_sql_semua_pelanggaran(
@@ -122,9 +159,11 @@ function lingkup_sql_semua_pelanggaran(
     string $alias = 'ps'
 ): string {
 
-    if ($konteks['role'] === 'admin' ||
-        $konteks['role'] === 'guru') {
-
+    if (in_array(
+        $konteks['role'] ?? '',
+        ['admin', 'guru', 'guru_wali_kelas'],
+        true
+    )) {
         return '1 = 1';
     }
 
@@ -133,8 +172,10 @@ function lingkup_sql_semua_pelanggaran(
 
 
 // ==================================================
-// AKSES DATA PRIBADI
-// RIWAYAT DAN TINDAKAN HANYA MILIK GURU SENDIRI
+// AKSES DATA PELANGGARAN
+// ADMIN  : SEMUA DATA
+// WALI   : DATA DI KELAS YANG DIWALIKAN
+// GURU   : DATA YANG DICATAT SENDIRI
 // ==================================================
 
 function lingkup_sql_pelanggaran(
@@ -143,14 +184,40 @@ function lingkup_sql_pelanggaran(
     bool $kelas_wali = false
 ): string {
 
-    // ADMIN BISA MELIHAT SEMUA
-    if ($konteks['role'] === 'admin') {
+    // ADMIN MELIHAT SEMUA DATA
+    if (($konteks['role'] ?? '') === 'admin') {
         return '1 = 1';
     }
 
-    // GURU HANYA MELIHAT CATATAN MILIKNYA
-    return $alias . '.guru_id = ' .
-           (int)$konteks['guru_id'];
+    // WALI KELAS MELIHAT DATA DI KELASNYA
+    if (
+        ($konteks['role'] ?? '') === 'guru_wali_kelas' &&
+        ($kelas_wali || !empty($konteks['is_wali']))
+    ) {
+
+        $kelas_ids = array_map(
+            'intval',
+            $konteks['kelas_ids'] ?? []
+        );
+
+        $kelas_ids = array_filter($kelas_ids);
+
+        if (empty($kelas_ids)) {
+            return '1 = 0';
+        }
+
+        return $alias . '.kelas_id IN (' .
+            implode(',', $kelas_ids) . ')';
+    }
+
+    // GURU BIASA HANYA MELIHAT CATATAN SENDIRI
+    $guru_id = (int)($konteks['guru_id'] ?? 0);
+
+    if ($guru_id <= 0) {
+        return '1 = 0';
+    }
+
+    return $alias . '.guru_id = ' . $guru_id;
 }
 
 

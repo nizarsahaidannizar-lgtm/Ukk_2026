@@ -72,10 +72,12 @@ $hasil = mysqli_query($koneksi, $sql);
             padding: 25px 30px !important;
         }
 
+        /* HEADER DISESUAIKAN */
         .page-title {
             color: #212529;
-            font-weight: 700;
-            font-size: 28px;
+            font-weight: 600;
+            font-size: 24px;
+            margin-bottom: 8px;
         }
 
         .card {
@@ -116,9 +118,9 @@ $hasil = mysqli_query($koneksi, $sql);
             <!-- HEADER -->
             <div class="mb-4">
 
-                <h1 class="page-title">
+                <h4 class="page-title">
                     Tindakan Pelanggaran
-                </h1>
+                </h4>
 
                 <p class="text-muted mb-0">
                     SIP · Kelola dan berikan tindak lanjut pelanggaran siswa.

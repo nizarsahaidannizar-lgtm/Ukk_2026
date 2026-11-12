@@ -4,14 +4,21 @@ include '../includes/cek_session.php';
 include '../config/koneksi.php';
 
 // ============================================
-// CEK STATUS WALI KELAS
+// INFORMASI LOGIN
 // ============================================
 
 $user_id_login = (int)($_SESSION['id_user'] ?? 0);
+$role_login = strtolower(trim($_SESSION['role'] ?? ''));
+
+// ============================================
+// CEK STATUS WALI KELAS
+// ============================================
 
 $q_guru_login = mysqli_query(
     $koneksi,
-    "SELECT id FROM t_guru WHERE user_id = $user_id_login LIMIT 1"
+    "SELECT id FROM t_guru
+     WHERE user_id = $user_id_login
+     LIMIT 1"
 );
 
 $data_guru_login = $q_guru_login
@@ -20,23 +27,28 @@ $data_guru_login = $q_guru_login
 
 $current_guru_id = (int)($data_guru_login['id'] ?? 0);
 
-$q_cek_walas = mysqli_query($koneksi, "
-    SELECT tw.*, k.nama AS nama_kelas
-    FROM t_wali_kelas tw
-    JOIN t_kelas k ON k.id = tw.kelas_id
-    JOIN t_tahun_ajaran ta ON ta.id = tw.tahun_ajaran_id
-    WHERE tw.guru_id = $current_guru_id
-      AND ta.status_aktif = 1
-    LIMIT 1
-");
+$data_walas = null;
 
-$data_walas = $q_cek_walas
-    ? mysqli_fetch_assoc($q_cek_walas)
-    : null;
+if ($current_guru_id > 0) {
+    $q_cek_walas = mysqli_query($koneksi, "
+        SELECT tw.*, k.nama AS nama_kelas
+        FROM t_wali_kelas tw
+        JOIN t_kelas k ON k.id = tw.kelas_id
+        JOIN t_tahun_ajaran ta ON ta.id = tw.tahun_ajaran_id
+        WHERE tw.guru_id = $current_guru_id
+          AND ta.status_aktif = 1
+        LIMIT 1
+    ");
 
+    $data_walas = $q_cek_walas
+        ? mysqli_fetch_assoc($q_cek_walas)
+        : null;
+}
+
+// Status wali kelas berdasarkan penugasan aktif
 $is_wali_kelas = !empty($data_walas);
-$nama_kelas_binaan = $data_walas['nama_kelas'] ?? '';
 
+$nama_kelas_binaan = $data_walas['nama_kelas'] ?? '';
 
 // ============================================
 // FILTER TANGGAL
@@ -47,14 +59,19 @@ $bulan_input = filter_input(INPUT_GET, 'bulan', FILTER_VALIDATE_INT);
 $tahun_input = filter_input(INPUT_GET, 'tahun', FILTER_VALIDATE_INT);
 
 $filter_hari = (
-    $hari_input >= 1 && $hari_input <= 31
+    $hari_input !== false &&
+    $hari_input >= 1 &&
+    $hari_input <= 31
 ) ? $hari_input : '';
 
-$filter_bulan = !isset($_GET['bulan'])
-    ? ''
-    : (($bulan_input >= 1 && $bulan_input <= 12) ? $bulan_input : '');
+$filter_bulan = (
+    $bulan_input !== false &&
+    $bulan_input >= 1 &&
+    $bulan_input <= 12
+) ? $bulan_input : '';
 
 $filter_tahun = (
+    $tahun_input !== false &&
     $tahun_input >= 2000 &&
     $tahun_input <= (int)date('Y') + 1
 ) ? $tahun_input : (int)date('Y');
@@ -78,10 +95,8 @@ $nama_bulan = [
     12 => 'Desember'
 ];
 
-
 // ============================================
 // FILTER DASHBOARD
-// TIDAK ADA PEMBATASAN BERDASARKAN GURU
 // ============================================
 
 $conditions = [];
@@ -98,7 +113,6 @@ if ($filter_hari !== '') {
 
 $where_sql = "WHERE " . implode(' AND ', $conditions);
 
-
 // ============================================
 // TOTAL SISWA MELANGGAR
 // ============================================
@@ -114,7 +128,6 @@ $total_siswa = $q_siswa
     ? (int)mysqli_fetch_assoc($q_siswa)['total']
     : 0;
 
-
 // ============================================
 // TOTAL KASUS PELANGGARAN
 // ============================================
@@ -129,7 +142,6 @@ $q_pelanggaran = mysqli_query(
 $total_pelanggaran = $q_pelanggaran
     ? (int)mysqli_fetch_assoc($q_pelanggaran)['total']
     : 0;
-
 
 // ============================================
 // TOTAL TINDAK LANJUT
@@ -147,7 +159,6 @@ $total_tindak_lanjut = $q_tindak_lanjut
     ? (int)mysqli_fetch_assoc($q_tindak_lanjut)['total']
     : 0;
 
-
 // ============================================
 // TOTAL POIN
 // ============================================
@@ -163,7 +174,6 @@ $total_poin = $q_poin
     ? (int)mysqli_fetch_assoc($q_poin)['total']
     : 0;
 
-
 // ============================================
 // GRAFIK PELANGGARAN
 // ============================================
@@ -177,7 +187,6 @@ $chart_error = '';
 
 if ($filter_bulan !== '') {
 
-    // GRAFIK HARIAN
     $chart_query = mysqli_query(
         $koneksi,
         "SELECT
@@ -229,7 +238,6 @@ if ($filter_bulan !== '') {
 
 } else {
 
-    // GRAFIK BULANAN
     $chart_query = mysqli_query(
         $koneksi,
         "SELECT
@@ -266,9 +274,8 @@ if ($filter_bulan !== '') {
 
 $chart_has_data = array_sum($chart_data) > 0;
 
-
 // ============================================
-// REKAP POIN SISWA SEMUA GURU
+// REKAP POIN SISWA
 // ============================================
 
 $rekap_poin = mysqli_query(
@@ -359,7 +366,6 @@ if ($rekap_error) {
 
             </header>
 
-
             <!-- SELAMAT DATANG -->
             <div class="alert alert-primary alert-dismissible fade show mb-4 shadow-sm border-0">
 
@@ -375,8 +381,7 @@ if ($rekap_error) {
 
             </div>
 
-
-            <!-- MENU WALI KELAS -->
+            <!-- MENU KHUSUS WALI KELAS -->
             <?php if ($is_wali_kelas): ?>
 
                 <div class="row g-3 mb-4">
@@ -401,10 +406,11 @@ if ($rekap_error) {
 
                                 </div>
 
-                                <a href="laporan_walas.php" class="btn btn-success btn-sm px-4 fw-semibold">
+                                <a href="laporan_guru.php"
+                                   class="btn btn-success btn-sm px-4 fw-semibold">
 
                                     <i class="fa-solid fa-print me-1"></i>
-                                    Buka Laporan Kelas
+                                    Buka Laporan
 
                                 </a>
 
@@ -418,7 +424,6 @@ if ($rekap_error) {
 
             <?php endif; ?>
 
-
             <!-- FILTER -->
             <div class="card border-0 shadow-sm rounded-3 mb-4">
 
@@ -427,12 +432,10 @@ if ($rekap_error) {
                     <form method="GET" class="row g-3 align-items-center">
 
                         <div class="col-auto">
-
                             <label class="fw-semibold text-secondary">
                                 <i class="fa-solid fa-filter me-1"></i>
                                 Filter Rekap:
                             </label>
-
                         </div>
 
                         <div class="col-md-2">
@@ -445,9 +448,7 @@ if ($rekap_error) {
 
                                     <option value="<?= $h ?>"
                                         <?= ($filter_hari == $h) ? 'selected' : '' ?>>
-
                                         Tanggal <?= $h ?>
-
                                     </option>
 
                                 <?php endfor; ?>
@@ -466,9 +467,7 @@ if ($rekap_error) {
 
                                     <option value="<?= $num ?>"
                                         <?= ($filter_bulan !== '' && (int)$filter_bulan === $num) ? 'selected' : '' ?>>
-
                                         <?= $nama ?>
-
                                     </option>
 
                                 <?php endforeach; ?>
@@ -493,9 +492,7 @@ if ($rekap_error) {
 
                                     <option value="<?= $t ?>"
                                         <?= ((int)$filter_tahun === $t) ? 'selected' : '' ?>>
-
                                         Tahun <?= $t ?>
-
                                     </option>
 
                                 <?php endfor; ?>
@@ -507,13 +504,12 @@ if ($rekap_error) {
                         <div class="col-auto">
 
                             <button type="submit" class="btn btn-primary btn-sm px-3 fw-semibold">
-
                                 <i class="fa-solid fa-magnifying-glass me-1"></i>
                                 Tampilkan
-
                             </button>
 
-                            <a href="dashboard_guru.php" class="btn btn-secondary btn-sm px-3 fw-semibold">
+                            <a href="dashboard_guru.php"
+                               class="btn btn-secondary btn-sm px-3 fw-semibold">
                                 Reset
                             </a>
 
@@ -525,131 +521,74 @@ if ($rekap_error) {
 
             </div>
 
-
             <!-- KARTU STATISTIK -->
             <div class="row g-3 mb-4">
 
-                <!-- SISWA -->
                 <div class="col-md-3">
-
                     <div class="card border-0 shadow-sm rounded-3 h-100">
-
                         <div class="card-body d-flex align-items-center">
-
                             <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-3 me-3">
-
                                 <i class="fa-solid fa-user-graduate fs-3"></i>
-
                             </div>
-
                             <div>
-
                                 <p class="text-muted small mb-1">Siswa Melanggar</p>
-
                                 <h3 class="fw-bold mb-0">
                                     <?= number_format($total_siswa) ?>
                                 </h3>
-
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
 
-
-                <!-- KASUS -->
                 <div class="col-md-3">
-
                     <div class="card border-0 shadow-sm rounded-3 h-100">
-
                         <div class="card-body d-flex align-items-center">
-
                             <div class="bg-danger bg-opacity-10 text-danger p-3 rounded-3 me-3">
-
                                 <i class="fa-solid fa-triangle-exclamation fs-3"></i>
-
                             </div>
-
                             <div>
-
                                 <p class="text-muted small mb-1">Jumlah Kasus Pelanggaran</p>
-
                                 <h3 class="fw-bold mb-0">
                                     <?= number_format($total_pelanggaran) ?>
                                 </h3>
-
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
 
-
-                <!-- TINDAK LANJUT -->
                 <div class="col-md-3">
-
                     <div class="card border-0 shadow-sm rounded-3 h-100">
-
                         <div class="card-body d-flex align-items-center">
-
                             <div class="bg-warning bg-opacity-10 text-warning p-3 rounded-3 me-3">
-
                                 <i class="fa-solid fa-hourglass-half fs-3"></i>
-
                             </div>
-
                             <div>
-
                                 <p class="text-muted small mb-1">Perlu Tindak Lanjut</p>
-
                                 <h3 class="fw-bold mb-0">
                                     <?= number_format($total_tindak_lanjut) ?>
                                 </h3>
-
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
 
-
-                <!-- POIN -->
                 <div class="col-md-3">
-
                     <div class="card border-0 shadow-sm rounded-3 h-100">
-
                         <div class="card-body d-flex align-items-center">
-
                             <div class="bg-info bg-opacity-10 text-info p-3 rounded-3 me-3">
-
                                 <i class="fa-solid fa-star fs-3"></i>
-
                             </div>
-
                             <div>
-
                                 <p class="text-muted small mb-1">Total Poin</p>
-
                                 <h3 class="fw-bold mb-0 text-info">
                                     <?= number_format($total_poin) ?>
                                 </h3>
-
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
 
             </div>
-
 
             <!-- GRAFIK -->
             <div class="card border-0 shadow-sm rounded-3 mb-4">
@@ -677,21 +616,16 @@ if ($rekap_error) {
                     <?php elseif (!$chart_has_data): ?>
 
                         <div class="admin-chart-empty">
-
                             <strong>Belum ada data pelanggaran.</strong>
-
                             <span>
                                 Grafik akan tampil setelah ada catatan pada periode yang dipilih.
                             </span>
-
                         </div>
 
                     <?php else: ?>
 
                         <div style="position:relative; height:320px;">
-
                             <canvas id="grafikGuru"></canvas>
-
                         </div>
 
                     <?php endif; ?>
@@ -700,18 +634,14 @@ if ($rekap_error) {
 
             </div>
 
-
             <!-- REKAP POIN -->
             <div class="card border-0 shadow-sm rounded-3 mb-4">
 
                 <div class="card-header bg-white border-0 p-3">
 
                     <h5 class="fw-bold mb-1">
-
                         <i class="fa-solid fa-ranking-star text-success me-2"></i>
-
                         Rekap Poin Siswa
-
                     </h5>
 
                     <p class="text-muted small mb-0">
@@ -727,7 +657,6 @@ if ($rekap_error) {
                         <table class="table table-striped table-hover align-middle mb-0">
 
                             <thead class="table-light">
-
                                 <tr>
                                     <th>No</th>
                                     <th>Siswa</th>
@@ -736,7 +665,6 @@ if ($rekap_error) {
                                     <th>Total Poin</th>
                                     <th>Terakhir</th>
                                 </tr>
-
                             </thead>
 
                             <tbody>
@@ -757,7 +685,6 @@ if ($rekap_error) {
                                     <?php while ($row = mysqli_fetch_assoc($rekap_poin)): ?>
 
                                         <tr>
-
                                             <td><?= $no++ ?></td>
 
                                             <td class="fw-semibold">
@@ -781,7 +708,6 @@ if ($rekap_error) {
                                             <td>
                                                 <?= htmlspecialchars($row['terakhir'] ?? '-') ?>
                                             </td>
-
                                         </tr>
 
                                     <?php endwhile; ?>
@@ -789,15 +715,10 @@ if ($rekap_error) {
                                 <?php else: ?>
 
                                     <tr>
-
                                         <td colspan="6" class="text-center py-4 text-muted">
-
                                             <i class="fa-solid fa-folder-open fs-3 mb-2 d-block"></i>
-
                                             Belum ada data rekap poin pada periode ini.
-
                                         </td>
-
                                     </tr>
 
                                 <?php endif; ?>
@@ -816,7 +737,6 @@ if ($rekap_error) {
 
     </div>
 </div>
-
 
 <!-- JAVASCRIPT -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -837,13 +757,10 @@ new Chart(document.getElementById('grafikGuru'), {
     type: 'bar',
 
     data: {
-
         labels: labelsGuru,
 
         datasets: [{
-
             label: 'Jumlah Pelanggaran',
-
             data: dataGuru,
 
             backgroundColor: (context) =>
@@ -852,25 +769,16 @@ new Chart(document.getElementById('grafikGuru'), {
                     : 'rgba(13, 110, 253, 0.58)',
 
             hoverBackgroundColor: 'rgba(13, 110, 253, 0.9)',
-
             borderRadius: 7,
-
             borderSkipped: false,
-
             maxBarThickness: 28,
-
             categoryPercentage: 0.78,
-
             barPercentage: 0.82
-
         }]
-
     },
 
     options: {
-
         responsive: true,
-
         maintainAspectRatio: false,
 
         interaction: {
@@ -879,110 +787,74 @@ new Chart(document.getElementById('grafikGuru'), {
         },
 
         scales: {
-
             x: {
-
                 grid: {
                     display: false
                 },
 
                 title: {
-
                     display: true,
-
                     text: <?= json_encode($filter_bulan !== '' ? 'Tanggal' : 'Bulan') ?>,
-
                     color: '#667085',
-
                     font: {
                         weight: '600'
                     },
-
                     padding: {
                         top: 10
                     }
-
                 },
 
                 ticks: {
-
                     color: '#667085',
-
                     autoSkip: true,
-
                     maxTicksLimit: 12,
-
                     maxRotation: 0
-
                 },
 
                 border: {
                     display: false
                 }
-
             },
 
             y: {
-
                 beginAtZero: true,
-
                 suggestedMax: maxValueGuru + tickStepGuru,
 
                 grid: {
-
                     color: 'rgba(148, 163, 184, 0.18)',
-
                     drawTicks: false
-
                 },
 
                 ticks: {
-
                     precision: 0,
-
                     stepSize: tickStepGuru,
-
                     color: '#667085',
-
                     padding: 10
-
                 },
 
                 border: {
                     display: false
                 }
-
             }
-
         },
 
         plugins: {
-
             legend: {
                 display: false
             },
 
             tooltip: {
-
                 backgroundColor: '#17233f',
-
                 padding: 12,
-
                 displayColors: false,
 
                 callbacks: {
-
                     label: (context) =>
                         `${context.parsed.y} kasus`
-
                 }
-
             }
-
         }
-
     }
-
 });
 
 <?php endif; ?>

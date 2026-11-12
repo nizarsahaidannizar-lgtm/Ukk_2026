@@ -1,83 +1,110 @@
 
 <?php
+// ==================================================
 // includes/cek_session.php
+// ==================================================
 
+// MULAI SESSION
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// ============================================
+// ==================================================
 // BASE URL PROJECT
-// ============================================
+// ==================================================
 
 $base_url_path = '/Ukk_2026/';
 
-// ============================================
+// ==================================================
 // CEK LOGIN
-// ============================================
+// ==================================================
 
 if (
     !isset($_SESSION['status']) ||
     $_SESSION['status'] !== 'login'
 ) {
-    header("Location: " . $base_url_path . "login.php");
+    header('Location: ' . $base_url_path . 'login.php');
     exit();
 }
 
-// ============================================
-// FUNGSI BATASI AKSES
-// ============================================
+// ==================================================
+// NORMALISASI ROLE
+// ==================================================
 
-function batasi_akses(array $roles_diizinkan)
-{
-    global $base_url_path;
+if (!function_exists('normalisasi_role')) {
 
-    $role_aktif = strtolower(trim($_SESSION['role'] ?? ''));
+    function normalisasi_role($role)
+    {
+        $role = strtolower(trim((string)$role));
 
-    $roles_diizinkan = array_map(
-        function ($role) {
-            return strtolower(trim($role));
-        },
-        $roles_diizinkan
-    );
+        $alias_wali = [
+            'wali_kelas',
+            'walikelas',
+            'guru wali kelas',
+            'guru_wali_kelas',
+            'guru-wali-kelas'
+        ];
 
-    if (!in_array($role_aktif, $roles_diizinkan, true)) {
-
-        $_SESSION['pesan_error'] =
-            'Akses ditolak. Anda tidak memiliki izin ke halaman ini.';
-
-        if ($role_aktif === 'admin') {
-
-            header('Location: ' . $base_url_path . 'dashboard.php');
-
-        } elseif (
-            $role_aktif === 'guru' ||
-            $role_aktif === 'guru_wali_kelas'
-        ) {
-
-            header('Location: ' . $base_url_path . 'guru/dashboard_guru.php');
-
-        } else {
-
-            header('Location: ' . $base_url_path . 'login.php');
+        if (in_array($role, $alias_wali, true)) {
+            return 'guru_wali_kelas';
         }
 
-        exit();
+        return $role;
     }
 }
 
-// ============================================
+// ==================================================
+// FUNGSI BATASI AKSES
+// ==================================================
+
+if (!function_exists('batasi_akses')) {
+
+    function batasi_akses(array $roles_diizinkan)
+    {
+        global $base_url_path;
+
+        $role_aktif = normalisasi_role($_SESSION['role'] ?? '');
+
+        $roles_diizinkan = array_map(
+            'normalisasi_role',
+            $roles_diizinkan
+        );
+
+        if (!in_array($role_aktif, $roles_diizinkan, true)) {
+
+            $_SESSION['pesan_error'] =
+                'Akses ditolak. Anda tidak memiliki izin ke halaman ini.';
+
+            if ($role_aktif === 'admin') {
+                header('Location: ' . $base_url_path . 'dashboard.php');
+
+            } elseif (
+                in_array(
+                    $role_aktif,
+                    ['guru', 'guru_wali_kelas'],
+                    true
+                )
+            ) {
+                header('Location: ' . $base_url_path . 'guru/dashboard_guru.php');
+
+            } else {
+                header('Location: ' . $base_url_path . 'login.php');
+            }
+
+            exit();
+        }
+    }
+}
+
+// ==================================================
 // INFORMASI HALAMAN
-// ============================================
+// ==================================================
 
 $halaman = basename($_SERVER['PHP_SELF'] ?? '');
-$self_path = $_SERVER['PHP_SELF'] ?? '';
 
-$is_guru_subdir = strpos($self_path, '/guru/') !== false;
-
-// ============================================
+// ==================================================
 // DAFTAR HAK AKSES HALAMAN
-// ============================================
+// ==================================================
 
 $hak_akses_halaman = [
 
@@ -143,68 +170,121 @@ $hak_akses_halaman = [
     // GURU DAN WALI KELAS
     // ========================================
 
-    'dashboard_guru.php' => ['guru', 'guru_wali_kelas'],
+    'dashboard_guru.php' => [
+        'guru',
+        'guru_wali_kelas'
+    ],
 
-    'catat_pelanggaran.php' => ['guru', 'guru_wali_kelas'],
-    'proses_simpan_pelanggaran.php' => ['guru', 'guru_wali_kelas'],
+    'catat_pelanggaran.php' => [
+        'guru',
+        'guru_wali_kelas'
+    ],
 
-    'edit_catatan_pelanggaran.php' => ['guru', 'guru_wali_kelas'],
-    'proses_edit_catatan_pelanggaran.php' => ['guru', 'guru_wali_kelas'],
-    'proses_hapus_catatan_pelanggaran.php' => ['guru', 'guru_wali_kelas'],
+    'proses_simpan_pelanggaran.php' => [
+        'guru',
+        'guru_wali_kelas'
+    ],
 
-    'tindakan_guru.php' => ['guru', 'guru_wali_kelas'],
+    'edit_catatan_pelanggaran.php' => [
+        'guru',
+        'guru_wali_kelas'
+    ],
+
+    'proses_edit_catatan_pelanggaran.php' => [
+        'guru',
+        'guru_wali_kelas'
+    ],
+
+    'proses_hapus_catatan_pelanggaran.php' => [
+        'guru',
+        'guru_wali_kelas'
+    ],
+
+    'tindakan_guru.php' => [
+        'guru',
+        'guru_wali_kelas'
+    ],
 
     // ========================================
-    // RIWAYAT ADMIN, GURU, DAN WALI KELAS
+    // RIWAYAT
     // ========================================
 
-    'riwayat_guru.php' => ['admin', 'guru', 'guru_wali_kelas'],
-
-    'rekap_poin.php' => ['guru', 'guru_wali_kelas'],
+    'riwayat_guru.php' => [
+        'admin',
+        'guru',
+        'guru_wali_kelas'
+    ],
 
     // ========================================
-    // KHUSUS GURU BIASA
+    // REKAP POIN
     // ========================================
 
-    'laporan_guru.php' => ['guru'],
+    'rekap_poin.php' => [
+        'guru',
+        'guru_wali_kelas'
+    ],
+
+    // ========================================
+    // KHUSUS WALI KELAS
+    // ========================================
+
+    'laporan_guru.php' => [
+        'guru_wali_kelas'
+    ],
+
+    'laporan_walas.php' => [
+        'guru_wali_kelas'
+    ],
+
+    'kelas_saya.php' => [
+        'guru_wali_kelas'
+    ],
 
     // ========================================
     // KHUSUS ADMIN
     // ========================================
 
     'laporan.php' => ['admin'],
-    'riwayat.php' => ['admin'],
 
     // ========================================
     // ADMIN, GURU, DAN WALI KELAS
     // ========================================
 
-    'cetak_laporan.php' => ['admin', 'guru', 'guru_wali_kelas'],
-    'proses_tindakan.php' => ['admin', 'guru', 'guru_wali_kelas']
+    'cetak_laporan.php' => [
+        'admin',
+        'guru',
+        'guru_wali_kelas'
+    ],
 
+    'proses_tindakan.php' => [
+        'admin',
+        'guru',
+        'guru_wali_kelas'
+    ]
 ];
 
-// ============================================
+// ==================================================
 // MENENTUKAN IZIN HALAMAN
-// ============================================
+// ==================================================
 
+// Halaman yang tidak terdaftar otomatis ditolak
 $izin_halaman = $hak_akses_halaman[$halaman] ?? [];
 
-// ============================================
+// ==================================================
 // PEMERIKSAAN HAK AKSES
-// ============================================
+// ==================================================
 
 batasi_akses($izin_halaman);
 
-// ============================================
+// ==================================================
 // BATAS INPUT TEKS
-// ============================================
+// ==================================================
 
 $aturan_batas_input = [];
 
-// ============================================
+// ==================================================
 // BATAS INPUT ANGKA
-// ============================================
+// ==================================================
 
 $aturan_batas_angka = [
 
@@ -404,9 +484,9 @@ $aturan_batas_angka = [
     ]
 ];
 
-// ============================================
+// ==================================================
 // VALIDASI INPUT POST
-// ============================================
+// ==================================================
 
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 
@@ -415,7 +495,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 
     $pesan_batas = '';
 
+    // ------------------------------------------
     // VALIDASI TEKS
+    // ------------------------------------------
+
     foreach ($batas_halaman as $field => $rule) {
 
         if (!array_key_exists($field, $_POST)) {
@@ -433,33 +516,54 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             ? mb_strlen($value, 'UTF-8')
             : strlen($value);
 
-        if (isset($rule['min']) && $character_count < $rule['min']) {
-            $pesan_batas = 'Kolom ' . $field . ' minimal ' . $rule['min'] . ' karakter.';
+        if (
+            isset($rule['min']) &&
+            $character_count < $rule['min']
+        ) {
+            $pesan_batas = 'Kolom ' . $field . ' minimal ' .
+                $rule['min'] . ' karakter.';
             break;
         }
 
-        if (isset($rule['max']) && $character_count > $rule['max']) {
-            $pesan_batas = 'Kolom ' . $field . ' maksimal ' . $rule['max'] . ' karakter.';
+        if (
+            isset($rule['max']) &&
+            $character_count > $rule['max']
+        ) {
+            $pesan_batas = 'Kolom ' . $field . ' maksimal ' .
+                $rule['max'] . ' karakter.';
             break;
         }
 
-        if (!empty($rule['digits']) && $value !== '' && !preg_match('/\A[0-9]+\z/', $value)) {
+        if (
+            !empty($rule['digits']) &&
+            $value !== '' &&
+            !preg_match('/\A[0-9]+\z/', $value)
+        ) {
             $pesan_batas = 'Kolom ' . $field . ' hanya boleh berisi angka.';
             break;
         }
 
-        if (!empty($rule['no_digits']) && preg_match('/[0-9]/', $value)) {
+        if (
+            !empty($rule['no_digits']) &&
+            preg_match('/[0-9]/', $value)
+        ) {
             $pesan_batas = 'Nama siswa tidak boleh mengandung angka.';
             break;
         }
 
-        if (!empty($rule['academic_year']) && !preg_match('/\A[0-9]{4}\/[0-9]{4}\z/', $value)) {
-            $pesan_batas = 'Nama tahun ajaran harus berformat angka seperti 2026/2027.';
+        if (
+            !empty($rule['academic_year']) &&
+            !preg_match('/\A[0-9]{4}\/[0-9]{4}\z/', $value)
+        ) {
+            $pesan_batas = 'Nama tahun ajaran harus berformat 2026/2027.';
             break;
         }
     }
 
+    // ------------------------------------------
     // VALIDASI ANGKA
+    // ------------------------------------------
+
     if ($pesan_batas === '') {
 
         foreach ($batas_angka_halaman as $field => $rule) {
@@ -468,12 +572,19 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 continue;
             }
 
-            if (!is_string($_POST[$field]) && !is_int($_POST[$field])) {
+            // Tolak input berbentuk array atau objek
+            if (
+                !is_string($_POST[$field]) &&
+                !is_int($_POST[$field])
+            ) {
                 $pesan_batas = 'Format angka ' . $field . ' tidak valid.';
                 break;
             }
 
-            $value = filter_var($_POST[$field], FILTER_VALIDATE_INT);
+            $value = filter_var(
+                $_POST[$field],
+                FILTER_VALIDATE_INT
+            );
 
             if (
                 $value === false ||
@@ -487,27 +598,33 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         }
     }
 
+    // ------------------------------------------
     // TAMPILKAN PESAN ERROR
+    // ------------------------------------------
+
     if ($pesan_batas !== '') {
 
         http_response_code(422);
+
         header('Content-Type: text/html; charset=UTF-8');
 
         echo '<!DOCTYPE html>';
         echo '<html lang="id">';
         echo '<head>';
         echo '<meta charset="UTF-8">';
-        echo '<title>Input tidak valid</title>';
+        echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
+        echo '<title>Input Tidak Valid</title>';
         echo '</head>';
 
-        echo '<body style="font-family:sans-serif;padding:2rem">';
-        echo '<h1>Input tidak valid</h1>';
+        echo '<body style="font-family:Arial,sans-serif;padding:2rem">';
+
+        echo '<h2>Input Tidak Valid</h2>';
 
         echo '<p>' .
             htmlspecialchars($pesan_batas, ENT_QUOTES, 'UTF-8') .
             '</p>';
 
-        echo '<button type="button" onclick="history.back()">Kembali ke formulir</button>';
+        echo '<button type="button" onclick="history.back()">Kembali</button>';
 
         echo '</body>';
         echo '</html>';
@@ -515,4 +632,5 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         exit();
     }
 }
+
 ?>

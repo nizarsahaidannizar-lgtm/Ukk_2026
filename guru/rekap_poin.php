@@ -2,15 +2,27 @@
 <?php
 // guru/rekap_poin.php
 
-include '../includes/cek_session.php';
-include '../config/koneksi.php';
+// ======================================
+// INCLUDE FILE
+// ======================================
 
-// Semua guru boleh melihat rekap poin seluruh siswa
-batasi_akses(['guru']);
+include __DIR__ . '/../includes/cek_session.php';
+include __DIR__ . '/../config/koneksi.php';
+
+// ======================================
+// NORMALISASI ROLE
+// ======================================
+
+$role = normalisasi_role($_SESSION['role'] ?? '');
+
+// ======================================
+// CEK HAK AKSES
+// ======================================
+
+batasi_akses(['guru', 'guru_wali_kelas']);
 
 // ======================================
 // QUERY REKAP SELURUH PELANGGARAN
-// TANPA FILTER GURU_ID
 // ======================================
 
 $sql = "SELECT
@@ -55,13 +67,13 @@ $hasil = mysqli_query($koneksi, $sql);
 
     <title>Rekap Poin Siswa - SIP</title>
 
-    <!-- Bootstrap CSS -->
+    <!-- BOOTSTRAP -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Font Awesome -->
+    <!-- FONT AWESOME -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- DataTables CSS -->
+    <!-- DATATABLES -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
 
     <!-- CSS UTAMA -->
@@ -76,7 +88,7 @@ $hasil = mysqli_query($koneksi, $sql);
     <div class="row">
 
         <!-- SIDEBAR -->
-        <?php include '../layout/sidebar.php'; ?>
+        <?php include __DIR__ . '/../layout/sidebar.php'; ?>
 
         <!-- KONTEN UTAMA -->
         <main class="col-md-9 ms-sm-auto col-lg-10 p-4 guru-content">
@@ -106,11 +118,8 @@ $hasil = mysqli_query($koneksi, $sql);
                 <div class="card-header bg-white py-3">
 
                     <h5 class="card-title m-0 fw-bold text-dark">
-
                         <i class="fas fa-chart-bar me-2"></i>
-
                         Daftar Akumulasi Poin Pelanggaran Siswa
-
                     </h5>
 
                 </div>
@@ -119,8 +128,10 @@ $hasil = mysqli_query($koneksi, $sql);
 
                     <div class="table-responsive">
 
-                        <table id="tabelRekapPoin"
-                               class="table table-striped table-hover align-middle mb-0 w-100">
+                        <table
+                            id="tabelRekapPoin"
+                            class="table table-striped table-hover align-middle mb-0 w-100"
+                        >
 
                             <thead class="table-dark">
 
@@ -156,51 +167,47 @@ $hasil = mysqli_query($koneksi, $sql);
 
                             <tbody>
 
-                            <?php
+                                <?php
+                                $no = 1;
 
-                            $no = 1;
+                                if ($hasil && mysqli_num_rows($hasil) > 0):
 
-                            if ($hasil && mysqli_num_rows($hasil) > 0):
+                                    while ($row = mysqli_fetch_assoc($hasil)):
+                                ?>
 
-                                while ($row = mysqli_fetch_assoc($hasil)):
+                                    <tr>
 
-                            ?>
+                                        <td class="text-center fw-semibold">
+                                            <?= $no++ ?>
+                                        </td>
 
-                                <tr>
+                                        <td class="fw-semibold text-dark">
+                                            <?= htmlspecialchars($row['nama_siswa']) ?>
+                                        </td>
 
-                                    <td class="text-center fw-semibold">
-                                        <?= $no++ ?>
-                                    </td>
+                                        <td>
+                                            <?= htmlspecialchars($row['nama_kelas']) ?>
+                                        </td>
 
-                                    <td class="fw-semibold text-dark">
-                                        <?= htmlspecialchars($row['nama_siswa']) ?>
-                                    </td>
+                                        <td class="text-center">
+                                            <?= (int)$row['jumlah_pelanggaran'] ?> Kali
+                                        </td>
 
-                                    <td>
-                                        <?= htmlspecialchars($row['nama_kelas']) ?>
-                                    </td>
+                                        <td class="text-center fw-bold text-danger">
+                                            <?= number_format((int)$row['total_poin']) ?> Poin
+                                        </td>
 
-                                    <td class="text-center">
-                                        <?= (int)$row['jumlah_pelanggaran'] ?> Kali
-                                    </td>
+                                        <td class="text-center small text-muted">
+                                            <?= htmlspecialchars($row['terakhir'] ?? '-') ?>
+                                        </td>
 
-                                    <td class="text-center fw-bold text-danger">
-                                        <?= number_format((int)$row['total_poin']) ?> Poin
-                                    </td>
+                                    </tr>
 
-                                    <td class="text-center small text-muted">
-                                        <?= htmlspecialchars($row['terakhir'] ?? '-') ?>
-                                    </td>
+                                <?php
+                                    endwhile;
 
-                                </tr>
-
-                            <?php
-
-                                endwhile;
-
-                            endif;
-
-                            ?>
+                                endif;
+                                ?>
 
                             </tbody>
 
@@ -212,11 +219,8 @@ $hasil = mysqli_query($koneksi, $sql);
                     <?php if ($hasil && mysqli_num_rows($hasil) == 0): ?>
 
                         <div class="alert alert-info mt-3 mb-0">
-
                             <i class="fas fa-info-circle me-2"></i>
-
                             Belum ada data rekap poin siswa.
-
                         </div>
 
                     <?php endif; ?>
@@ -225,13 +229,9 @@ $hasil = mysqli_query($koneksi, $sql);
                     <?php if (!$hasil): ?>
 
                         <div class="alert alert-danger mt-3 mb-0">
-
                             <i class="fas fa-exclamation-triangle me-2"></i>
-
                             Gagal mengambil data rekap:
-
                             <?= htmlspecialchars(mysqli_error($koneksi)) ?>
-
                         </div>
 
                     <?php endif; ?>
@@ -257,7 +257,6 @@ $hasil = mysqli_query($koneksi, $sql);
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
 <script>
-
 $(document).ready(function() {
 
     $('#tabelRekapPoin').DataTable({
@@ -279,15 +278,10 @@ $(document).ready(function() {
             search: "Cari:",
 
             paginate: {
-
                 first: "Pertama",
-
                 last: "Terakhir",
-
                 next: "Selanjutnya",
-
                 previous: "Sebelumnya"
-
             }
 
         },
@@ -299,7 +293,6 @@ $(document).ready(function() {
     });
 
 });
-
 </script>
 
 </body>

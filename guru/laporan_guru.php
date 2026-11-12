@@ -5,7 +5,8 @@
 include '../includes/cek_session.php';
 include '../config/koneksi.php';
 
-batasi_akses(['guru', 'admin']);
+// KHUSUS ADMIN DAN WALI KELAS
+batasi_akses(['admin', 'guru_wali_kelas']);
 
 // ========================================
 // FILTER TANGGAL DAN STATUS
@@ -147,13 +148,10 @@ if ($hasil) {
 
     <title>Laporan Guru - SIP</title>
 
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- DataTables -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
 
     <link rel="stylesheet" href="../layout/style.css">
@@ -180,12 +178,11 @@ if ($hasil) {
                     <h1>Laporan Pelanggaran</h1>
 
                     <p class="text-muted">
-                        SIP · Tinjau seluruh laporan pelanggaran siswa berdasarkan periode dan status.
+                        SIP · Tinjau laporan pelanggaran siswa berdasarkan periode dan status.
                     </p>
 
                 </div>
 
-                <!-- CETAK LAPORAN DI SEBELAH KANAN -->
                 <div>
 
                     <a
@@ -406,19 +403,12 @@ if ($hasil) {
                                 <tr>
 
                                     <th class="text-center py-3">Tanggal</th>
-
                                     <th class="py-3">Nama Siswa</th>
-
                                     <th class="py-3">Kelas</th>
-
                                     <th class="py-3">Pelanggaran</th>
-
                                     <th class="py-3">Guru Pelapor</th>
-
                                     <th class="text-center py-3">Poin</th>
-
                                     <th class="py-3">Tindakan</th>
-
                                     <th class="text-center py-3">Status</th>
 
                                 </tr>
