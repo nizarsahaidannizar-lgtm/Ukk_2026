@@ -11,6 +11,19 @@ batasi_akses(['admin']);
 $pesan_sukses = $_SESSION['pesan_sukses'] ?? '';
 $pesan_error = $_SESSION['pesan_error'] ?? '';
 
+// NOTIFIKASI DARI PROSES EDIT
+if (isset($_SESSION['pesan'])) {
+
+    if (($_SESSION['tipe'] ?? '') === 'success') {
+        $pesan_sukses = $_SESSION['pesan'];
+    } else {
+        $pesan_error = $_SESSION['pesan'];
+    }
+
+    unset($_SESSION['pesan']);
+    unset($_SESSION['tipe']);
+}
+
 unset($_SESSION['pesan_sukses']);
 unset($_SESSION['pesan_error']);
 
@@ -110,7 +123,7 @@ if (!$hasil) {
 
             <!-- NOTIFIKASI SUKSES -->
             <?php if ($pesan_sukses !== ''): ?>
-                <div class="alert alert-success alert-dismissible fade show shadow-sm">
+                <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
                     <i class="fas fa-check-circle me-2"></i>
                     <?= htmlspecialchars($pesan_sukses); ?>
 
@@ -120,7 +133,7 @@ if (!$hasil) {
 
             <!-- NOTIFIKASI ERROR -->
             <?php if ($pesan_error !== ''): ?>
-                <div class="alert alert-danger alert-dismissible fade show shadow-sm">
+                <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
                     <i class="fas fa-exclamation-circle me-2"></i>
                     <?= htmlspecialchars($pesan_error); ?>
 

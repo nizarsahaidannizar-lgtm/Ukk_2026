@@ -76,6 +76,7 @@ if (!function_exists('batasi_akses')) {
                 'Akses ditolak. Anda tidak memiliki izin ke halaman ini.';
 
             if ($role_aktif === 'admin') {
+
                 header('Location: ' . $base_url_path . 'dashboard.php');
 
             } elseif (
@@ -85,13 +86,25 @@ if (!function_exists('batasi_akses')) {
                     true
                 )
             ) {
+
                 header('Location: ' . $base_url_path . 'guru/dashboard_guru.php');
 
             } else {
+
                 header('Location: ' . $base_url_path . 'login.php');
+
             }
 
             exit();
+        }
+
+        // HAPUS PESAN AKSES DITOLAK LAMA
+        if (
+            isset($_SESSION['pesan_error']) &&
+            $_SESSION['pesan_error'] ===
+            'Akses ditolak. Anda tidak memiliki izin ke halaman ini.'
+        ) {
+            unset($_SESSION['pesan_error']);
         }
     }
 }
@@ -121,8 +134,15 @@ $hak_akses_halaman = [
     'proses_tambah_siswa.php' => ['admin'],
     'proses_edit_siswa.php' => ['admin'],
 
+    // ========================================
+    // PENEMPATAN SISWA
+    // ========================================
+
     'penempatan_siswa.php' => ['admin'],
+    'edit_penempatan.php' => ['admin'],
     'proses_simpan_penempatan.php' => ['admin'],
+    'proses_edit_penempatan.php' => ['admin'],
+    'proses_hapus_penempatan.php' => ['admin'],
 
     'kelola_kelas.php' => ['admin'],
     'tambah_kelas.php' => ['admin'],
@@ -267,7 +287,6 @@ $hak_akses_halaman = [
 // MENENTUKAN IZIN HALAMAN
 // ==================================================
 
-// Halaman yang tidak terdaftar otomatis ditolak
 $izin_halaman = $hak_akses_halaman[$halaman] ?? [];
 
 // ==================================================
@@ -431,6 +450,10 @@ $aturan_batas_angka = [
         'status_aktif' => ['min' => 0, 'max' => 1]
     ],
 
+    // ========================================
+    // PENEMPATAN SISWA
+    // ========================================
+
     'penempatan_siswa.php' => [
         'siswa_id' => ['min' => 1, 'max' => 2147483647],
         'tahun_ajaran_id' => ['min' => 1, 'max' => 2147483647],
@@ -438,11 +461,27 @@ $aturan_batas_angka = [
         'status_aktif' => ['min' => 0, 'max' => 1]
     ],
 
+    'edit_penempatan.php' => [
+        'id' => ['min' => 1, 'max' => 2147483647]
+    ],
+
     'proses_simpan_penempatan.php' => [
         'siswa_id' => ['min' => 1, 'max' => 2147483647],
         'tahun_ajaran_id' => ['min' => 1, 'max' => 2147483647],
         'kelas_id' => ['min' => 1, 'max' => 2147483647],
         'status_aktif' => ['min' => 0, 'max' => 1]
+    ],
+
+    'proses_edit_penempatan.php' => [
+        'id' => ['min' => 1, 'max' => 2147483647],
+        'siswa_id' => ['min' => 1, 'max' => 2147483647],
+        'tahun_ajaran_id' => ['min' => 1, 'max' => 2147483647],
+        'kelas_id' => ['min' => 1, 'max' => 2147483647],
+        'status_aktif' => ['min' => 0, 'max' => 1]
+    ],
+
+    'proses_hapus_penempatan.php' => [
+        'id' => ['min' => 1, 'max' => 2147483647]
     ],
 
     'catat_pelanggaran.php' => [
@@ -572,7 +611,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 continue;
             }
 
-            // Tolak input berbentuk array atau objek
             if (
                 !is_string($_POST[$field]) &&
                 !is_int($_POST[$field])

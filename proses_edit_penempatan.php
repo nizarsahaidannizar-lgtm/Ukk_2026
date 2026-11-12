@@ -76,9 +76,10 @@ mysqli_stmt_bind_param(
     $id
 );
 
+// Eksekusi update
 if (mysqli_stmt_execute($stmt)) {
 
-    $_SESSION['pesan'] = "Penempatan siswa berhasil diperbarui!";
+    $_SESSION['pesan'] = "Data penempatan siswa berhasil diperbarui!";
     $_SESSION['tipe'] = "success";
 
 } else {
@@ -90,6 +91,7 @@ if (mysqli_stmt_execute($stmt)) {
 
 mysqli_stmt_close($stmt);
 
+// Kembali ke halaman penempatan siswa
 header("Location: penempatan_siswa.php");
 exit;
 ?>

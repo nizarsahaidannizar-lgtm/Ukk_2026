@@ -6,7 +6,10 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-$current_page = basename($_SERVER['PHP_SELF'] ?? '');
+$current_page = strtolower(
+    pathinfo(basename($_SERVER['PHP_SELF'] ?? ''), PATHINFO_FILENAME)
+);
+
 $base_url = '/Ukk_2026/';
 
 $role = strtolower(trim($_SESSION['role'] ?? ''));
@@ -18,11 +21,228 @@ if (function_exists('normalisasi_role')) {
 $role_guru = ($role === 'guru');
 $role_wali = ($role === 'guru_wali_kelas');
 
+// ============================================
+// FUNGSI MENU AKTIF
+// ============================================
+
 if (!function_exists('menu_aktif')) {
-    function menu_aktif($pages, $current_page) {
-        return in_array($current_page, (array)$pages, true)
-            ? 'active'
-            : '';
+
+    function menu_aktif($menu, $current_page) {
+
+        $menu = basename($menu);
+        $menu = strtolower(pathinfo($menu, PATHINFO_FILENAME));
+
+        $current_page = strtolower(
+            pathinfo(basename($current_page), PATHINFO_FILENAME)
+        );
+
+        // ======================================
+        // KELOMPOK HALAMAN MENU ADMIN
+        // ======================================
+
+        $kelompok_admin = [
+
+            'dashboard' => [
+                'dashboard'
+            ],
+
+            'kelola_guru' => [
+                'kelola_guru',
+                'tambah_guru',
+                'edit_guru',
+                'hapus_guru',
+                'proses_tambah_guru',
+                'proses_edit_guru',
+                'proses_hapus_guru'
+            ],
+
+            'kelola_siswa' => [
+                'kelola_siswa',
+                'tambah_siswa',
+                'edit_siswa',
+                'hapus_siswa',
+                'proses_tambah_siswa',
+                'proses_edit_siswa',
+                'proses_hapus_siswa'
+            ],
+
+            'kelola_kelas' => [
+                'kelola_kelas',
+                'tambah_kelas',
+                'edit_kelas',
+                'hapus_kelas',
+                'proses_tambah_kelas',
+                'proses_edit_kelas',
+                'proses_hapus_kelas'
+            ],
+
+            'kelola_tahun_ajaran' => [
+                'kelola_tahun_ajaran',
+                'tambah_tahun_ajaran',
+                'edit_tahun_ajaran',
+                'hapus_tahun_ajaran',
+                'proses_tambah_tahun_ajaran',
+                'proses_edit_tahun_ajaran',
+                'proses_hapus_tahun_ajaran'
+            ],
+
+            // ======================================
+            // PENEMPATAN SISWA
+            // ======================================
+
+            'penempatan_siswa' => [
+                'penempatan_siswa',
+                'tambah_penempatan_siswa',
+                'edit_penempatan_siswa',
+                'hapus_penempatan_siswa',
+
+                // NAMA FILE SESUAI PROJECT
+                'edit_penempatan',
+                'proses_simpan_penempatan',
+                'proses_edit_penempatan',
+                'proses_hapus_penempatan',
+
+                // NAMA FILE TAMBAHAN
+                'proses_penempatan_siswa',
+                'proses_tambah_penempatan_siswa',
+                'proses_edit_penempatan_siswa'
+            ],
+
+            'kelola_walikelas' => [
+                'kelola_walikelas',
+                'tambah_walikelas',
+                'edit_walikelas',
+                'hapus_walikelas',
+                'proses_tambah_walikelas',
+                'proses_edit_walikelas',
+                'proses_hapus_walikelas'
+            ],
+
+            'kelola_pelanggaran_kategori' => [
+                'kelola_pelanggaran_kategori',
+                'tambah_pelanggaran_kategori',
+                'edit_pelanggaran_kategori',
+                'hapus_pelanggaran_kategori',
+                'proses_tambah_pelanggaran_kategori',
+                'proses_edit_pelanggaran_kategori',
+                'proses_hapus_pelanggaran_kategori'
+            ],
+
+            'kelola_jenis_pelanggaran' => [
+                'kelola_jenis_pelanggaran',
+                'tambah_jenis_pelanggaran',
+                'edit_jenis_pelanggaran',
+                'hapus_jenis_pelanggaran',
+                'proses_tambah_jenis_pelanggaran',
+                'proses_edit_jenis_pelanggaran',
+                'proses_hapus_jenis_pelanggaran'
+            ],
+
+            'laporan' => [
+                'laporan',
+                'cetak_laporan',
+                'detail_laporan'
+            ],
+
+            'riwayat_guru' => [
+                'riwayat_guru',
+                'detail_riwayat'
+            ]
+        ];
+
+        // ======================================
+        // KELOMPOK HALAMAN GURU DAN WALI KELAS
+        // ======================================
+
+        $kelompok_guru = [
+
+            'dashboard_guru' => [
+                'dashboard_guru'
+            ],
+
+            'catat_pelanggaran' => [
+                'catat_pelanggaran',
+                'tambah_pelanggaran',
+                'edit_pelanggaran',
+                'hapus_pelanggaran',
+                'edit_catatan_pelanggaran',
+                'tambah_catatan_pelanggaran',
+                'hapus_catatan_pelanggaran',
+                'proses_simpan_pelanggaran',
+                'proses_tambah_pelanggaran',
+                'proses_edit_pelanggaran',
+                'proses_hapus_pelanggaran',
+                'proses_edit_catatan_pelanggaran',
+                'proses_hapus_catatan_pelanggaran',
+                'ubah_pelanggaran',
+                'detail_pelanggaran',
+                'detail_catatan_pelanggaran'
+            ],
+
+            'tindakan_guru' => [
+                'tindakan_guru',
+                'tambah_tindakan',
+                'edit_tindakan',
+                'hapus_tindakan',
+                'proses_tindakan',
+                'proses_simpan_tindakan',
+                'proses_tambah_tindakan',
+                'proses_edit_tindakan',
+                'proses_hapus_tindakan'
+            ],
+
+            'riwayat_guru' => [
+                'riwayat_guru',
+                'detail_riwayat'
+            ],
+
+            'rekap_poin' => [
+                'rekap_poin',
+                'detail_rekap'
+            ],
+
+            'kelas_saya' => [
+                'kelas_saya',
+                'detail_siswa_kelas'
+            ]
+        ];
+
+        // ======================================
+        // TENTUKAN KELOMPOK BERDASARKAN ROLE
+        // ======================================
+
+        $role = strtolower(trim($_SESSION['role'] ?? ''));
+
+        if (function_exists('normalisasi_role')) {
+            $role = normalisasi_role($role);
+        }
+
+        if ($role === 'admin') {
+            $kelompok_menu = $kelompok_admin;
+        } else {
+            $kelompok_menu = $kelompok_guru;
+        }
+
+        // ======================================
+        // CEK MENU AKTIF
+        // ======================================
+
+        if ($current_page === $menu) {
+            return 'active';
+        }
+
+        if (
+            isset($kelompok_menu[$menu]) &&
+            in_array(
+                $current_page,
+                $kelompok_menu[$menu],
+                true
+            )
+        ) {
+            return 'active';
+        }
+
+        return '';
     }
 }
 ?>
@@ -117,9 +337,10 @@ if (!function_exists('menu_aktif')) {
     color: white;
 }
 
-.sidebar .nav-link.active {
-    background-color: #0d6efd;
-    color: white;
+.sidebar .nav-link.active,
+.sidebar .nav-link.active:hover {
+    background-color: #0d6efd !important;
+    color: white !important;
     font-weight: 600;
 }
 
