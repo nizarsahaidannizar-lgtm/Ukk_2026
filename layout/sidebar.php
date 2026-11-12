@@ -13,8 +13,17 @@ if (session_status() === PHP_SESSION_NONE) {
 $current_page = basename($_SERVER['PHP_SELF'] ?? '');
 $role = strtolower(trim($_SESSION['role'] ?? ''));
 
-// BASE URL PROJECT
 $base_url = '/Ukk_2026/';
+
+// Normalisasi role wali kelas
+$role_wali = in_array($role, [
+    'guru_wali_kelas',
+    'wali_kelas',
+    'walikelas',
+    'guru wali kelas'
+], true);
+
+$role_guru = ($role === 'guru');
 
 // ============================================
 // FUNGSI MENU AKTIF
@@ -34,20 +43,18 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
 
 <style>
 
-/* ==========================================
-   SIDEBAR UTAMA
-========================================== */
+/* SIDEBAR */
 
 .sidebar-fixed {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
 
     width: 240px !important;
-    height: 100vh;
+    height: 100vh !important;
 
-    background-color: #212529 !important;
+    background: #212529 !important;
 
     padding: 12px 10px;
 
@@ -57,10 +64,11 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     overflow-y: auto;
     overflow-x: hidden;
 
-    z-index: 9999 !important;
+    z-index: 2147483647 !important;
 
     box-sizing: border-box;
-    pointer-events: auto;
+    pointer-events: auto !important;
+    isolation: isolate;
 }
 
 .sidebar-fixed::-webkit-scrollbar {
@@ -72,9 +80,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     border-radius: 4px;
 }
 
-/* ==========================================
-   LOGO SIP
-========================================== */
+/* LOGO */
 
 .sidebar-brand {
     display: flex;
@@ -82,7 +88,6 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     align-items: center;
     justify-content: center;
     text-align: center;
-
     padding: 8px 5px;
     gap: 3px;
 }
@@ -90,7 +95,6 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
 .sidebar-brand .logo-icon {
     width: 55px;
     height: 48px;
-
     display: flex;
     align-items: center;
     justify-content: center;
@@ -112,12 +116,9 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
 .sidebar-brand .brand-subtitle {
     color: #adb5bd;
     font-size: 9px;
-    line-height: 1.3;
 }
 
-/* ==========================================
-   MENU SIDEBAR
-========================================== */
+/* MENU */
 
 .sidebar-menu,
 .sidebar-menu .nav-item {
@@ -126,7 +127,6 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
 
 .sidebar-menu .nav-link {
     width: 100%;
-
     box-sizing: border-box;
 
     padding: 9px 12px;
@@ -142,16 +142,14 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
 
     white-space: nowrap;
 
-    background-color: transparent;
-
-    transition: background-color .2s ease;
+    background: transparent;
 
     text-decoration: none !important;
 
     position: relative;
-    z-index: 10000;
+    z-index: 2;
 
-    cursor: pointer;
+    cursor: pointer !important;
     pointer-events: auto !important;
 }
 
@@ -159,8 +157,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     background-color: rgba(255,255,255,.10) !important;
 }
 
-.sidebar-menu .nav-link.active,
-.sidebar-menu .nav-link.active:hover {
+.sidebar-menu .nav-link.active {
     background-color: #0d6efd !important;
     font-weight: 600;
 }
@@ -168,24 +165,17 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
 .sidebar-menu .nav-link i {
     width: 22px;
     min-width: 22px;
-
     text-align: center;
-
     font-size: 13.5px;
     color: #fff !important;
 }
 
-.sidebar-menu .nav-link.text-danger {
-    color: #dc3545 !important;
-}
-
+.sidebar-menu .nav-link.text-danger,
 .sidebar-menu .nav-link.text-danger i {
     color: #dc3545 !important;
 }
 
-/* ==========================================
-   KONTEN UTAMA
-========================================== */
+/* KONTEN */
 
 body {
     overflow-x: hidden;
@@ -197,17 +187,12 @@ main,
 .container-fluid.main-container {
     margin-left: 240px !important;
     width: calc(100% - 240px) !important;
-
     min-height: 100vh;
-
     padding: 25px 30px;
-
     box-sizing: border-box;
 }
 
-/* ==========================================
-   RESPONSIVE
-========================================== */
+/* RESPONSIVE */
 
 @media (max-width: 768px) {
 
@@ -233,14 +218,13 @@ main,
 <nav class="sidebar-fixed text-white">
 
     <!-- LOGO -->
+
     <div class="sidebar-brand mb-2">
 
         <div class="logo-icon">
 
             <svg viewBox="0 0 128 104"
-                 xmlns="http://www.w3.org/2000/svg"
-                 role="img"
-                 aria-label="Logo SIP">
+                 xmlns="http://www.w3.org/2000/svg">
 
                 <path d="M8 33 L64 0 L120 33 V88 Q120 98 110 98 H78 V75 Q78 62 64 62 Q50 62 50 75 V98 H18 Q8 98 8 88 Z"
                       fill="#fff"/>
@@ -380,11 +364,12 @@ main,
          MENU GURU DAN WALI KELAS
     ===================================== -->
 
-    <?php elseif ($role === 'guru' || $role === 'guru_wali_kelas'): ?>
+    <?php elseif ($role_guru || $role_wali): ?>
 
         <ul class="nav nav-pills flex-column sidebar-menu mb-auto">
 
             <!-- DASHBOARD -->
+
             <li class="nav-item">
                 <a href="<?= $base_url ?>guru/dashboard_guru.php"
                    class="nav-link <?= is_active('dashboard_guru.php', $current_page) ?>">
@@ -394,25 +379,28 @@ main,
             </li>
 
             <!-- CATAT PELANGGARAN -->
+
             <li class="nav-item">
-                <a href="<?= $base_url ?>catat_pelanggaran.php"
-                   class="nav-link <?= is_active('catat_pelanggaran.php', $current_page) ?>">
+                <a href="<?= $base_url ?>guru/catat_pelanggaran.php"
+                   class="nav-link <?= is_active(['catat_pelanggaran.php','edit_catatan_pelanggaran.php'], $current_page) ?>">
                     <i class="fa-solid fa-pen-to-square me-2"></i>
                     <span>Catat Pelanggaran</span>
                 </a>
             </li>
 
             <!-- TINDAKAN -->
+
             <li class="nav-item">
                 <a href="<?= $base_url ?>guru/tindakan_guru.php"
-                   class="nav-link <?= is_active(['tindakan.php','tindakan_guru.php'], $current_page) ?>">
+                   class="nav-link <?= is_active('tindakan_guru.php', $current_page) ?>">
                     <i class="fa-solid fa-handshake-angle me-2"></i>
                     <span>Tindakan</span>
                 </a>
             </li>
 
-            <!-- LAPORAN KHUSUS GURU -->
-            <?php if ($role === 'guru'): ?>
+            <!-- LAPORAN HANYA GURU BIASA -->
+
+            <?php if ($role_guru): ?>
 
                 <li class="nav-item">
                     <a href="<?= $base_url ?>guru/laporan_guru.php"
@@ -425,6 +413,7 @@ main,
             <?php endif; ?>
 
             <!-- RIWAYAT -->
+
             <li class="nav-item">
                 <a href="<?= $base_url ?>guru/riwayat_guru.php"
                    class="nav-link <?= is_active('riwayat_guru.php', $current_page) ?>">
@@ -434,6 +423,7 @@ main,
             </li>
 
             <!-- REKAP POIN -->
+
             <li class="nav-item">
                 <a href="<?= $base_url ?>guru/rekap_poin.php"
                    class="nav-link <?= is_active('rekap_poin.php', $current_page) ?>">
@@ -442,8 +432,9 @@ main,
                 </a>
             </li>
 
-            <!-- KELAS SAYA -->
-            <?php if ($role === 'guru_wali_kelas'): ?>
+            <!-- KELAS SAYA KHUSUS WALI KELAS -->
+
+            <?php if ($role_wali): ?>
 
                 <li class="nav-item">
                     <a href="<?= $base_url ?>guru/kelola_kelas_walas.php"

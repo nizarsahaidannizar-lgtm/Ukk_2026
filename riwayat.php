@@ -1,22 +1,35 @@
 
 <?php
-include 'includes/cek_session.php';
-include 'config/koneksi.php';
+// riwayat_guru.php
 
-// Admin dan guru boleh mengakses riwayat
-batasi_akses(['admin', 'guru']);
-
-$role = $_SESSION['role'] ?? '';
-$sql = "";
-$hasil = false;
+session_start();
 
 // ======================================
-// MENENTUKAN HAK AKSES RIWAYAT
+// INCLUDE FILE
+// ======================================
+
+include __DIR__ . '/includes/cek_session.php';
+include __DIR__ . '/config/koneksi.php';
+
+// ======================================
+// CEK HAK AKSES
+// ======================================
+
+$role = strtolower(trim($_SESSION['role'] ?? ''));
+
+batasi_akses(['admin', 'guru', 'guru_wali_kelas']);
+
+$sql = "";
+$hasil = false;
+$stmt = null;
+
+// ======================================
+// QUERY RIWAYAT
 // ======================================
 
 if ($role === 'admin') {
 
-    // ADMIN: Melihat seluruh riwayat guru
+    // ADMIN MELIHAT SEMUA RIWAYAT
     $sql = "SELECT
                 ps.id,
                 ps.tanggal,
@@ -35,19 +48,25 @@ if ($role === 'admin') {
 
     $hasil = mysqli_query($koneksi, $sql);
 
-} elseif ($role === 'guru') {
+} elseif ($role === 'guru' || $role === 'guru_wali_kelas') {
 
-    // GURU: Mengambil ID guru berdasarkan akun login
-    $id_user = $_SESSION['id_user'] ?? 0;
+    // GURU DAN WALI KELAS MENGAMBIL ID GURU
+    $id_user = (int)($_SESSION['id_user'] ?? 0);
 
-    if (!$id_user) {
-        die("ID akun guru tidak ditemukan. Silakan login kembali.");
+    if ($id_user <= 0) {
+        die("ID akun tidak ditemukan. Silakan login kembali.");
     }
 
     $stmtGuru = mysqli_prepare(
         $koneksi,
-        "SELECT id FROM t_guru WHERE user_id = ? LIMIT 1"
+        "SELECT id FROM t_guru
+         WHERE user_id = ? AND status_aktif = 1
+         LIMIT 1"
     );
+
+    if (!$stmtGuru) {
+        die("Gagal mengambil data guru: " . mysqli_error($koneksi));
+    }
 
     mysqli_stmt_bind_param($stmtGuru, "i", $id_user);
     mysqli_stmt_execute($stmtGuru);
@@ -58,12 +77,12 @@ if ($role === 'admin') {
     mysqli_stmt_close($stmtGuru);
 
     if (!$dataGuru) {
-        die("Data guru tidak ditemukan.");
+        die("Data guru tidak ditemukan atau belum aktif.");
     }
 
-    $guru_id = (int) $dataGuru['id'];
+    $guru_id = (int)$dataGuru['id'];
 
-    // HANYA MENAMPILKAN RIWAYAT YANG DICATAT GURU TERSEBUT
+    // RIWAYAT BERDASARKAN GURU YANG LOGIN
     $sql = "SELECT
                 ps.id,
                 ps.tanggal,
@@ -83,31 +102,37 @@ if ($role === 'admin') {
 
     $stmt = mysqli_prepare($koneksi, $sql);
 
+    if (!$stmt) {
+        die("Gagal menyiapkan riwayat: " . mysqli_error($koneksi));
+    }
+
     mysqli_stmt_bind_param($stmt, "i", $guru_id);
     mysqli_stmt_execute($stmt);
 
     $hasil = mysqli_stmt_get_result($stmt);
 
 } else {
-    die("Akses tidak diizinkan.");
+    die("Role akun tidak dikenali.");
+}
+
+if ($hasil === false) {
+    die("Gagal mengambil data riwayat: " . mysqli_error($koneksi));
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Riwayat Pelanggaran - SIP</title>
 
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
 
     <link rel="stylesheet" href="layout/style.css">
@@ -118,10 +143,8 @@ if ($role === 'admin') {
 <div class="container-fluid">
     <div class="row">
 
-        <!-- SIDEBAR -->
-        <?php include 'layout/sidebar.php'; ?>
+        <?php include __DIR__ . '/layout/sidebar.php'; ?>
 
-        <!-- KONTEN UTAMA -->
         <main class="col-md-9 ms-sm-auto col-lg-10 p-4">
 
             <header class="admin-page-header mb-4">
@@ -129,14 +152,15 @@ if ($role === 'admin') {
 
                 <p>
                     <?php if ($role === 'admin'): ?>
-                        Menampilkan seluruh riwayat pelanggaran yang dicatat oleh semua guru.
+                        Menampilkan seluruh riwayat pelanggaran.
+                    <?php elseif ($role === 'guru_wali_kelas'): ?>
+                        Menampilkan riwayat pelanggaran yang dicatat oleh Wali Kelas.
                     <?php else: ?>
-                        Menampilkan riwayat pelanggaran yang kamu catat sendiri.
+                        Menampilkan riwayat pelanggaran yang kamu catat.
                     <?php endif; ?>
                 </p>
             </header>
 
-            <!-- CARD TABEL -->
             <div class="card border-0 shadow-sm rounded-3 mb-5">
 
                 <div class="card-header bg-white py-3">
@@ -168,26 +192,25 @@ if ($role === 'admin') {
 
                             <tbody>
 
-                                <?php if ($hasil && mysqli_num_rows($hasil) > 0): ?>
+                                <?php if (mysqli_num_rows($hasil) > 0): ?>
 
                                     <?php while ($row = mysqli_fetch_assoc($hasil)): ?>
 
                                         <tr>
-
                                             <td class="text-center text-nowrap">
                                                 <?= htmlspecialchars($row['tanggal'] ?? '-') ?>
                                             </td>
 
                                             <td class="fw-semibold text-dark">
-                                                <?= htmlspecialchars($row['nama_siswa']) ?>
+                                                <?= htmlspecialchars($row['nama_siswa'] ?? '-') ?>
                                             </td>
 
                                             <td>
-                                                <?= htmlspecialchars($row['nama_kelas']) ?>
+                                                <?= htmlspecialchars($row['nama_kelas'] ?? '-') ?>
                                             </td>
 
                                             <td>
-                                                <?= htmlspecialchars($row['nama_pelanggaran']) ?>
+                                                <?= htmlspecialchars($row['nama_pelanggaran'] ?? '-') ?>
                                             </td>
 
                                             <td class="text-center fw-bold">
@@ -207,26 +230,24 @@ if ($role === 'admin') {
                                             <td class="text-center small text-muted">
                                                 <?= htmlspecialchars($row['updated_at'] ?? '-') ?>
                                             </td>
-
                                         </tr>
 
                                     <?php endwhile; ?>
 
+                                <?php else: ?>
+
+                                    <tr>
+                                        <td colspan="8" class="text-center text-muted">
+                                            Belum ada riwayat pelanggaran yang tercatat.
+                                        </td>
+                                    </tr>
+
                                 <?php endif; ?>
 
                             </tbody>
-
                         </table>
 
                     </div>
-
-                    <?php if ($hasil && mysqli_num_rows($hasil) == 0): ?>
-                        <div class="alert alert-info mt-3 mb-0">
-                            <i class="fas fa-info-circle me-2"></i>
-                            Belum ada riwayat pelanggaran yang tercatat.
-                        </div>
-                    <?php endif; ?>
-
                 </div>
             </div>
 
@@ -234,12 +255,10 @@ if ($role === 'admin') {
     </div>
 </div>
 
-<!-- JAVASCRIPT -->
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- DataTables -->
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
@@ -248,7 +267,6 @@ if ($role === 'admin') {
 $(document).ready(function() {
 
     $('#tabelRiwayat').DataTable({
-
         autoWidth: false,
 
         columnDefs: [
@@ -274,7 +292,6 @@ $(document).ready(function() {
             infoEmpty: "Menampilkan 0 sampai 0 data",
             infoFiltered: "(disaring dari total _MAX_ data)",
             search: "Cari:",
-
             paginate: {
                 first: "Pertama",
                 last: "Terakhir",
@@ -285,7 +302,6 @@ $(document).ready(function() {
 
         pageLength: 10,
         order: []
-
     });
 
 });
@@ -295,8 +311,7 @@ $(document).ready(function() {
 </html>
 
 <?php
-// Menutup statement khusus guru
-if (isset($stmt) && $stmt) {
+if ($stmt) {
     mysqli_stmt_close($stmt);
 }
 ?>

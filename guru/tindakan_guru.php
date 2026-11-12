@@ -1,13 +1,20 @@
 
 <?php
-// guru/tindakan_guru.php
+// ============================================
+// TINDAKAN GURU DAN WALI KELAS
+// File: guru/tindakan_guru.php
+// ============================================
 
 include '../includes/cek_session.php';
 include '../config/koneksi.php';
 
-batasi_akses(['guru']);
+// Guru dan wali kelas boleh mengakses
+batasi_akses(['guru', 'guru_wali_kelas']);
 
-// Ambil semua data pelanggaran
+// ============================================
+// AMBIL DATA PELANGGARAN
+// ============================================
+
 $sql = "SELECT
             ps.id,
             ps.tanggal,
@@ -28,131 +35,262 @@ $sql = "SELECT
         ORDER BY ps.tanggal DESC, ps.id DESC";
 
 $hasil = mysqli_query($koneksi, $sql);
+
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Tindakan Pelanggaran - SIP</title>
 
+    <!-- BOOTSTRAP -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- FONT AWESOME -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- DATATABLES -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
 
+    <!-- STYLE PROJECT -->
     <link rel="stylesheet" href="../layout/style.css">
+
+    <style>
+        body {
+            background: #f5f7fb;
+        }
+
+        .guru-content {
+            margin-left: 240px !important;
+            width: calc(100% - 240px) !important;
+            min-height: 100vh;
+            padding: 25px 30px !important;
+        }
+
+        .page-title {
+            color: #212529;
+            font-weight: 700;
+            font-size: 28px;
+        }
+
+        .card {
+            border-radius: 12px;
+        }
+
+        .table thead th {
+            white-space: nowrap;
+            font-size: 13px;
+        }
+
+        .table tbody td {
+            font-size: 13px;
+        }
+
+        @media(max-width: 768px) {
+            .guru-content {
+                margin-left: 200px !important;
+                width: calc(100% - 200px) !important;
+                padding: 15px !important;
+            }
+        }
+    </style>
+
 </head>
 
-<body class="bg-light">
+<body>
 
 <div class="container-fluid">
     <div class="row">
 
+        <!-- SIDEBAR -->
         <?php include '../layout/sidebar.php'; ?>
 
-        <main class="col-md-9 ms-sm-auto col-lg-10 p-4 guru-content">
+        <!-- KONTEN UTAMA -->
+        <main class="guru-content">
 
-            <header class="admin-page-header mb-4">
-                <div>
-                    <h1>Tindakan Pelanggaran</h1>
-                    <p class="text-muted">
-                        SIP · Semua guru dapat melihat dan memberikan tindak lanjut pelanggaran siswa.
-                    </p>
-                </div>
-            </header>
+            <!-- HEADER -->
+            <div class="mb-4">
 
+                <h1 class="page-title">
+                    Tindakan Pelanggaran
+                </h1>
+
+                <p class="text-muted mb-0">
+                    SIP · Kelola dan berikan tindak lanjut pelanggaran siswa.
+                </p>
+
+            </div>
+
+            <!-- NOTIFIKASI SUKSES -->
             <?php if (isset($_SESSION['pesan_sukses'])): ?>
+
                 <div class="alert alert-success alert-dismissible fade show shadow-sm">
+
                     <i class="fa-solid fa-circle-check me-2"></i>
+
                     <?= htmlspecialchars($_SESSION['pesan_sukses']) ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert">
+                    </button>
+
                 </div>
+
                 <?php unset($_SESSION['pesan_sukses']); ?>
+
             <?php endif; ?>
 
+
+            <!-- NOTIFIKASI ERROR -->
             <?php if (isset($_SESSION['pesan_error'])): ?>
+
                 <div class="alert alert-danger alert-dismissible fade show shadow-sm">
+
                     <i class="fa-solid fa-triangle-exclamation me-2"></i>
+
                     <?= htmlspecialchars($_SESSION['pesan_error']) ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert">
+                    </button>
+
                 </div>
+
                 <?php unset($_SESSION['pesan_error']); ?>
+
             <?php endif; ?>
 
+
+            <!-- ERROR QUERY -->
             <?php if (!$hasil): ?>
-                <div class="alert alert-danger">
-                    Gagal mengambil data:
-                    <?= htmlspecialchars(mysqli_error($koneksi)) ?>
-                </div>
-            <?php endif; ?>
 
-            <div class="card border-0 shadow-sm rounded-3 mb-5">
+                <div class="alert alert-danger">
+
+                    <strong>Gagal mengambil data!</strong>
+
+                    <br>
+
+                    <?= htmlspecialchars(mysqli_error($koneksi)) ?>
+
+                </div>
+
+            <?php else: ?>
+
+
+            <!-- CARD DATA -->
+            <div class="card border-0 shadow-sm mb-5">
 
                 <div class="card-header bg-white py-3">
-                    <h5 class="card-title menu-page-title m-0 fw-bold">
-                        <i class="fas fa-clipboard-list me-2"></i>
+
+                    <h5 class="mb-0 fw-bold">
+
+                        <i class="fa-solid fa-clipboard-list me-2 text-primary"></i>
+
                         Daftar Catatan Pelanggaran Siswa
+
                     </h5>
+
                 </div>
 
+
                 <div class="card-body p-3">
+
                     <div class="table-responsive">
 
                         <table id="tabelTindakLanjut"
-                            class="table table-striped table-hover align-middle mb-0 w-100">
+                               class="table table-striped table-hover align-middle w-100">
 
                             <thead class="table-dark">
+
                                 <tr>
+
                                     <th>Siswa</th>
+
                                     <th>Kelas</th>
+
                                     <th>Pelanggaran</th>
+
                                     <th class="text-center">Tanggal</th>
+
                                     <th class="text-center">Poin</th>
-                                    <th style="min-width:280px;">Tindakan & Status</th>
+
+                                    <th style="min-width:280px;">
+                                        Tindakan & Status
+                                    </th>
+
                                 </tr>
+
                             </thead>
 
-                            <tbody>
 
-                            <?php if ($hasil): ?>
+                            <tbody>
 
                                 <?php while ($row = mysqli_fetch_assoc($hasil)): ?>
 
                                     <tr>
-                                        <td class="fw-semibold text-dark">
+
+                                        <!-- NAMA SISWA -->
+                                        <td class="fw-semibold">
+
                                             <?= htmlspecialchars($row['nama_siswa']) ?>
+
                                         </td>
 
+
+                                        <!-- KELAS -->
                                         <td>
+
                                             <?= htmlspecialchars($row['nama_kelas']) ?>
+
                                         </td>
 
+
+                                        <!-- PELANGGARAN -->
                                         <td>
+
                                             <?= htmlspecialchars($row['nama_pelanggaran']) ?>
+
                                         </td>
 
-                                        <td class="text-center small text-nowrap">
+
+                                        <!-- TANGGAL -->
+                                        <td class="text-center text-nowrap">
+
                                             <?= htmlspecialchars($row['tanggal'] ?? '-') ?>
+
                                         </td>
 
-                                        <td class="text-center fw-bold text-danger">
-                                            <?= (int)$row['poin'] ?>
+
+                                        <!-- POIN -->
+                                        <td class="text-center">
+
+                                            <span class="badge bg-danger">
+
+                                                <?= (int)$row['poin'] ?>
+
+                                            </span>
+
                                         </td>
 
+
+                                        <!-- FORM TINDAKAN -->
                                         <td>
-                                            <form
-                                                action="proses_tindakan.php"
-                                                method="POST"
-                                                class="d-flex flex-column gap-2 py-1">
 
-                                                <input
-                                                    type="hidden"
-                                                    name="id"
-                                                    value="<?= (int)$row['id'] ?>">
+                                            <form action="proses_tindakan.php"
+                                                  method="POST"
+                                                  class="d-flex flex-column gap-2">
+
+                                                <input type="hidden"
+                                                       name="id"
+                                                       value="<?= (int)$row['id'] ?>">
+
 
                                                 <textarea
                                                     name="tindakan"
@@ -160,6 +298,7 @@ $hasil = mysqli_query($koneksi, $sql);
                                                     rows="2"
                                                     placeholder="Tuliskan tindakan yang diberikan..."
                                                     required><?= htmlspecialchars($row['tindakan'] ?? '') ?></textarea>
+
 
                                                 <div class="d-flex gap-2">
 
@@ -169,6 +308,7 @@ $hasil = mysqli_query($koneksi, $sql);
                                                         required>
 
                                                         <?php
+
                                                         $daftar_status = [
                                                             'Ditindaklanjuti',
                                                             'Proses',
@@ -176,82 +316,128 @@ $hasil = mysqli_query($koneksi, $sql);
                                                         ];
 
                                                         $status_sekarang = $row['status'] ?? '';
+
                                                         ?>
 
                                                         <?php foreach ($daftar_status as $st): ?>
+
                                                             <option
                                                                 value="<?= htmlspecialchars($st) ?>"
                                                                 <?= $status_sekarang === $st ? 'selected' : '' ?>>
+
                                                                 <?= htmlspecialchars($st) ?>
+
                                                             </option>
+
                                                         <?php endforeach; ?>
 
                                                     </select>
 
+
                                                     <button
-                                                        class="btn btn-primary btn-sm px-3 fw-semibold text-nowrap"
-                                                        type="submit">
+                                                        type="submit"
+                                                        class="btn btn-primary btn-sm px-3 text-nowrap">
 
                                                         <i class="fa-solid fa-floppy-disk me-1"></i>
+
                                                         Simpan
 
                                                     </button>
 
                                                 </div>
+
                                             </form>
+
                                         </td>
+
                                     </tr>
 
                                 <?php endwhile; ?>
 
-                            <?php endif; ?>
-
                             </tbody>
+
                         </table>
 
                     </div>
 
-                    <?php if ($hasil && mysqli_num_rows($hasil) === 0): ?>
-                        <div class="alert alert-info mt-3 mb-0">
+                    <?php if (mysqli_num_rows($hasil) === 0): ?>
+
+                        <div class="alert alert-info mb-0">
+
+                            <i class="fa-solid fa-circle-info me-2"></i>
+
                             Belum ada catatan pelanggaran siswa.
+
                         </div>
+
                     <?php endif; ?>
 
                 </div>
+
             </div>
 
+            <?php endif; ?>
+
         </main>
+
     </div>
 </div>
 
+
+<!-- JAVASCRIPT -->
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
+
 <script>
+
 $(document).ready(function() {
+
     $('#tabelTindakLanjut').DataTable({
+
         autoWidth: false,
-        language: {
-            lengthMenu: "Tampilkan _MENU_ data",
-            zeroRecords: "Data tidak ditemukan",
-            info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
-            infoEmpty: "Menampilkan 0 sampai 0 data",
-            infoFiltered: "(disaring dari total _MAX_ data)",
-            search: "Cari:",
-            paginate: {
-                first: "Pertama",
-                last: "Terakhir",
-                next: "Selanjutnya",
-                previous: "Sebelumnya"
-            }
-        },
+
         pageLength: 10,
-        ordering: false
+
+        ordering: false,
+
+        language: {
+
+            lengthMenu: "Tampilkan _MENU_ data",
+
+            zeroRecords: "Data tidak ditemukan",
+
+            info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+
+            infoEmpty: "Menampilkan 0 sampai 0 data",
+
+            infoFiltered: "(disaring dari total _MAX_ data)",
+
+            search: "Cari:",
+
+            paginate: {
+
+                first: "Pertama",
+
+                last: "Terakhir",
+
+                next: "Selanjutnya",
+
+                previous: "Sebelumnya"
+
+            }
+
+        }
+
     });
+
 });
+
 </script>
 
 </body>

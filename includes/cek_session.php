@@ -35,7 +35,9 @@ function batasi_akses(array $roles_diizinkan)
     $role_aktif = strtolower(trim($_SESSION['role'] ?? ''));
 
     $roles_diizinkan = array_map(
-        'strtolower',
+        function ($role) {
+            return strtolower(trim($role));
+        },
         $roles_diizinkan
     );
 
@@ -45,13 +47,18 @@ function batasi_akses(array $roles_diizinkan)
             'Akses ditolak. Anda tidak memiliki izin ke halaman ini.';
 
         if ($role_aktif === 'admin') {
+
             header('Location: ' . $base_url_path . 'dashboard.php');
+
         } elseif (
             $role_aktif === 'guru' ||
             $role_aktif === 'guru_wali_kelas'
         ) {
+
             header('Location: ' . $base_url_path . 'guru/dashboard_guru.php');
+
         } else {
+
             header('Location: ' . $base_url_path . 'login.php');
         }
 
@@ -133,7 +140,7 @@ $hak_akses_halaman = [
     'hapus_jenis_pelanggaran.php' => ['admin'],
 
     // ========================================
-    // MENU GURU DAN WALI KELAS
+    // GURU DAN WALI KELAS
     // ========================================
 
     'dashboard_guru.php' => ['guru', 'guru_wali_kelas'],
@@ -147,11 +154,16 @@ $hak_akses_halaman = [
 
     'tindakan_guru.php' => ['guru', 'guru_wali_kelas'],
 
-    'riwayat_guru.php' => ['guru', 'guru_wali_kelas'],
+    // ========================================
+    // RIWAYAT ADMIN, GURU, DAN WALI KELAS
+    // ========================================
+
+    'riwayat_guru.php' => ['admin', 'guru', 'guru_wali_kelas'],
+
     'rekap_poin.php' => ['guru', 'guru_wali_kelas'],
 
     // ========================================
-    // KHUSUS GURU, BUKAN WALI KELAS
+    // KHUSUS GURU BIASA
     // ========================================
 
     'laporan_guru.php' => ['guru'],
@@ -164,11 +176,11 @@ $hak_akses_halaman = [
     'riwayat.php' => ['admin'],
 
     // ========================================
-    // ADMIN DAN GURU
+    // ADMIN, GURU, DAN WALI KELAS
     // ========================================
 
-    'cetak_laporan.php' => ['admin', 'guru'],
-    'proses_tindakan.php' => ['admin', 'guru'],
+    'cetak_laporan.php' => ['admin', 'guru', 'guru_wali_kelas'],
+    'proses_tindakan.php' => ['admin', 'guru', 'guru_wali_kelas']
 
 ];
 
@@ -176,7 +188,6 @@ $hak_akses_halaman = [
 // MENENTUKAN IZIN HALAMAN
 // ============================================
 
-// Halaman yang tidak terdaftar otomatis ditolak.
 $izin_halaman = $hak_akses_halaman[$halaman] ?? [];
 
 // ============================================

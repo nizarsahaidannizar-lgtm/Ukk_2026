@@ -1,13 +1,19 @@
+
 <?php
 // catat_pelanggaran.php
+
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
 include 'includes/akses_pelanggaran.php';
 
+// HAK AKSES ADMIN, GURU, DAN WALI KELAS
+batasi_akses(['admin', 'guru', 'guru_wali_kelas']);
+
+// KONTEKS AKSES PELANGGARAN
 $konteks_akses = konteks_akses_pelanggaran($koneksi);
 $lingkup_akses = lingkup_sql_pelanggaran($konteks_akses, 'ps');
 
-// Daftar siswa
+// DAFTAR SISWA
 $siswa = mysqli_query($koneksi, "
     SELECT id, nis, nama
     FROM t_siswa
@@ -15,7 +21,7 @@ $siswa = mysqli_query($koneksi, "
     ORDER BY nama ASC
 ");
 
-// Daftar tahun ajaran
+// DAFTAR TAHUN AJARAN
 $tahun = mysqli_query($koneksi, "
     SELECT id, nama
     FROM t_tahun_ajaran
@@ -23,7 +29,7 @@ $tahun = mysqli_query($koneksi, "
     ORDER BY id DESC
 ");
 
-// Daftar kelas
+// DAFTAR KELAS
 $kelas = mysqli_query($koneksi, "
     SELECT id, nama, tingkat, jurusan
     FROM t_kelas
@@ -31,7 +37,7 @@ $kelas = mysqli_query($koneksi, "
     ORDER BY nama ASC
 ");
 
-// Daftar pelanggaran
+// DAFTAR PELANGGARAN
 $pelanggaran = mysqli_query($koneksi, "
     SELECT id, nama, poin, pelanggaran_kategori_id
     FROM t_pelanggaran
@@ -39,7 +45,7 @@ $pelanggaran = mysqli_query($koneksi, "
     ORDER BY nama ASC
 ");
 
-// Data guru yang login
+// DATA GURU LOGIN
 $stmt_guru = mysqli_prepare($koneksi, "
     SELECT id, nama
     FROM t_guru
@@ -56,26 +62,46 @@ $guru_login = mysqli_fetch_assoc(
     mysqli_stmt_get_result($stmt_guru)
 ) ?: [];
 
-// Data catatan pelanggaran
+// DATA CATATAN PELANGGARAN
 $sql = "
     SELECT
         ps.*,
         ta.nama AS tahun_ajaran,
         s.nis,
+        s.nama AS nama_siswa,
+        k.nama AS nama_kelas,
         k.tingkat,
-        k.jurusan
+        k.jurusan,
+        p.nama AS nama_pelanggaran,
+        g.nama AS nama_guru
+
     FROM t_pelanggaran_siswa ps
+
     LEFT JOIN t_tahun_ajaran ta
         ON ps.tahun_ajaran_id = ta.id
+
     LEFT JOIN t_siswa s
         ON ps.siswa_id = s.id
+
     LEFT JOIN t_kelas k
         ON ps.kelas_id = k.id
+
+    LEFT JOIN t_pelanggaran p
+        ON ps.pelanggaran_id = p.id
+
+    LEFT JOIN t_guru g
+        ON ps.guru_id = g.id
+
     WHERE $lingkup_akses
+
     ORDER BY ps.id DESC
 ";
 
 $hasil = mysqli_query($koneksi, $sql);
+
+if (!$hasil) {
+    die("Query data pelanggaran gagal: " . mysqli_error($koneksi));
+}
 ?>
 
 <!DOCTYPE html>
@@ -101,13 +127,14 @@ $hasil = mysqli_query($koneksi, $sql);
 
         <?php include 'layout/sidebar.php'; ?>
 
-        <!-- KONTEN UTAMA -->
         <main class="col-md-9 col-lg-10 p-4">
 
-            <!-- HEADER UTAMA -->
+            <!-- HEADER -->
             <div class="mb-4">
                 <h2 class="fw-normal text-dark mb-1">Tindakan Pelanggaran</h2>
-                <p class="text-muted mb-0">SIP &middot; Semua guru dapat melihat dan memberikan tindak lanjut pelanggaran siswa.</p>
+                <p class="text-muted mb-0">
+                    SIP &middot; Semua guru dan wali kelas dapat mencatat serta melihat tindak lanjut pelanggaran siswa.
+                </p>
             </div>
 
             <!-- PESAN SUKSES -->
@@ -131,7 +158,6 @@ $hasil = mysqli_query($koneksi, $sql);
             <!-- FORM CATAT PELANGGARAN -->
             <div class="card shadow-sm mb-4">
 
-                <!-- HEADER KARTU DIUBAH JADI HITAM (bg-dark) -->
                 <div class="card-header bg-dark text-white">
                     <strong>
                         <i class="fas fa-edit me-2"></i>
@@ -296,7 +322,6 @@ $hasil = mysqli_query($koneksi, $sql);
 
                         </div>
 
-                        <!-- TOMBOL DIUBAH JADI HITAM (btn-dark) -->
                         <button type="submit" class="btn btn-dark">
                             <i class="fas fa-save me-1"></i>
                             Simpan Pelanggaran
@@ -310,7 +335,6 @@ $hasil = mysqli_query($koneksi, $sql);
             <!-- DATA CATATAN PELANGGARAN -->
             <div class="card shadow-sm">
 
-                <!-- HEADER KARTU DIUBAH JADI HITAM (bg-dark) -->
                 <div class="card-header bg-dark text-white">
                     <strong>
                         <i class="fas fa-table me-2"></i>
@@ -344,7 +368,7 @@ $hasil = mysqli_query($koneksi, $sql);
                                 <?php
                                 $no = 1;
 
-                                if ($hasil && mysqli_num_rows($hasil) > 0) {
+                                if (mysqli_num_rows($hasil) > 0) {
                                     while ($row = mysqli_fetch_assoc($hasil)) {
                                 ?>
 
@@ -403,7 +427,6 @@ $hasil = mysqli_query($koneksi, $sql);
     </div>
 </div>
 
-<!-- BOOTSTRAP JAVASCRIPT -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- POIN OTOMATIS -->
