@@ -1,30 +1,30 @@
 
 <?php
-// guru/tindakan.php
+// guru/tindakan_guru.php
 
 include '../includes/cek_session.php';
 include '../config/koneksi.php';
 
 batasi_akses(['guru']);
 
-// ========================================
-// SEMUA GURU BISA MELIHAT SEMUA PELANGGARAN
-// TIDAK ADA FILTER BERDASARKAN GURU_ID
-// ========================================
-
+// Ambil semua data pelanggaran
 $sql = "SELECT
             ps.id,
             ps.tanggal,
             ps.poin,
             ps.tindakan,
             ps.status,
+
             COALESCE(s.nama, ps.nama_siswa, 'Siswa Tidak Ditemukan') AS nama_siswa,
             COALESCE(k.nama, ps.nama_kelas, '-') AS nama_kelas,
             COALESCE(p.nama, ps.nama_pelanggaran, '-') AS nama_pelanggaran
+
         FROM t_pelanggaran_siswa ps
+
         LEFT JOIN t_siswa s ON ps.siswa_id = s.id
         LEFT JOIN t_kelas k ON ps.kelas_id = k.id
         LEFT JOIN t_pelanggaran p ON ps.pelanggaran_id = p.id
+
         ORDER BY ps.tanggal DESC, ps.id DESC";
 
 $hasil = mysqli_query($koneksi, $sql);
@@ -38,13 +38,10 @@ $hasil = mysqli_query($koneksi, $sql);
 
     <title>Tindakan Pelanggaran - SIP</title>
 
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
 
     <link rel="stylesheet" href="../layout/style.css">
@@ -55,52 +52,44 @@ $hasil = mysqli_query($koneksi, $sql);
 <div class="container-fluid">
     <div class="row">
 
-        <!-- SIDEBAR -->
         <?php include '../layout/sidebar.php'; ?>
 
-        <!-- KONTEN UTAMA -->
         <main class="col-md-9 ms-sm-auto col-lg-10 p-4 guru-content">
 
             <header class="admin-page-header mb-4">
-                <div class="admin-page-heading">
-                    <div>
-                        <h1>Tindakan Pelanggaran</h1>
-                        <p class="text-muted">
-                            SIP · Semua guru dapat melihat dan memberikan tindak lanjut pelanggaran siswa.
-                        </p>
-                    </div>
+                <div>
+                    <h1>Tindakan Pelanggaran</h1>
+                    <p class="text-muted">
+                        SIP · Semua guru dapat melihat dan memberikan tindak lanjut pelanggaran siswa.
+                    </p>
                 </div>
             </header>
 
-            <!-- PESAN SUKSES -->
             <?php if (isset($_SESSION['pesan_sukses'])): ?>
-
-                <div class="alert alert-success alert-dismissible fade show shadow-sm mb-3">
+                <div class="alert alert-success alert-dismissible fade show shadow-sm">
                     <i class="fa-solid fa-circle-check me-2"></i>
                     <?= htmlspecialchars($_SESSION['pesan_sukses']) ?>
-
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
-
                 <?php unset($_SESSION['pesan_sukses']); ?>
-
             <?php endif; ?>
 
-            <!-- PESAN ERROR -->
             <?php if (isset($_SESSION['pesan_error'])): ?>
-
-                <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-3">
+                <div class="alert alert-danger alert-dismissible fade show shadow-sm">
                     <i class="fa-solid fa-triangle-exclamation me-2"></i>
                     <?= htmlspecialchars($_SESSION['pesan_error']) ?>
-
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
-
                 <?php unset($_SESSION['pesan_error']); ?>
-
             <?php endif; ?>
 
-            <!-- CARD TABEL -->
+            <?php if (!$hasil): ?>
+                <div class="alert alert-danger">
+                    Gagal mengambil data:
+                    <?= htmlspecialchars(mysqli_error($koneksi)) ?>
+                </div>
+            <?php endif; ?>
+
             <div class="card border-0 shadow-sm rounded-3 mb-5">
 
                 <div class="card-header bg-white py-3">
@@ -111,33 +100,29 @@ $hasil = mysqli_query($koneksi, $sql);
                 </div>
 
                 <div class="card-body p-3">
-
                     <div class="table-responsive">
 
                         <table id="tabelTindakLanjut"
-                               class="table table-striped table-hover align-middle mb-0 w-100">
+                            class="table table-striped table-hover align-middle mb-0 w-100">
 
                             <thead class="table-dark">
                                 <tr>
-                                    <th class="py-3">Siswa</th>
-                                    <th class="py-3">Kelas</th>
-                                    <th class="py-3">Pelanggaran</th>
-                                    <th class="text-center py-3">Tanggal</th>
-                                    <th class="text-center py-3">Poin</th>
-                                    <th class="py-3" style="min-width:280px;">
-                                        Tindakan & Status
-                                    </th>
+                                    <th>Siswa</th>
+                                    <th>Kelas</th>
+                                    <th>Pelanggaran</th>
+                                    <th class="text-center">Tanggal</th>
+                                    <th class="text-center">Poin</th>
+                                    <th style="min-width:280px;">Tindakan & Status</th>
                                 </tr>
                             </thead>
 
                             <tbody>
 
-                            <?php if ($hasil && mysqli_num_rows($hasil) > 0): ?>
+                            <?php if ($hasil): ?>
 
                                 <?php while ($row = mysqli_fetch_assoc($hasil)): ?>
 
                                     <tr>
-
                                         <td class="fw-semibold text-dark">
                                             <?= htmlspecialchars($row['nama_siswa']) ?>
                                         </td>
@@ -150,7 +135,7 @@ $hasil = mysqli_query($koneksi, $sql);
                                             <?= htmlspecialchars($row['nama_pelanggaran']) ?>
                                         </td>
 
-                                        <td class="text-center small">
+                                        <td class="text-center small text-nowrap">
                                             <?= htmlspecialchars($row['tanggal'] ?? '-') ?>
                                         </td>
 
@@ -159,14 +144,15 @@ $hasil = mysqli_query($koneksi, $sql);
                                         </td>
 
                                         <td>
+                                            <form
+                                                action="proses_tindakan.php"
+                                                method="POST"
+                                                class="d-flex flex-column gap-2 py-1">
 
-                                            <form action="../proses_tindakan.php"
-                                                  method="post"
-                                                  class="d-flex flex-column gap-2 py-1">
-
-                                                <input type="hidden"
-                                                       name="id"
-                                                       value="<?= (int)$row['id'] ?>">
+                                                <input
+                                                    type="hidden"
+                                                    name="id"
+                                                    value="<?= (int)$row['id'] ?>">
 
                                                 <textarea
                                                     name="tindakan"
@@ -177,9 +163,10 @@ $hasil = mysqli_query($koneksi, $sql);
 
                                                 <div class="d-flex gap-2">
 
-                                                    <select name="status"
-                                                            class="form-select form-select-sm"
-                                                            required>
+                                                    <select
+                                                        name="status"
+                                                        class="form-select form-select-sm"
+                                                        required>
 
                                                         <?php
                                                         $daftar_status = [
@@ -188,22 +175,22 @@ $hasil = mysqli_query($koneksi, $sql);
                                                             'Selesai'
                                                         ];
 
-                                                        foreach ($daftar_status as $st):
+                                                        $status_sekarang = $row['status'] ?? '';
                                                         ?>
 
-                                                            <option value="<?= htmlspecialchars($st) ?>"
-                                                                <?= (($row['status'] ?? '') === $st) ? 'selected' : '' ?>>
-
+                                                        <?php foreach ($daftar_status as $st): ?>
+                                                            <option
+                                                                value="<?= htmlspecialchars($st) ?>"
+                                                                <?= $status_sekarang === $st ? 'selected' : '' ?>>
                                                                 <?= htmlspecialchars($st) ?>
-
                                                             </option>
-
                                                         <?php endforeach; ?>
 
                                                     </select>
 
-                                                    <button class="btn btn-primary btn-sm px-3 fw-semibold text-nowrap"
-                                                            type="submit">
+                                                    <button
+                                                        class="btn btn-primary btn-sm px-3 fw-semibold text-nowrap"
+                                                        type="submit">
 
                                                         <i class="fa-solid fa-floppy-disk me-1"></i>
                                                         Simpan
@@ -211,11 +198,8 @@ $hasil = mysqli_query($koneksi, $sql);
                                                     </button>
 
                                                 </div>
-
                                             </form>
-
                                         </td>
-
                                     </tr>
 
                                 <?php endwhile; ?>
@@ -223,24 +207,14 @@ $hasil = mysqli_query($koneksi, $sql);
                             <?php endif; ?>
 
                             </tbody>
-
                         </table>
 
                     </div>
 
-                    <?php if (!$hasil): ?>
-
-                        <div class="alert alert-danger mt-3">
-                            Gagal mengambil data:
-                            <?= htmlspecialchars(mysqli_error($koneksi)) ?>
-                        </div>
-
-                    <?php elseif (mysqli_num_rows($hasil) == 0): ?>
-
+                    <?php if ($hasil && mysqli_num_rows($hasil) === 0): ?>
                         <div class="alert alert-info mt-3 mb-0">
                             Belum ada catatan pelanggaran siswa.
                         </div>
-
                     <?php endif; ?>
 
                 </div>
@@ -250,23 +224,16 @@ $hasil = mysqli_query($koneksi, $sql);
     </div>
 </div>
 
-<!-- JAVASCRIPT -->
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- DATATABLES -->
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
 <script>
 $(document).ready(function() {
-
     $('#tabelTindakLanjut').DataTable({
-
         autoWidth: false,
-
         language: {
             lengthMenu: "Tampilkan _MENU_ data",
             zeroRecords: "Data tidak ditemukan",
@@ -274,7 +241,6 @@ $(document).ready(function() {
             infoEmpty: "Menampilkan 0 sampai 0 data",
             infoFiltered: "(disaring dari total _MAX_ data)",
             search: "Cari:",
-
             paginate: {
                 first: "Pertama",
                 last: "Terakhir",
@@ -282,12 +248,9 @@ $(document).ready(function() {
                 previous: "Sebelumnya"
             }
         },
-
         pageLength: 10,
-        order: []
-
+        ordering: false
     });
-
 });
 </script>
 

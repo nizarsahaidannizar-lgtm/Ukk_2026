@@ -1,81 +1,349 @@
+
 <?php
 // kelola_kelas.php
+
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
-// HANYA ROLE ADMIN YANG BISA AKSES
+// Hanya admin
 batasi_akses(['admin']);
 
-// QUERY DATABASE (Mencegah Undefined variable $hasil)
+// ========================================
+// STATISTIK KELAS
+// ========================================
+
+$sql_statistik = "
+    SELECT
+        COUNT(*) AS total_kelas,
+        SUM(CASE WHEN status_aktif = 1 THEN 1 ELSE 0 END) AS kelas_aktif,
+        SUM(CASE WHEN status_aktif = 0 OR status_aktif IS NULL THEN 1 ELSE 0 END) AS kelas_nonaktif,
+        COUNT(DISTINCT tingkat) AS total_tingkat,
+        COUNT(DISTINCT NULLIF(jurusan, '')) AS total_jurusan
+    FROM t_kelas
+";
+
+$query_statistik = mysqli_query($koneksi, $sql_statistik);
+
+$statistik = $query_statistik
+    ? mysqli_fetch_assoc($query_statistik)
+    : [
+        'total_kelas' => 0,
+        'kelas_aktif' => 0,
+        'kelas_nonaktif' => 0,
+        'total_tingkat' => 0,
+        'total_jurusan' => 0
+    ];
+
+// ========================================
+// AMBIL DATA KELAS
+// ========================================
+
 $sql = "SELECT * FROM t_kelas ORDER BY nama ASC";
 $hasil = mysqli_query($koneksi, $sql);
+
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Kelola Kelas - SIP</title>
 
-    <!-- Bootstrap 5 CSS & FontAwesome Icons -->
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- DataTables Bootstrap 5 CSS -->
+    <!-- DataTables -->
     <link href="https://cdn.datatables.net/2.3.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-    
+
     <link rel="stylesheet" href="layout/style.css">
+
+    <style>
+        .stat-card {
+            border: none;
+            border-radius: 12px;
+            height: 100%;
+            transition: 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+        }
+
+        .stat-number {
+            font-size: 27px;
+            font-weight: 700;
+            margin-bottom: 0;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+    </style>
+
 </head>
 
 <body class="bg-light">
 
 <div class="container-fluid">
+
     <div class="row">
 
+        <!-- SIDEBAR -->
         <?php include 'layout/sidebar.php'; ?>
 
         <!-- KONTEN UTAMA -->
         <main class="col-md-9 ms-sm-auto col-lg-10 p-4">
 
-            <header class="admin-page-header">
+            <!-- HEADER -->
+            <header class="admin-page-header mb-4">
+
                 <h1>Kelola Data Kelas</h1>
+
                 <p>Atur daftar kelas, tingkat, jurusan, dan statusnya.</p>
+
             </header>
 
-            <!-- ALERT NOTIFIKASI SUKSES / ERROR -->
-            <?php if (isset($_SESSION['pesan_sukses'])) { ?>
-                <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
-                    <?= $_SESSION['pesan_sukses']; ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+            <!-- ================================= -->
+            <!-- STATISTIK KELAS -->
+            <!-- ================================= -->
+
+            <div class="row g-3 mb-4">
+
+                <!-- TOTAL KELAS -->
+                <div class="col-xl col-md-4 col-sm-6">
+
+                    <div class="card stat-card shadow-sm">
+
+                        <div class="card-body d-flex align-items-center justify-content-between">
+
+                            <div>
+                                <p class="stat-label">Total Kelas</p>
+
+                                <h3 class="stat-number text-primary">
+                                    <?= number_format((int)$statistik['total_kelas']) ?>
+                                </h3>
+                            </div>
+
+                            <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                                <i class="fa-solid fa-school"></i>
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
+
+
+                <!-- KELAS AKTIF -->
+                <div class="col-xl col-md-4 col-sm-6">
+
+                    <div class="card stat-card shadow-sm">
+
+                        <div class="card-body d-flex align-items-center justify-content-between">
+
+                            <div>
+                                <p class="stat-label">Kelas Aktif</p>
+
+                                <h3 class="stat-number text-success">
+                                    <?= number_format((int)$statistik['kelas_aktif']) ?>
+                                </h3>
+                            </div>
+
+                            <div class="stat-icon bg-success bg-opacity-10 text-success">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- KELAS NONAKTIF -->
+                <div class="col-xl col-md-4 col-sm-6">
+
+                    <div class="card stat-card shadow-sm">
+
+                        <div class="card-body d-flex align-items-center justify-content-between">
+
+                            <div>
+                                <p class="stat-label">Kelas Tidak Aktif</p>
+
+                                <h3 class="stat-number text-danger">
+                                    <?= number_format((int)$statistik['kelas_nonaktif']) ?>
+                                </h3>
+                            </div>
+
+                            <div class="stat-icon bg-danger bg-opacity-10 text-danger">
+                                <i class="fa-solid fa-circle-xmark"></i>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TOTAL TINGKAT -->
+                <div class="col-xl col-md-4 col-sm-6">
+
+                    <div class="card stat-card shadow-sm">
+
+                        <div class="card-body d-flex align-items-center justify-content-between">
+
+                            <div>
+                                <p class="stat-label">Total Tingkat</p>
+
+                                <h3 class="stat-number text-info">
+                                    <?= number_format((int)$statistik['total_tingkat']) ?>
+                                </h3>
+                            </div>
+
+                            <div class="stat-icon bg-info bg-opacity-10 text-info">
+                                <i class="fa-solid fa-layer-group"></i>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TOTAL JURUSAN -->
+                <div class="col-xl col-md-4 col-sm-6">
+
+                    <div class="card stat-card shadow-sm">
+
+                        <div class="card-body d-flex align-items-center justify-content-between">
+
+                            <div>
+                                <p class="stat-label">Total Jurusan</p>
+
+                                <h3 class="stat-number text-warning">
+                                    <?= number_format((int)$statistik['total_jurusan']) ?>
+                                </h3>
+                            </div>
+
+                            <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================================= -->
+            <!-- NOTIFIKASI -->
+            <!-- ================================= -->
+
+            <?php if (isset($_SESSION['pesan_sukses'])): ?>
+
+                <div class="alert alert-success alert-dismissible fade show mb-3">
+
+                    <i class="fa-solid fa-circle-check me-2"></i>
+
+                    <?= htmlspecialchars($_SESSION['pesan_sukses']) ?>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
+                </div>
+
                 <?php unset($_SESSION['pesan_sukses']); ?>
-            <?php } ?>
 
-            <?php if (isset($_SESSION['pesan_error'])) { ?>
-                <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
-                    <?= $_SESSION['pesan_error']; ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <?php endif; ?>
+
+
+            <?php if (isset($_SESSION['pesan_error'])): ?>
+
+                <div class="alert alert-danger alert-dismissible fade show mb-3">
+
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i>
+
+                    <?= htmlspecialchars($_SESSION['pesan_error']) ?>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
                 </div>
+
                 <?php unset($_SESSION['pesan_error']); ?>
-            <?php } ?>
 
-            <!-- CARD TABEL KELAS -->
-            <div class="card shadow-sm border-0 rounded-3 mb-5">
-                <div class="card-header bg-white py-3 d-flex flex-wrap gap-2 justify-content-between align-items-center">
-                    <h5 class="card-title m-0 fw-bold">Data Kelas</h5>
-                    <a href="tambah_kelas.php" class="btn btn-primary btn-sm fw-semibold text-nowrap">
-                        + Tambah Kelas
-                    </a>
+            <?php endif; ?>
+
+
+            <!-- ERROR DATABASE -->
+            <?php if (!$hasil): ?>
+
+                <div class="alert alert-danger">
+                    Gagal mengambil data kelas:
+                    <?= htmlspecialchars(mysqli_error($koneksi)) ?>
                 </div>
+
+            <?php endif; ?>
+
+
+            <!-- ================================= -->
+            <!-- TABEL KELAS -->
+            <!-- ================================= -->
+
+            <div class="card shadow-sm border-0 rounded-3 mb-5">
+
+                <div class="card-header bg-white py-3 d-flex flex-wrap gap-2 justify-content-between align-items-center">
+
+                    <h5 class="card-title m-0 fw-bold">
+                        <i class="fa-solid fa-school me-2"></i>
+                        Data Kelas
+                    </h5>
+
+                    <a href="tambah_kelas.php" class="btn btn-primary btn-sm fw-semibold text-nowrap">
+
+                        <i class="fa-solid fa-plus me-1"></i>
+                        Tambah Kelas
+
+                    </a>
+
+                </div>
+
+
                 <div class="card-body p-4">
 
                     <div class="table-responsive">
-                        <table id="tabelKelas" class="table table-striped table-bordered table-hover align-middle w-100">
+
+                        <table id="tabelKelas"
+                            class="table table-striped table-bordered table-hover align-middle w-100">
 
                             <thead class="table-dark">
+
                                 <tr>
+
                                     <th>No.</th>
                                     <th>Nama Kelas</th>
                                     <th>Tingkat</th>
@@ -84,100 +352,198 @@ $hasil = mysqli_query($koneksi, $sql);
                                     <th>Dibuat</th>
                                     <th>Diubah</th>
                                     <th class="text-center action-column">Aksi</th>
+
                                 </tr>
+
                             </thead>
 
+
                             <tbody>
-                                <?php
-                                $no = 1;
-                                while ($row = mysqli_fetch_assoc($hasil)) { ?>
 
-                                <tr>
-                                    <td><?= $no++ ?></td>
+                                <?php if ($hasil): ?>
 
-                                    <td><?= htmlspecialchars($row['nama']) ?></td>
+                                    <?php $no = 1; ?>
 
-                                    <td><?= htmlspecialchars($row['tingkat']) ?></td>
+                                    <?php while ($row = mysqli_fetch_assoc($hasil)): ?>
 
-                                    <td><?= htmlspecialchars($row['jurusan']) ?></td>
+                                        <tr>
 
-                                    <td>
-                                        <?php if ($row['status_aktif'] == 1) { ?>
-                                            <span class="badge bg-success">Aktif</span>
-                                        <?php } else { ?>
-                                            <span class="badge bg-danger">Tidak Aktif</span>
-                                        <?php } ?>
-                                    </td>
+                                            <td>
+                                                <?= $no++ ?>
+                                            </td>
 
-                                    <td><?= htmlspecialchars(date('d-m-Y H:i', strtotime($row['created_at']))) ?></td>
+                                            <td>
+                                                <?= htmlspecialchars($row['nama'] ?? '-') ?>
+                                            </td>
 
-                                    <td><?= htmlspecialchars(date('d-m-Y H:i', strtotime($row['updated_at']))) ?></td>
+                                            <td>
+                                                <?= htmlspecialchars($row['tingkat'] ?? '-') ?>
+                                            </td>
 
-                                    <td class="text-center text-nowrap action-column">
-                                        <a href="edit_kelas.php?id=<?= urlencode($row['id']) ?>" class="btn btn-warning btn-sm me-1 fw-semibold text-white" title="Edit" aria-label="Edit kelas">
-                                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                                        </a>
+                                            <td>
+                                                <?= htmlspecialchars($row['jurusan'] ?? '-') ?>
+                                            </td>
 
-                                        <a href="hapus_kelas.php?id=<?= urlencode($row['id']) ?>" 
-                                           class="btn btn-danger btn-sm fw-semibold" title="Hapus" aria-label="Hapus kelas"
-                                           onclick="return confirm('Yakin ingin menghapus data kelas ini?');">
-                                            <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                                            <td>
 
-                                <?php } ?>
+                                                <?php if ((int)$row['status_aktif'] === 1): ?>
+
+                                                    <span class="badge bg-success">
+                                                        Aktif
+                                                    </span>
+
+                                                <?php else: ?>
+
+                                                    <span class="badge bg-danger">
+                                                        Tidak Aktif
+                                                    </span>
+
+                                                <?php endif; ?>
+
+                                            </td>
+
+                                            <td class="text-nowrap">
+
+                                                <?php
+                                                $created = $row['created_at'] ?? '';
+
+                                                echo !empty($created)
+                                                    ? date('d-m-Y H:i', strtotime($created))
+                                                    : '-';
+                                                ?>
+
+                                            </td>
+
+                                            <td class="text-nowrap">
+
+                                                <?php
+                                                $updated = $row['updated_at'] ?? '';
+
+                                                echo !empty($updated)
+                                                    ? date('d-m-Y H:i', strtotime($updated))
+                                                    : '-';
+                                                ?>
+
+                                            </td>
+
+                                            <td class="text-center text-nowrap action-column">
+
+                                                <!-- EDIT -->
+                                                <a href="edit_kelas.php?id=<?= urlencode($row['id']) ?>"
+                                                    class="btn btn-warning btn-sm me-1 fw-semibold text-white"
+                                                    title="Edit">
+
+                                                    <i class="fa-solid fa-pen-to-square"></i>
+
+                                                </a>
+
+
+                                                <!-- HAPUS -->
+                                                <a href="hapus_kelas.php?id=<?= urlencode($row['id']) ?>"
+                                                    class="btn btn-danger btn-sm fw-semibold"
+                                                    title="Hapus"
+                                                    onclick="return confirm('Yakin ingin menghapus data kelas ini?');">
+
+                                                    <i class="fa-solid fa-trash-can"></i>
+
+                                                </a>
+
+                                            </td>
+
+                                        </tr>
+
+                                    <?php endwhile; ?>
+
+                                <?php endif; ?>
+
                             </tbody>
 
                         </table>
+
                     </div>
 
+                    <?php if ($hasil && mysqli_num_rows($hasil) === 0): ?>
+
+                        <div class="alert alert-info mt-3 mb-0">
+                            Belum ada data kelas.
+                        </div>
+
+                    <?php endif; ?>
+
                 </div>
+
             </div>
 
         </main>
+
     </div>
+
 </div>
 
-<!-- jQuery -->
+
+<!-- JAVASCRIPT -->
+
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-<!-- DataTables JS -->
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
 
-<!-- DataTables Bootstrap 5 JS -->
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.bootstrap5.min.js"></script>
 
-<!-- Bootstrap 5 JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+
 <script>
+
 $(document).ready(function () {
+
     $('#tabelKelas').DataTable({
+
         pageLength: 10,
+
         lengthMenu: [5, 10, 25, 50, 100],
-        order: [[1, 'asc']], // Urutkan berdasarkan kolom Nama Kelas
+
+        order: [[1, 'asc']],
+
         autoWidth: false,
+
         columnDefs: [
             { targets: [0, -1], orderable: false }
         ],
+
         language: {
+
             search: "Cari:",
+
             lengthMenu: "Tampilkan _MENU_ data",
+
             info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data kelas",
+
             infoEmpty: "Tidak ada data kelas",
+
             infoFiltered: "(difilter dari _MAX_ total data)",
+
             zeroRecords: "Data kelas tidak ditemukan",
+
             emptyTable: "Belum ada data kelas",
+
             paginate: {
+
                 first: "Pertama",
+
                 last: "Terakhir",
+
                 next: "Berikutnya",
+
                 previous: "Sebelumnya"
+
             }
+
         }
+
     });
+
 });
+
 </script>
 
 </body>

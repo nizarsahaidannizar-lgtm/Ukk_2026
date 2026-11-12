@@ -59,8 +59,7 @@ if (in_array($status, $status_diizinkan, true)) {
 }
 
 // ========================================
-// QUERY SELURUH DATA PELANGGARAN
-// SEMUA GURU DAPAT MELIHAT
+// QUERY DATA PELANGGARAN
 // ========================================
 
 $where_clause = !empty($where)
@@ -130,7 +129,6 @@ if ($hasil) {
     while ($row = mysqli_fetch_assoc($hasil)) {
 
         $total_poin += (int)$row['poin'];
-
         $jumlah_catatan++;
 
         $data_laporan[] = $row;
@@ -145,7 +143,6 @@ if ($hasil) {
 <head>
 
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Laporan Guru - SIP</title>
@@ -176,19 +173,20 @@ if ($hasil) {
         <main class="col-md-9 ms-sm-auto col-lg-10 p-4 guru-content">
 
             <!-- HEADER -->
-            <header class="admin-page-header mb-4">
+            <header class="admin-page-header d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
 
-                <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div>
 
-                    <div>
+                    <h1>Laporan Pelanggaran</h1>
 
-                        <h1>Laporan Pelanggaran</h1>
+                    <p class="text-muted">
+                        SIP · Tinjau seluruh laporan pelanggaran siswa berdasarkan periode dan status.
+                    </p>
 
-                        <p class="text-muted">
-                            SIP · Tinjau seluruh laporan pelanggaran siswa berdasarkan periode dan status.
-                        </p>
+                </div>
 
-                    </div>
+                <!-- CETAK LAPORAN DI SEBELAH KANAN -->
+                <div>
 
                     <a
                         class="btn btn-outline-primary fw-semibold shadow-sm"
@@ -386,8 +384,10 @@ if ($hasil) {
                 <div class="card-header bg-white py-3">
 
                     <h5 class="card-title m-0 fw-bold">
+
                         <i class="fa-solid fa-file-lines me-2"></i>
                         Data Laporan Pelanggaran
+
                     </h5>
 
                 </div>
@@ -476,9 +476,7 @@ if ($hasil) {
                                         <td class="text-center">
 
                                             <span class="badge bg-<?= $warna ?> px-2 py-1">
-
                                                 <?= htmlspecialchars($row['status'] ?? '-') ?>
-
                                             </span>
 
                                         </td>
@@ -496,9 +494,7 @@ if ($hasil) {
                     <?php if ($hasil && $jumlah_catatan === 0): ?>
 
                         <div class="alert alert-info mt-3 mb-0">
-
                             Belum ada data laporan pelanggaran.
-
                         </div>
 
                     <?php endif; ?>
@@ -514,6 +510,7 @@ if ($hasil) {
 </div>
 
 <!-- JAVASCRIPT -->
+
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
