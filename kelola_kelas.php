@@ -9,32 +9,6 @@ include 'config/koneksi.php';
 batasi_akses(['admin']);
 
 // ========================================
-// STATISTIK KELAS
-// ========================================
-
-$sql_statistik = "
-    SELECT
-        COUNT(*) AS total_kelas,
-        SUM(CASE WHEN status_aktif = 1 THEN 1 ELSE 0 END) AS kelas_aktif,
-        SUM(CASE WHEN status_aktif = 0 OR status_aktif IS NULL THEN 1 ELSE 0 END) AS kelas_nonaktif,
-        COUNT(DISTINCT tingkat) AS total_tingkat,
-        COUNT(DISTINCT NULLIF(jurusan, '')) AS total_jurusan
-    FROM t_kelas
-";
-
-$query_statistik = mysqli_query($koneksi, $sql_statistik);
-
-$statistik = $query_statistik
-    ? mysqli_fetch_assoc($query_statistik)
-    : [
-        'total_kelas' => 0,
-        'kelas_aktif' => 0,
-        'kelas_nonaktif' => 0,
-        'total_tingkat' => 0,
-        'total_jurusan' => 0
-    ];
-
-// ========================================
 // AMBIL DATA KELAS
 // ========================================
 
@@ -64,41 +38,6 @@ $hasil = mysqli_query($koneksi, $sql);
 
     <link rel="stylesheet" href="layout/style.css">
 
-    <style>
-        .stat-card {
-            border: none;
-            border-radius: 12px;
-            height: 100%;
-            transition: 0.2s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-3px);
-        }
-
-        .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 21px;
-        }
-
-        .stat-number {
-            font-size: 27px;
-            font-weight: 700;
-            margin-bottom: 0;
-        }
-
-        .stat-label {
-            font-size: 13px;
-            color: #6c757d;
-            margin-bottom: 5px;
-        }
-    </style>
-
 </head>
 
 <body class="bg-light">
@@ -121,145 +60,6 @@ $hasil = mysqli_query($koneksi, $sql);
                 <p>Atur daftar kelas, tingkat, jurusan, dan statusnya.</p>
 
             </header>
-
-
-            <!-- ================================= -->
-            <!-- STATISTIK KELAS -->
-            <!-- ================================= -->
-
-            <div class="row g-3 mb-4">
-
-                <!-- TOTAL KELAS -->
-                <div class="col-xl col-md-4 col-sm-6">
-
-                    <div class="card stat-card shadow-sm">
-
-                        <div class="card-body d-flex align-items-center justify-content-between">
-
-                            <div>
-                                <p class="stat-label">Total Kelas</p>
-
-                                <h3 class="stat-number text-primary">
-                                    <?= number_format((int)$statistik['total_kelas']) ?>
-                                </h3>
-                            </div>
-
-                            <div class="stat-icon bg-primary bg-opacity-10 text-primary">
-                                <i class="fa-solid fa-school"></i>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- KELAS AKTIF -->
-                <div class="col-xl col-md-4 col-sm-6">
-
-                    <div class="card stat-card shadow-sm">
-
-                        <div class="card-body d-flex align-items-center justify-content-between">
-
-                            <div>
-                                <p class="stat-label">Kelas Aktif</p>
-
-                                <h3 class="stat-number text-success">
-                                    <?= number_format((int)$statistik['kelas_aktif']) ?>
-                                </h3>
-                            </div>
-
-                            <div class="stat-icon bg-success bg-opacity-10 text-success">
-                                <i class="fa-solid fa-circle-check"></i>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- KELAS NONAKTIF -->
-                <div class="col-xl col-md-4 col-sm-6">
-
-                    <div class="card stat-card shadow-sm">
-
-                        <div class="card-body d-flex align-items-center justify-content-between">
-
-                            <div>
-                                <p class="stat-label">Kelas Tidak Aktif</p>
-
-                                <h3 class="stat-number text-danger">
-                                    <?= number_format((int)$statistik['kelas_nonaktif']) ?>
-                                </h3>
-                            </div>
-
-                            <div class="stat-icon bg-danger bg-opacity-10 text-danger">
-                                <i class="fa-solid fa-circle-xmark"></i>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- TOTAL TINGKAT -->
-                <div class="col-xl col-md-4 col-sm-6">
-
-                    <div class="card stat-card shadow-sm">
-
-                        <div class="card-body d-flex align-items-center justify-content-between">
-
-                            <div>
-                                <p class="stat-label">Total Tingkat</p>
-
-                                <h3 class="stat-number text-info">
-                                    <?= number_format((int)$statistik['total_tingkat']) ?>
-                                </h3>
-                            </div>
-
-                            <div class="stat-icon bg-info bg-opacity-10 text-info">
-                                <i class="fa-solid fa-layer-group"></i>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- TOTAL JURUSAN -->
-                <div class="col-xl col-md-4 col-sm-6">
-
-                    <div class="card stat-card shadow-sm">
-
-                        <div class="card-body d-flex align-items-center justify-content-between">
-
-                            <div>
-                                <p class="stat-label">Total Jurusan</p>
-
-                                <h3 class="stat-number text-warning">
-                                    <?= number_format((int)$statistik['total_jurusan']) ?>
-                                </h3>
-                            </div>
-
-                            <div class="stat-icon bg-warning bg-opacity-10 text-warning">
-                                <i class="fa-solid fa-graduation-cap"></i>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
 
             <!-- ================================= -->
             <!-- NOTIFIKASI -->
@@ -303,8 +103,10 @@ $hasil = mysqli_query($koneksi, $sql);
             <?php if (!$hasil): ?>
 
                 <div class="alert alert-danger">
+
                     Gagal mengambil data kelas:
                     <?= htmlspecialchars(mysqli_error($koneksi)) ?>
+
                 </div>
 
             <?php endif; ?>
@@ -319,13 +121,17 @@ $hasil = mysqli_query($koneksi, $sql);
                 <div class="card-header bg-white py-3 d-flex flex-wrap gap-2 justify-content-between align-items-center">
 
                     <h5 class="card-title m-0 fw-bold">
+
                         <i class="fa-solid fa-school me-2"></i>
+
                         Data Kelas
+
                     </h5>
 
                     <a href="tambah_kelas.php" class="btn btn-primary btn-sm fw-semibold text-nowrap">
 
                         <i class="fa-solid fa-plus me-1"></i>
+
                         Tambah Kelas
 
                     </a>
@@ -386,7 +192,7 @@ $hasil = mysqli_query($koneksi, $sql);
 
                                             <td>
 
-                                                <?php if ((int)$row['status_aktif'] === 1): ?>
+                                                <?php if ((int)($row['status_aktif'] ?? 0) === 1): ?>
 
                                                     <span class="badge bg-success">
                                                         Aktif
@@ -465,7 +271,9 @@ $hasil = mysqli_query($koneksi, $sql);
                     <?php if ($hasil && mysqli_num_rows($hasil) === 0): ?>
 
                         <div class="alert alert-info mt-3 mb-0">
+
                             Belum ada data kelas.
+
                         </div>
 
                     <?php endif; ?>

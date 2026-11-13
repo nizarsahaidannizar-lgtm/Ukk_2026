@@ -1,6 +1,6 @@
 
 <?php
-// laporan_pelanggaran.php
+// laporan.php
 
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
@@ -56,16 +56,27 @@ if ($tanggal_valid($sampai)) {
     $sampai = '';
 }
 
+// ========================================
+// FILTER STATUS DIPERBAIKI
+// ========================================
+
 $status_diizinkan = [
     'tercatat',
-    'Ditindaklanjuti',
-    'Proses',
-    'Selesai'
+    'ditindaklanjuti',
+    'proses',
+    'selesai'
 ];
 
+$status = strtolower(trim((string)$status));
+
 if (in_array($status, $status_diizinkan, true)) {
+
     $status_sql = mysqli_real_escape_string($koneksi, $status);
-    $where[] = "ps.status = '$status_sql'";
+
+    $where[] = "
+        LOWER(TRIM(COALESCE(ps.status, ''))) = '$status_sql'
+    ";
+
 } else {
     $status = '';
 }
@@ -308,7 +319,7 @@ if ($hasil) {
                             </button>
 
                             <a
-                                href="laporan_pelanggaran.php"
+                                href="laporan.php"
                                 class="btn btn-secondary fw-semibold"
                             >
                                 Reset
@@ -440,14 +451,18 @@ if ($hasil) {
 
                                     <?php
 
+                                    $status_tampil = strtolower(trim($row['status'] ?? ''));
+
                                     $warna = 'secondary';
 
-                                    if ($row['status'] === 'Selesai') {
+                                    if ($status_tampil === 'selesai') {
                                         $warna = 'success';
-                                    } elseif ($row['status'] === 'Proses') {
+                                    } elseif ($status_tampil === 'proses') {
                                         $warna = 'warning';
-                                    } elseif ($row['status'] === 'Ditindaklanjuti') {
+                                    } elseif ($status_tampil === 'ditindaklanjuti') {
                                         $warna = 'primary';
+                                    } elseif ($status_tampil === 'tercatat') {
+                                        $warna = 'info';
                                     }
 
                                     ?>

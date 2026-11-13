@@ -4,9 +4,22 @@
 
 include '../includes/cek_session.php';
 include '../config/koneksi.php';
+include '../includes/akses_pelanggaran.php';
 
 // KHUSUS ADMIN DAN WALI KELAS
 batasi_akses(['admin', 'guru_wali_kelas']);
+
+// ========================================
+// MENGAMBIL HAK AKSES ADMIN DAN WALI KELAS
+// ========================================
+
+$konteks = konteks_akses_pelanggaran($koneksi);
+
+$where = [];
+
+// ADMIN MELIHAT SEMUA DATA
+// WALI KELAS HANYA MELIHAT KELAS BINAANNYA
+$where[] = lingkup_sql_pelanggaran($konteks, 'ps');
 
 // ========================================
 // FILTER TANGGAL DAN STATUS
@@ -29,21 +42,31 @@ $tanggal_valid = static function ($nilai): bool {
     return $tanggal && $tanggal->format('Y-m-d') === $nilai;
 };
 
-$where = [];
+// ========================================
+// FILTER TANGGAL MULAI
+// ========================================
 
 if ($tanggal_valid($mulai)) {
     $mulai_sql = mysqli_real_escape_string($koneksi, $mulai);
-    $where[] = "ps.tanggal >= '$mulai_sql'";
+    $where[] = "DATE(ps.tanggal) >= '$mulai_sql'";
 } else {
     $mulai = '';
 }
 
+// ========================================
+// FILTER TANGGAL SAMPAI
+// ========================================
+
 if ($tanggal_valid($sampai)) {
     $sampai_sql = mysqli_real_escape_string($koneksi, $sampai);
-    $where[] = "ps.tanggal <= '$sampai_sql'";
+    $where[] = "DATE(ps.tanggal) <= '$sampai_sql'";
 } else {
     $sampai = '';
 }
+
+// ========================================
+// FILTER STATUS PELANGGARAN
+// ========================================
 
 $status_diizinkan = [
     'tercatat',
@@ -52,9 +75,33 @@ $status_diizinkan = [
     'Selesai'
 ];
 
-if (in_array($status, $status_diizinkan, true)) {
-    $status_sql = mysqli_real_escape_string($koneksi, $status);
-    $where[] = "ps.status = '$status_sql'";
+$status_normal = strtolower(trim((string)$status));
+
+$status_valid = [
+    'tercatat',
+    'ditindaklanjuti',
+    'proses',
+    'selesai'
+];
+
+if (in_array($status_normal, $status_valid, true)) {
+
+    $status_sql = mysqli_real_escape_string(
+        $koneksi,
+        $status_normal
+    );
+
+    $where[] = "
+        LOWER(TRIM(COALESCE(ps.status, ''))) = '$status_sql'
+    ";
+
+    foreach ($status_diizinkan as $opsi) {
+        if (strtolower($opsi) === $status_normal) {
+            $status = $opsi;
+            break;
+        }
+    }
+
 } else {
     $status = '';
 }
@@ -423,11 +470,11 @@ if ($hasil) {
 
                                     $warna = 'secondary';
 
-                                    if ($row['status'] === 'Selesai') {
+                                    if (strtolower(trim($row['status'] ?? '')) === 'selesai') {
                                         $warna = 'success';
-                                    } elseif ($row['status'] === 'Proses') {
+                                    } elseif (strtolower(trim($row['status'] ?? '')) === 'proses') {
                                         $warna = 'warning';
-                                    } elseif ($row['status'] === 'Ditindaklanjuti') {
+                                    } elseif (strtolower(trim($row['status'] ?? '')) === 'ditindaklanjuti') {
                                         $warna = 'primary';
                                     }
 

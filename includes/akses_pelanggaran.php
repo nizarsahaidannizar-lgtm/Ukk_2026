@@ -7,13 +7,23 @@
 
 function konteks_akses_pelanggaran(mysqli $koneksi, bool $wali_saja = false): array
 {
+    // ==================================================
+    // NORMALISASI ROLE
+    // ==================================================
+
     $role = strtolower(trim($_SESSION['role'] ?? ''));
 
-    // NORMALISASI ROLE
     if (function_exists('normalisasi_role')) {
         $role = normalisasi_role($role);
     } else {
-        if (in_array($role, ['wali_kelas', 'walikelas', 'guru wali kelas'], true)) {
+        if (in_array($role, [
+            'wali_kelas',
+            'walikelas',
+            'wali kelas',
+            'wali-kelas',
+            'guru wali kelas',
+            'guru-wali-kelas'
+        ], true)) {
             $role = 'guru_wali_kelas';
         }
     }
@@ -43,9 +53,15 @@ function konteks_akses_pelanggaran(mysqli $koneksi, bool $wali_saja = false): ar
 
     // ==================================================
     // ID USER LOGIN
+    // MENDUKUNG BEBERAPA NAMA SESSION
     // ==================================================
 
-    $user_id = (int)($_SESSION['id_user'] ?? 0);
+    $user_id = (int)(
+        $_SESSION['id_user']
+        ?? $_SESSION['user_id']
+        ?? $_SESSION['id']
+        ?? 0
+    );
 
     if ($user_id <= 0) {
         tolak_akses_pelanggaran(
@@ -54,7 +70,7 @@ function konteks_akses_pelanggaran(mysqli $koneksi, bool $wali_saja = false): ar
     }
 
     // ==================================================
-    // CARI ID GURU
+    // CARI ID GURU BERDASARKAN USER LOGIN
     // ==================================================
 
     $stmt = mysqli_prepare(
@@ -75,9 +91,8 @@ function konteks_akses_pelanggaran(mysqli $koneksi, bool $wali_saja = false): ar
     mysqli_stmt_bind_param($stmt, 'i', $user_id);
     mysqli_stmt_execute($stmt);
 
-    $guru = mysqli_fetch_assoc(
-        mysqli_stmt_get_result($stmt)
-    );
+    $hasil_guru = mysqli_stmt_get_result($stmt);
+    $guru = $hasil_guru ? mysqli_fetch_assoc($hasil_guru) : null;
 
     mysqli_stmt_close($stmt);
 
@@ -115,15 +130,18 @@ function konteks_akses_pelanggaran(mysqli $koneksi, bool $wali_saja = false): ar
 
     $kelas_ids = [];
 
-    while ($row = mysqli_fetch_assoc($hasil_kelas)) {
-        $kelas_ids[] = (int)$row['kelas_id'];
+    if ($hasil_kelas) {
+        while ($row = mysqli_fetch_assoc($hasil_kelas)) {
+            $kelas_ids[] = (int)$row['kelas_id'];
+        }
     }
 
     mysqli_stmt_close($stmt);
 
+    $kelas_ids = array_values(array_unique($kelas_ids));
+
     // ==================================================
     // HALAMAN KHUSUS WALI KELAS
-    // HARUS ROLE WALI KELAS DAN MEMILIKI KELAS AKTIF
     // ==================================================
 
     if (
@@ -143,8 +161,6 @@ function konteks_akses_pelanggaran(mysqli $koneksi, bool $wali_saja = false): ar
         'role' => $role,
         'guru_id' => $guru_id,
         'kelas_ids' => $kelas_ids,
-
-        // HANYA ROLE GURU_WALI_KELAS YANG DIANGGAP WALI
         'is_wali' => ($role === 'guru_wali_kelas'),
     ];
 }

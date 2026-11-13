@@ -40,6 +40,8 @@ if (!function_exists('normalisasi_role')) {
         $alias_wali = [
             'wali_kelas',
             'walikelas',
+            'wali kelas',
+            'wali-kelas',
             'guru wali kelas',
             'guru_wali_kelas',
             'guru-wali-kelas'
@@ -249,6 +251,7 @@ $hak_akses_halaman = [
     // ========================================
 
     'laporan_guru.php' => [
+        'admin',
         'guru_wali_kelas'
     ],
 

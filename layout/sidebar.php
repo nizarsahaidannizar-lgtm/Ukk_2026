@@ -95,14 +95,10 @@ if (!function_exists('menu_aktif')) {
                 'tambah_penempatan_siswa',
                 'edit_penempatan_siswa',
                 'hapus_penempatan_siswa',
-
-                // NAMA FILE SESUAI PROJECT
                 'edit_penempatan',
                 'proses_simpan_penempatan',
                 'proses_edit_penempatan',
                 'proses_hapus_penempatan',
-
-                // NAMA FILE TAMBAHAN
                 'proses_penempatan_siswa',
                 'proses_tambah_penempatan_siswa',
                 'proses_edit_penempatan_siswa'
@@ -204,6 +200,14 @@ if (!function_exists('menu_aktif')) {
             'kelas_saya' => [
                 'kelas_saya',
                 'detail_siswa_kelas'
+            ],
+
+            // ======================================
+            // LAPORAN WALI KELAS
+            // ======================================
+
+            'laporan_guru' => [
+                'laporan_guru'
             ]
         ];
 
@@ -523,6 +527,7 @@ if (!function_exists('menu_aktif')) {
             </li>
 
             <?php if ($role_wali): ?>
+
                 <li>
                     <a href="<?= $base_url ?>guru/kelas_saya.php"
                        class="nav-link <?= menu_aktif('kelas_saya.php', $current_page) ?>">
@@ -530,6 +535,16 @@ if (!function_exists('menu_aktif')) {
                         Kelas Saya
                     </a>
                 </li>
+
+                <!-- MENU LAPORAN WALI KELAS -->
+                <li>
+                    <a href="<?= $base_url ?>guru/laporan_guru.php"
+                       class="nav-link <?= menu_aktif('laporan_guru.php', $current_page) ?>">
+                        <i class="fa-solid fa-file-lines"></i>
+                        Laporan
+                    </a>
+                </li>
+
             <?php endif; ?>
 
         </ul>
@@ -543,7 +558,7 @@ if (!function_exists('menu_aktif')) {
 
         <ul class="nav nav-pills flex-column mb-0">
 
-            <?php if (!$role_wali): ?>
+            <?php if ($role === 'admin'): ?>
                 <li>
                     <a href="<?= $base_url ?>about_me.php"
                        class="nav-link <?= menu_aktif('about_me.php', $current_page) ?>">
