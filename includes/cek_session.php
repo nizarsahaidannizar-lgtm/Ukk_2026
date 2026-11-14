@@ -461,7 +461,7 @@ $aturan_batas_angka = [
         'siswa_id' => ['min' => 1, 'max' => 2147483647],
         'tahun_ajaran_id' => ['min' => 1, 'max' => 2147483647],
         'kelas_id' => ['min' => 1, 'max' => 2147483647],
-        'status_aktif' => ['min' => 0, 'max' => 1]
+        'status_aktif' => ['min' => 0, 'max' => 1],
     ],
 
     'edit_penempatan.php' => [

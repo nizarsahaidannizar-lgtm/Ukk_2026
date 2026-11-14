@@ -328,7 +328,10 @@ if (!$hasil) {
                                             <?= htmlspecialchars($row['jurusan'] ?? '-'); ?>
                                         </td>
 
+                                        
+
                                         <td class="text-center">
+
 
                                             <?php if ((int)$row['status_aktif'] === 1): ?>
                                                 <span class="badge bg-success px-2 py-1 rounded">
