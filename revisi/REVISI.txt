@@ -4,7 +4,7 @@ REVISI
 3.tahun ajaran harus tahun yang aktifpada fitur oenemoatan siswa
 4.ketika siswa sudah di tindak maka di menu Tindakan siswa harus tidak ada dan pindah ke Riwayat
 5.cetak laporan untuk mengcetak file nya itu kurang rapih
-
+6.pas di edit data siswa status di non aktif kan nah pas di penempatan siswa itu masih aktif harus nya engga aktif juga
 
 Kelola siswa,kelola guru,kelola kelas,kelola tahun ajaran,penempatan siswa,kelola wali kelas,
 kategori pelanggaran,jenis pelanggaran,laporan,riwayat,about me,catat pelanggaran,tindakan,rekap poin,kelas saya,
