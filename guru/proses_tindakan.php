@@ -153,8 +153,9 @@ mysqli_stmt_bind_param(
 
 if (mysqli_stmt_execute($stmt)) {
 
-    $_SESSION['pesan_sukses'] =
-        'Tindak lanjut berhasil disimpan.';
+    $_SESSION['pesan_sukses'] = ($status === 'Selesai')
+        ? 'Tindakan selesai. Data telah dipindahkan ke menu Riwayat.'
+        : 'Tindak lanjut berhasil disimpan.';
 
 } else {
 

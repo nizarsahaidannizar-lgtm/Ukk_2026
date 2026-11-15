@@ -2,6 +2,7 @@
 // proses_tambah_kelas.php
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
+batasi_akses(['admin']);
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: tambah_kelas.php');

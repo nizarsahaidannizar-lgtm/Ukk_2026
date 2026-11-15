@@ -51,8 +51,9 @@ if (!$data) {
 // ======================================
 
 $siswa = mysqli_query($koneksi, "
-    SELECT id, nis, nama
+    SELECT id, nis, nama, status_aktif
     FROM t_siswa
+    WHERE status_aktif = 1 OR id = " . (int)$data['siswa_id'] . "
     ORDER BY nama ASC
 ");
 
@@ -73,7 +74,9 @@ $kelas = mysqli_query($koneksi, "
 $tahun = mysqli_query($koneksi, "
     SELECT id, nama
     FROM t_tahun_ajaran
-    ORDER BY nama ASC
+    WHERE status_aktif = 1
+    ORDER BY tanggal_mulai DESC, id DESC
+    LIMIT 1
 ");
 
 if (!$siswa || !$kelas || !$tahun) {
@@ -97,6 +100,7 @@ if (!$siswa || !$kelas || !$tahun) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="stylesheet" href="layout/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 
 </head>
 
@@ -155,6 +159,7 @@ if (!$siswa || !$kelas || !$tahun) {
                                 </label>
 
                                 <select name="siswa_id"
+                                        id="pilihSiswaEdit"
                                         class="form-select"
                                         required>
 
@@ -165,7 +170,7 @@ if (!$siswa || !$kelas || !$tahun) {
                                         <option value="<?= (int)$s['id']; ?>"
                                             <?= $s['id'] == $data['siswa_id'] ? 'selected' : ''; ?>>
 
-                                            <?= htmlspecialchars($s['nis'].' - '.$s['nama']); ?>
+                                            <?= htmlspecialchars($s['nis'].' - '.$s['nama'].((int)$s['status_aktif'] === 1 ? '' : ' (Nonaktif)')); ?>
 
                                         </option>
 
@@ -214,23 +219,15 @@ if (!$siswa || !$kelas || !$tahun) {
                                     Tahun Ajaran
                                 </label>
 
-                                <select name="tahun_ajaran_id"
-                                        class="form-select"
-                                        required>
-
-                                    <option value="">Pilih Tahun Ajaran</option>
-
-                                    <?php while ($t = mysqli_fetch_assoc($tahun)) { ?>
-
-                                        <option value="<?= (int)$t['id']; ?>"
-                                            <?= $t['id'] == $data['tahun_ajaran_id'] ? 'selected' : ''; ?>>
-
-                                            <?= htmlspecialchars($t['nama']); ?>
-
+                                <select name="tahun_ajaran_id" class="form-select" required>
+                                    <?php if ($tahun && mysqli_num_rows($tahun) > 0): ?>
+                                        <?php $ta_aktif = mysqli_fetch_assoc($tahun); ?>
+                                        <option value="<?= (int)$ta_aktif['id']; ?>" selected>
+                                            <?= htmlspecialchars($ta_aktif['nama']); ?> (Aktif)
                                         </option>
-
-                                    <?php } ?>
-
+                                    <?php else: ?>
+                                        <option value="" selected disabled>Belum ada tahun ajaran aktif</option>
+                                    <?php endif; ?>
                                 </select>
 
                             </div>
@@ -324,6 +321,16 @@ if (!$siswa || !$kelas || !$tahun) {
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+$(function () {
+    $('#pilihSiswaEdit').select2({
+        width: '100%',
+        placeholder: '-- Cari nama atau NIS siswa --'
+    });
+});
+</script>
 
 </body>
 </html>

@@ -32,6 +32,8 @@ $sql = "SELECT
         LEFT JOIN t_kelas k ON ps.kelas_id = k.id
         LEFT JOIN t_pelanggaran p ON ps.pelanggaran_id = p.id
 
+        WHERE LOWER(TRIM(COALESCE(ps.status, ''))) <> 'selesai'
+
         ORDER BY ps.tanggal DESC, ps.id DESC";
 
 $hasil = mysqli_query($koneksi, $sql);

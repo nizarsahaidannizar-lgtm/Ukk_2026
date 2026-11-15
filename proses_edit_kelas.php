@@ -2,6 +2,7 @@
 // proses_edit_kelas.php
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
+batasi_akses(['admin']);
 
 $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
 $nama = trim($_POST['nama'] ?? '');
@@ -12,8 +13,8 @@ $status_aktif = $_POST['status_aktif'] ?? '';
 if (
     !$id ||
     $nama === '' ||
-    $tingkat === '' ||
-    $jurusan === '' ||
+    !in_array($tingkat, ['X', 'XI', 'XII'], true) ||
+    $jurusan === '' || strlen($jurusan) > 100 ||
     !in_array((string)$status_aktif, ['0', '1'], true)
 ) {
     $_SESSION['pesan_error'] = 'Data kelas tidak valid. Periksa kembali isian Anda.';

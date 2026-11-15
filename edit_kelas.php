@@ -2,6 +2,7 @@
 // edit_kelas.php
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
+batasi_akses(['admin']);
 
 $id = (int) ($_GET['id'] ?? 0);
 
@@ -16,6 +17,8 @@ mysqli_stmt_execute($stmt);
 $hasil = mysqli_stmt_get_result($stmt);
 $data = mysqli_fetch_assoc($hasil);
 mysqli_stmt_close($stmt);
+
+$daftar_jurusan = mysqli_query($koneksi, "SELECT DISTINCT jurusan FROM t_kelas WHERE jurusan <> '' ORDER BY jurusan ASC");
 
 if (!$data) {
     header("Location: kelola_kelas.php");
@@ -85,23 +88,41 @@ if (!$data) {
                             <!-- Tingkat -->
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Tingkat</label>
-                                <input type="text" 
-                                       name="tingkat" 
-                                       class="form-control" 
-                                       value="<?= htmlspecialchars($data['tingkat']); ?>" 
-                                       placeholder="Contoh: X, XI, XII" 
-                                       required>
+                                <select name="tingkat" class="form-select" required>
+                                    <option value="">-- Pilih Tingkat --</option>
+                                    <?php foreach (['X', 'XI', 'XII'] as $tingkat): ?>
+                                        <option value="<?= $tingkat; ?>" <?= $data['tingkat'] === $tingkat ? 'selected' : ''; ?>>
+                                            <?= $tingkat; ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
 
                             <!-- Jurusan -->
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Jurusan</label>
-                                <input type="text" 
-                                       name="jurusan" 
-                                       class="form-control" 
-                                       value="<?= htmlspecialchars($data['jurusan']); ?>" 
-                                       placeholder="Contoh: Rekayasa Perangkat Lunak" 
-                                       required>
+                                <select name="jurusan" class="form-select" required>
+                                    <option value="">-- Pilih Jurusan --</option>
+                                    <?php
+                                    $jurusan_ada = false;
+                                    if ($daftar_jurusan):
+                                        while ($j = mysqli_fetch_assoc($daftar_jurusan)):
+                                            $jurusan_ada = true;
+                                    ?>
+                                        <option value="<?= htmlspecialchars($j['jurusan'], ENT_QUOTES, 'UTF-8'); ?>"
+                                            <?= $data['jurusan'] === $j['jurusan'] ? 'selected' : ''; ?>>
+                                            <?= htmlspecialchars($j['jurusan']); ?>
+                                        </option>
+                                    <?php
+                                        endwhile;
+                                    endif;
+                                    if (!$jurusan_ada && !empty($data['jurusan'])):
+                                    ?>
+                                        <option value="<?= htmlspecialchars($data['jurusan'], ENT_QUOTES, 'UTF-8'); ?>" selected>
+                                            <?= htmlspecialchars($data['jurusan']); ?>
+                                        </option>
+                                    <?php endif; ?>
+                                </select>
                             </div>
 
                             <!-- Status Aktif -->

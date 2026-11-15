@@ -2,6 +2,9 @@
 // tambah_kelas.php
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
+batasi_akses(['admin']);
+
+$daftar_jurusan = mysqli_query($koneksi, "SELECT DISTINCT jurusan FROM t_kelas WHERE jurusan <> '' ORDER BY jurusan ASC");
 ?>
 
 <!DOCTYPE html>
@@ -74,11 +77,21 @@ include 'config/koneksi.php';
                             <!-- Jurusan -->
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Jurusan</label>
-                                <input type="text" 
-                                       name="jurusan" 
-                                       class="form-control" 
-                                       placeholder="Contoh: Rekayasa Perangkat Lunak" 
-                                       required>
+                                <select name="jurusan" class="form-select" required>
+                                    <option value="" selected disabled>-- Pilih Jurusan --</option>
+                                    <?php $ada_jurusan = false; ?>
+                                    <?php if ($daftar_jurusan): ?>
+                                        <?php while ($j = mysqli_fetch_assoc($daftar_jurusan)): $ada_jurusan = true; ?>
+                                            <option value="<?= htmlspecialchars($j['jurusan'], ENT_QUOTES, 'UTF-8'); ?>">
+                                                <?= htmlspecialchars($j['jurusan']); ?>
+                                            </option>
+                                        <?php endwhile; ?>
+                                    <?php endif; ?>
+                                    <?php if (!$ada_jurusan): ?>
+                                        <option value="Rekayasa Perangkat Lunak">Rekayasa Perangkat Lunak</option>
+                                    <?php endif; ?>
+                                </select>
+                                <small class="text-muted">Pilihan jurusan mengikuti data jurusan yang sudah tersedia.</small>
                             </div>
 
                             <!-- Status Aktif -->

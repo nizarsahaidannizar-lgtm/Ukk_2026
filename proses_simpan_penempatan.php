@@ -47,8 +47,8 @@ $selesai = DateTime::createFromFormat('!Y-m-d', $tanggal_selesai);
 
 if (
     !$mulai ||
-    !$selesai ||
     $mulai->format('Y-m-d') !== $tanggal_mulai ||
+    !$selesai ||
     $selesai->format('Y-m-d') !== $tanggal_selesai ||
     $tanggal_selesai < $tanggal_mulai
 ) {
@@ -77,7 +77,7 @@ if (!$siswa_valid) {
 }
 
 // VALIDASI TAHUN AJARAN
-$sql = "SELECT id FROM t_tahun_ajaran WHERE id = ?";
+$sql = "SELECT id FROM t_tahun_ajaran WHERE id = ? AND status_aktif = 1";
 
 $stmt = mysqli_prepare($koneksi, $sql);
 

@@ -46,6 +46,7 @@ if ($role === 'admin') {
             LEFT JOIN t_siswa s ON ps.siswa_id = s.id
             LEFT JOIN t_kelas k ON ps.kelas_id = k.id
             LEFT JOIN t_pelanggaran p ON ps.pelanggaran_id = p.id
+            WHERE LOWER(TRIM(COALESCE(ps.status, ''))) = 'selesai'
             ORDER BY ps.updated_at DESC, ps.id DESC";
 
     $hasil = mysqli_query($koneksi, $sql);
@@ -101,6 +102,7 @@ if ($role === 'admin') {
             LEFT JOIN t_kelas k ON ps.kelas_id = k.id
             LEFT JOIN t_pelanggaran p ON ps.pelanggaran_id = p.id
             WHERE ps.guru_id = ?
+              AND LOWER(TRIM(COALESCE(ps.status, ''))) = 'selesai'
             ORDER BY ps.updated_at DESC, ps.id DESC";
 
     $stmt = mysqli_prepare($koneksi, $sql);

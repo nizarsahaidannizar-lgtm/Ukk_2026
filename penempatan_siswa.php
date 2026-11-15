@@ -39,7 +39,9 @@ $siswa = mysqli_query($koneksi, "
 $tahun = mysqli_query($koneksi, "
     SELECT id, nama
     FROM t_tahun_ajaran
-    ORDER BY nama ASC
+    WHERE status_aktif = 1
+    ORDER BY tanggal_mulai DESC, id DESC
+    LIMIT 1
 ");
 
 // AMBIL KELAS
@@ -65,7 +67,7 @@ $sql = "
         k.nama AS nama_kelas,
         k.tingkat,
         k.jurusan,
-        ks.status_aktif
+        CASE WHEN s.status_aktif = 1 AND ks.status_aktif = 1 THEN 1 ELSE 0 END AS status_aktif
     FROM t_kelas_siswa ks
     LEFT JOIN t_siswa s
         ON ks.siswa_id = s.id
@@ -97,6 +99,8 @@ if (!$hasil) {
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 
     <!-- DataTables Bootstrap 5 -->
     <link href="https://cdn.datatables.net/2.3.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
@@ -161,7 +165,7 @@ if (!$hasil) {
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Siswa</label>
 
-                                <select name="siswa_id" class="form-select" required>
+                                <select name="siswa_id" id="pilihSiswa" class="form-select" required>
                                     <option value="">-- Pilih Siswa --</option>
 
                                     <?php if ($siswa): ?>
@@ -180,21 +184,16 @@ if (!$hasil) {
                                 <label class="form-label fw-semibold">Tahun Ajaran</label>
 
                                 <select name="tahun_ajaran_id" class="form-select" required>
-                                    <option value="">-- Pilih Tahun Ajaran --</option>
-
                                     <?php if ($tahun && mysqli_num_rows($tahun) > 0): ?>
-                                        <?php while ($ta = mysqli_fetch_assoc($tahun)): ?>
-                                            <option value="<?= (int)$ta['id']; ?>">
-                                                <?= htmlspecialchars($ta['nama']); ?>
-                                            </option>
-                                        <?php endwhile; ?>
-                                    <?php else: ?>
-                                        <option value="" disabled>
-                                            Data tahun ajaran belum tersedia
+                                        <?php $ta_aktif = mysqli_fetch_assoc($tahun); ?>
+                                        <option value="<?= (int)$ta_aktif['id']; ?>" selected>
+                                            <?= htmlspecialchars($ta_aktif['nama']); ?> (Aktif)
                                         </option>
+                                    <?php else: ?>
+                                        <option value="" selected disabled>Belum ada tahun ajaran aktif</option>
                                     <?php endif; ?>
-
                                 </select>
+                                <small class="text-muted">Otomatis menggunakan tahun ajaran yang berstatus aktif.</small>
                             </div>
 
                             <!-- KELAS -->
@@ -408,9 +407,16 @@ if (!$hasil) {
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.bootstrap5.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
 $(document).ready(function () {
+
+    $('#pilihSiswa').select2({
+        width: '100%',
+        placeholder: '-- Cari nama atau NIS siswa --',
+        allowClear: true
+    });
 
     $('#tabelPenempatan').DataTable({
 
