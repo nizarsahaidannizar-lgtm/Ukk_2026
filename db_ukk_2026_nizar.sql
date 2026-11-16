@@ -686,7 +686,8 @@ ALTER TABLE `t_catatan_pelanggaran`
 --
 ALTER TABLE `t_guru`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`);
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `idx_guru_nama` (`nama`);
 
 --
 -- Indexes for table `t_jenis_pelanggaran`
@@ -699,7 +700,8 @@ ALTER TABLE `t_jenis_pelanggaran`
 -- Indexes for table `t_kelas`
 --
 ALTER TABLE `t_kelas`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_kelas_nama` (`nama`);
 
 --
 -- Indexes for table `t_kelas_siswa`
@@ -728,6 +730,7 @@ ALTER TABLE `t_pelanggaran_kategori`
 --
 ALTER TABLE `t_pelanggaran_siswa`
   ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_pelanggaran_tanggal` (`tanggal`),
   ADD KEY `tahun_ajaran_id` (`tahun_ajaran_id`),
   ADD KEY `siswa_id` (`siswa_id`),
   ADD KEY `kelas_id` (`kelas_id`),
@@ -739,7 +742,8 @@ ALTER TABLE `t_pelanggaran_siswa`
 -- Indexes for table `t_siswa`
 --
 ALTER TABLE `t_siswa`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_siswa_nama` (`nama`);
 
 --
 -- Indexes for table `t_tahun_ajaran`

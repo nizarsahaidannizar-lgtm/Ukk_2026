@@ -90,7 +90,11 @@ if (!$siswa || !$kelas || !$tahun) {
 
 <head>
 
-    <meta charset="UTF-8">
+
+<meta charset="UTF-8">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://code.jquery.com" crossorigin>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Edit Penempatan Siswa</title>

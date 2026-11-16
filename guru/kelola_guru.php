@@ -18,7 +18,12 @@ $hasil = mysqli_query($koneksi, $sql);
 <html lang="id">
 
 <head>
-    <meta charset="UTF-8">
+
+
+<meta charset="UTF-8">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://code.jquery.com" crossorigin>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelola Guru - SIP</title>
 
@@ -109,6 +114,12 @@ $hasil = mysqli_query($koneksi, $sql);
                                             <a href="edit_guru.php?id=<?= urlencode($row['id']) ?>"
                                                class="btn btn-warning btn-sm text-white px-2 py-1" title="Edit" aria-label="Edit guru">
                                                 <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                                            </a>
+
+                                            <!-- Tombol Reset Password Guru -->
+                                            <a href="reset_password_guru.php?id=<?= urlencode($row['id']) ?>"
+                                               class="btn btn-info btn-sm text-white px-2 py-1" title="Reset Password" aria-label="Reset password guru">
+                                                <i class="fa-solid fa-key" aria-hidden="true"></i>
                                             </a>
 
                                             <!-- Tombol Hapus Berbentuk Ikon -->

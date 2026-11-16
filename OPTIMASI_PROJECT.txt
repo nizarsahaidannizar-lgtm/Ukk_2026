@@ -1,0 +1,20 @@
+OPTIMASI PROJECT UKK_2026
+
+Perubahan yang dilakukan tanpa mengubah tampilan dan alur fitur:
+1. Filter tanggal dashboard admin dan guru diubah menjadi rentang tanggal agar indeks kolom tanggal dapat digunakan database.
+2. Grafik harian/bulanan dashboard memakai rentang tanggal pada klausa WHERE.
+3. Ditambahkan preconnect untuk domain CDN yang memang digunakan halaman, agar koneksi awal aset eksternal dapat dimulai lebih cepat.
+4. Ditambahkan indeks database untuk tanggal pelanggaran dan kolom nama yang sering dipakai untuk pengurutan.
+
+PENTING - DATABASE YANG SUDAH ADA:
+1. Backup database db_ukk_2026_nizar terlebih dahulu melalui phpMyAdmin (Export).
+2. Buka phpMyAdmin, pilih database db_ukk_2026_nizar.
+3. Pilih tab Import, lalu impor file optimasi_database.sql dari folder project ini.
+4. Jalankan hanya satu kali. File ini menambahkan indeks dan tidak menghapus/mengubah isi data.
+
+Untuk instalasi database baru, file db_ukk_2026_nizar.sql sudah memuat indeks tambahan tersebut.
+
+Catatan:
+- Desain, menu, form, hak akses, dan fungsi bisnis tidak sengaja diubah.
+- Kecepatan akhir juga dipengaruhi spesifikasi komputer, konfigurasi XAMPP/MySQL, browser, serta koneksi internet ke CDN.
+- Jika masih lambat setelah indeks diterapkan, periksa Apache dan MySQL di XAMPP serta tab Network pada Developer Tools browser untuk mengetahui request yang tertahan.

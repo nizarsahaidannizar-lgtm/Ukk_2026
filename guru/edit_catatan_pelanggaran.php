@@ -65,7 +65,10 @@ if (!$siswa || !$tahun || !$kelas || !$pelanggaran) {
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
+
+<meta charset="UTF-8">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Edit Catatan Pelanggaran - SIP</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">

@@ -99,18 +99,31 @@ $nama_bulan = [
 // FILTER DASHBOARD
 // ============================================
 
-$conditions = [];
-
-$conditions[] = "YEAR(ps.tanggal) = " . (int)$filter_tahun;
+$awal_tahun = sprintf('%04d-01-01', (int)$filter_tahun);
+$akhir_tahun = sprintf('%04d-01-01', (int)$filter_tahun + 1);
+$tanggal_awal = $awal_tahun;
+$tanggal_akhir = $akhir_tahun;
 
 if ($filter_bulan !== '') {
-    $conditions[] = "MONTH(ps.tanggal) = " . (int)$filter_bulan;
+    $awal_bulan = sprintf('%04d-%02d-01', (int)$filter_tahun, (int)$filter_bulan);
+    $tanggal_awal = $awal_bulan;
+    $tanggal_akhir = date('Y-m-d', strtotime($awal_bulan . ' +1 month'));
 }
 
 if ($filter_hari !== '') {
-    $conditions[] = "DAY(ps.tanggal) = " . (int)$filter_hari;
+    if (checkdate((int)$filter_bulan, (int)$filter_hari, (int)$filter_tahun)) {
+        $tanggal_awal = sprintf('%04d-%02d-%02d', (int)$filter_tahun, (int)$filter_bulan, (int)$filter_hari);
+        $tanggal_akhir = date('Y-m-d', strtotime($tanggal_awal . ' +1 day'));
+    } else {
+        $tanggal_awal = '1000-01-01';
+        $tanggal_akhir = '1000-01-02';
+    }
 }
 
+$conditions = [
+    "ps.tanggal >= '" . $tanggal_awal . "'",
+    "ps.tanggal < '" . $tanggal_akhir . "'"
+];
 $where_sql = "WHERE " . implode(' AND ', $conditions);
 
 // ============================================
@@ -193,8 +206,8 @@ if ($filter_bulan !== '') {
             DAY(ps.tanggal) AS label,
             COUNT(*) AS total
          FROM t_pelanggaran_siswa ps
-         WHERE YEAR(ps.tanggal) = " . (int)$filter_tahun . "
-           AND MONTH(ps.tanggal) = " . (int)$filter_bulan . "
+         WHERE ps.tanggal >= '" . sprintf('%04d-%02d-01', (int)$filter_tahun, (int)$filter_bulan) . "'
+           AND ps.tanggal < '" . date('Y-m-d', strtotime(sprintf('%04d-%02d-01', (int)$filter_tahun, (int)$filter_bulan) . ' +1 month')) . "'
          GROUP BY DAY(ps.tanggal)
          ORDER BY DAY(ps.tanggal)"
     );
@@ -244,7 +257,8 @@ if ($filter_bulan !== '') {
             MONTH(ps.tanggal) AS label,
             COUNT(*) AS total
          FROM t_pelanggaran_siswa ps
-         WHERE YEAR(ps.tanggal) = " . (int)$filter_tahun . "
+         WHERE ps.tanggal >= '" . $awal_tahun . "'
+           AND ps.tanggal < '" . $akhir_tahun . "'
          GROUP BY MONTH(ps.tanggal)
          ORDER BY MONTH(ps.tanggal)"
     );
@@ -309,7 +323,10 @@ if ($rekap_error) {
 <html lang="id">
 
 <head>
-    <meta charset="UTF-8">
+
+<meta charset="UTF-8">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Dashboard Guru - SIP</title>
