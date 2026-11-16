@@ -262,13 +262,15 @@ $hak_akses_halaman = [
     'kelas_saya.php' => [
         'guru_wali_kelas'
     ],
+// ========================================
+// KHUSUS ADMIN
+// ========================================
 
-    // ========================================
-    // KHUSUS ADMIN
-    // ========================================
+'laporan.php' => ['admin'],
 
-    'laporan.php' => ['admin'],
-
+// RESET PASSWORD GURU
+'reset_password_guru.php' => ['admin'],
+'proses_reset_password_guru.php' => ['admin'],
     // ========================================
     // ADMIN, GURU, DAN WALI KELAS
     // ========================================

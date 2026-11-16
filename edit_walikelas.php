@@ -1,50 +1,50 @@
+
 <?php
 // edit_walikelas.php
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
-require_once 'includes/tahun_ajaran.php';
 
 $id = (int) ($_GET['id'] ?? 0);
 
-// Perbaikan nama tabel sesuai konvensi: t_wali_kelas
+// Ambil data wali kelas
 $stmt = mysqli_prepare(
     $koneksi,
     "SELECT * FROM t_wali_kelas WHERE id = ?"
 );
+
 mysqli_stmt_bind_param($stmt, "i", $id);
 mysqli_stmt_execute($stmt);
 
 $hasil = mysqli_stmt_get_result($stmt);
 $data = mysqli_fetch_assoc($hasil);
+mysqli_stmt_close($stmt);
 
 if (!$data) {
     header("Location: kelola_walikelas.php");
     exit();
 }
 
-if (!normalisasi_tahun_ajaran_aktif($koneksi)) {
-    error_log('Gagal menormalisasi tahun ajaran aktif pada form edit wali kelas.');
-}
-
-$tahun_aktif_stmt = mysqli_prepare(
-    $koneksi,
-    "SELECT id FROM t_tahun_ajaran WHERE id = ? AND status_aktif = 1"
-);
-mysqli_stmt_bind_param($tahun_aktif_stmt, 'i', $data['tahun_ajaran_id']);
-mysqli_stmt_execute($tahun_aktif_stmt);
-$tahun_saat_ini_aktif = mysqli_stmt_get_result($tahun_aktif_stmt)->num_rows > 0;
-mysqli_stmt_close($tahun_aktif_stmt);
+// ==================================================
+// AMBIL TAHUN AJARAN YANG SEDANG AKTIF
+// ==================================================
 
 $tahun = mysqli_query(
     $koneksi,
     "SELECT id, nama FROM t_tahun_ajaran
      WHERE status_aktif = 1
-     ORDER BY tanggal_mulai DESC, id DESC"
+     ORDER BY tanggal_mulai DESC, id DESC
+     LIMIT 1"
 );
+
+$tahun_aktif = ($tahun) ? mysqli_fetch_assoc($tahun) : null;
+
+// AMBIL SEMUA KELAS
 $kelas = mysqli_query(
     $koneksi,
     "SELECT id, nama FROM t_kelas ORDER BY nama ASC"
 );
+
+// AMBIL SEMUA GURU
 $guru = mysqli_query(
     $koneksi,
     "SELECT id, nama FROM t_guru ORDER BY nama ASC"
@@ -93,25 +93,39 @@ $guru = mysqli_query(
                     <h5 class="card-title m-0 fw-bold">Form Edit Wali Kelas</h5>
                 </div>
                 <div class="card-body p-4">
-                    
+
+                    <?php if (!$tahun_aktif) { ?>
+
+                        <div class="alert alert-danger">
+                            Tidak ada tahun ajaran yang aktif.
+                            Silakan aktifkan tahun ajaran terlebih dahulu.
+                        </div>
+
+                    <?php } else { ?>
+
                     <form action="proses_edit_walikelas.php" method="POST">
-                        <input type="hidden" name="id" value="<?= htmlspecialchars($data['id']); ?>">
+
+                        <input type="hidden" name="id" value="<?= (int)$data['id']; ?>">
+
+                        <!-- TAHUN AJARAN OTOMATIS -->
+                        <input type="hidden"
+                               name="tahun_ajaran_id"
+                               value="<?= (int)$tahun_aktif['id']; ?>">
 
                         <div class="row g-3">
-                            
+
                             <!-- Tahun Ajaran -->
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Tahun Ajaran</label>
-                                <select name="tahun_ajaran_id" class="form-select" required>
-                                    <?php if (!$tahun_saat_ini_aktif) { ?>
-                                        <option value="" selected disabled>-- Pilih Tahun Ajaran Aktif --</option>
-                                    <?php } ?>
-                                    <?php while ($row = mysqli_fetch_assoc($tahun)) { ?>
-                                        <option value="<?= $row['id']; ?>" <?= ($row['id'] == $data['tahun_ajaran_id']) ? 'selected' : ''; ?>>
-                                            <?= htmlspecialchars($row['nama']); ?>
-                                        </option>
-                                    <?php } ?>
-                                </select>
+
+                                <input type="text"
+                                       class="form-control"
+                                       value="<?= htmlspecialchars($tahun_aktif['nama']); ?>"
+                                       readonly>
+
+                                <small class="text-muted">
+                                    Tahun ajaran mengikuti tahun ajaran yang sedang aktif.
+                                </small>
                             </div>
 
                             <!-- Kelas -->
@@ -119,7 +133,7 @@ $guru = mysqli_query(
                                 <label class="form-label fw-semibold">Kelas</label>
                                 <select name="kelas_id" class="form-select" required>
                                     <?php while ($row = mysqli_fetch_assoc($kelas)) { ?>
-                                        <option value="<?= $row['id']; ?>" <?= ($row['id'] == $data['kelas_id']) ? 'selected' : ''; ?>>
+                                        <option value="<?= (int)$row['id']; ?>" <?= ($row['id'] == $data['kelas_id']) ? 'selected' : ''; ?>>
                                             <?= htmlspecialchars($row['nama']); ?>
                                         </option>
                                     <?php } ?>
@@ -131,7 +145,7 @@ $guru = mysqli_query(
                                 <label class="form-label fw-semibold">Guru</label>
                                 <select name="guru_id" class="form-select" required>
                                     <?php while ($row = mysqli_fetch_assoc($guru)) { ?>
-                                        <option value="<?= $row['id']; ?>" <?= ($row['id'] == $data['guru_id']) ? 'selected' : ''; ?>>
+                                        <option value="<?= (int)$row['id']; ?>" <?= ($row['id'] == $data['guru_id']) ? 'selected' : ''; ?>>
                                             <?= htmlspecialchars($row['nama']); ?>
                                         </option>
                                     <?php } ?>
@@ -150,20 +164,20 @@ $guru = mysqli_query(
                             <!-- Tanggal Mulai -->
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Tanggal Mulai</label>
-                                <input type="date" 
-                                       name="tanggal_mulai" 
-                                       class="form-control" 
-                                       value="<?= htmlspecialchars($data['tanggal_mulai']); ?>" 
+                                <input type="date"
+                                       name="tanggal_mulai"
+                                       class="form-control"
+                                       value="<?= htmlspecialchars($data['tanggal_mulai']); ?>"
                                        required>
                             </div>
 
                             <!-- Tanggal Selesai -->
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Tanggal Selesai</label>
-                                <input type="date" 
-                                       name="tanggal_selesai" 
-                                       class="form-control" 
-                                       value="<?= htmlspecialchars($data['tanggal_selesai']); ?>" 
+                                <input type="date"
+                                       name="tanggal_selesai"
+                                       class="form-control"
+                                       value="<?= htmlspecialchars($data['tanggal_selesai']); ?>"
                                        required>
                             </div>
 
@@ -179,6 +193,8 @@ $guru = mysqli_query(
 
                         </div>
                     </form>
+
+                    <?php } ?>
 
                 </div>
             </div>

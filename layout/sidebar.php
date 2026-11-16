@@ -12,12 +12,43 @@ $current_page = strtolower(
 
 $base_url = '/Ukk_2026/';
 
-$role = strtolower(trim($_SESSION['role'] ?? ''));
+// ============================================
+// NORMALISASI ROLE
+// ============================================
 
-if (function_exists('normalisasi_role')) {
-    $role = normalisasi_role($role);
+if (!function_exists('ambil_role_sidebar')) {
+    function ambil_role_sidebar()
+    {
+        $role = strtolower(trim($_SESSION['role'] ?? ''));
+
+        if (function_exists('normalisasi_role')) {
+            $role = normalisasi_role($role);
+        }
+
+        $role = strtolower(trim($role));
+
+        // Samakan beberapa kemungkinan penulisan role wali kelas
+        $alias_wali = [
+            'wali kelas',
+            'wali_kelas',
+            'wali-kelas',
+            'guru wali kelas',
+            'guru wali_kelas',
+            'guru-wali-kelas',
+            'guru_walikelas'
+        ];
+
+        if (in_array($role, $alias_wali, true)) {
+            $role = 'guru_wali_kelas';
+        }
+
+        return $role;
+    }
 }
 
+$role = ambil_role_sidebar();
+
+$role_admin = ($role === 'admin');
 $role_guru = ($role === 'guru');
 $role_wali = ($role === 'guru_wali_kelas');
 
@@ -27,8 +58,8 @@ $role_wali = ($role === 'guru_wali_kelas');
 
 if (!function_exists('menu_aktif')) {
 
-    function menu_aktif($menu, $current_page) {
-
+    function menu_aktif($menu, $current_page)
+    {
         $menu = basename($menu);
         $menu = strtolower(pathinfo($menu, PATHINFO_FILENAME));
 
@@ -46,16 +77,17 @@ if (!function_exists('menu_aktif')) {
                 'dashboard'
             ],
 
-            'kelola_guru' => [
-                'kelola_guru',
-                'tambah_guru',
-                'edit_guru',
-                'hapus_guru',
-                'proses_tambah_guru',
-                'proses_edit_guru',
-                'proses_hapus_guru'
-            ],
-
+        'kelola_guru' => [
+    'kelola_guru',
+    'tambah_guru',
+    'edit_guru',
+    'hapus_guru',
+    'proses_tambah_guru',
+    'proses_edit_guru',
+    'proses_hapus_guru',
+    'reset_password_guru',
+    'proses_reset_password_guru'
+],
             'kelola_siswa' => [
                 'kelola_siswa',
                 'tambah_siswa',
@@ -215,11 +247,7 @@ if (!function_exists('menu_aktif')) {
         // TENTUKAN KELOMPOK BERDASARKAN ROLE
         // ======================================
 
-        $role = strtolower(trim($_SESSION['role'] ?? ''));
-
-        if (function_exists('normalisasi_role')) {
-            $role = normalisasi_role($role);
-        }
+        $role = ambil_role_sidebar();
 
         if ($role === 'admin') {
             $kelompok_menu = $kelompok_admin;
@@ -387,7 +415,7 @@ if (!function_exists('menu_aktif')) {
     <hr>
 
     <!-- MENU ADMIN -->
-    <?php if ($role === 'admin'): ?>
+    <?php if ($role_admin): ?>
 
         <ul class="nav nav-pills flex-column mb-0">
 
@@ -526,6 +554,7 @@ if (!function_exists('menu_aktif')) {
                 </a>
             </li>
 
+            <!-- MENU KHUSUS WALI KELAS -->
             <?php if ($role_wali): ?>
 
                 <li>
@@ -536,7 +565,6 @@ if (!function_exists('menu_aktif')) {
                     </a>
                 </li>
 
-                <!-- MENU LAPORAN WALI KELAS -->
                 <li>
                     <a href="<?= $base_url ?>guru/laporan_guru.php"
                        class="nav-link <?= menu_aktif('laporan_guru.php', $current_page) ?>">
@@ -558,7 +586,7 @@ if (!function_exists('menu_aktif')) {
 
         <ul class="nav nav-pills flex-column mb-0">
 
-            <?php if ($role === 'admin'): ?>
+            <?php if ($role_admin): ?>
                 <li>
                     <a href="<?= $base_url ?>about_me.php"
                        class="nav-link <?= menu_aktif('about_me.php', $current_page) ?>">

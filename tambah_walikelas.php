@@ -7,23 +7,17 @@ include 'config/koneksi.php';
 // HANYA ADMIN YANG BISA MENGAKSES
 batasi_akses(['admin']);
 
-// AKTIFKAN SEMUA TAHUN AJARAN
-$update_tahun = mysqli_query($koneksi, "
-    UPDATE t_tahun_ajaran
-    SET status_aktif = 1
-");
-
-if (!$update_tahun) {
-    error_log('Gagal mengaktifkan tahun ajaran: ' . mysqli_error($koneksi));
-}
-
-// AMBIL SEMUA TAHUN AJARAN
+// AMBIL TAHUN AJARAN YANG AKTIF
 $tahun = mysqli_query(
     $koneksi,
     "SELECT id, nama
      FROM t_tahun_ajaran
-     ORDER BY tanggal_mulai ASC, id ASC"
+     WHERE status_aktif = 1
+     ORDER BY tanggal_mulai DESC, id DESC
+     LIMIT 1"
 );
+
+$tahun_aktif = ($tahun) ? mysqli_fetch_assoc($tahun) : null;
 
 // AMBIL SEMUA KELAS
 $kelas = mysqli_query(
@@ -88,7 +82,21 @@ $guru = mysqli_query(
 
                 <div class="card-body p-4">
 
+                    <?php if (!$tahun_aktif) { ?>
+
+                        <div class="alert alert-danger">
+                            Tidak ada tahun ajaran yang aktif.
+                            Silakan aktifkan tahun ajaran terlebih dahulu.
+                        </div>
+
+                    <?php } else { ?>
+
                     <form action="proses_tambah_walikelas.php" method="POST">
+
+                        <!-- TAHUN AJARAN OTOMATIS -->
+                        <input type="hidden"
+                               name="tahun_ajaran_id"
+                               value="<?= (int)$tahun_aktif['id']; ?>">
 
                         <div class="row g-3">
 
@@ -98,21 +106,13 @@ $guru = mysqli_query(
                                     Tahun Ajaran
                                 </label>
 
-                                <select name="tahun_ajaran_id" class="form-select" required>
-                                    <option value="">-- Pilih Tahun Ajaran --</option>
-
-                                    <?php if ($tahun && mysqli_num_rows($tahun) > 0) { ?>
-                                        <?php while ($row = mysqli_fetch_assoc($tahun)) { ?>
-                                            <option value="<?= (int)$row['id']; ?>">
-                                                <?= htmlspecialchars($row['nama']); ?>
-                                            </option>
-                                        <?php } ?>
-                                    <?php } ?>
-
-                                </select>
+                                <input type="text"
+                                       class="form-control"
+                                       value="<?= htmlspecialchars($tahun_aktif['nama']); ?>"
+                                       readonly>
 
                                 <small class="text-muted">
-                                    Silakan pilih tahun ajaran.
+                                    Tahun ajaran diambil otomatis dari tahun ajaran aktif.
                                 </small>
                             </div>
 
@@ -210,6 +210,8 @@ $guru = mysqli_query(
                         </div>
 
                     </form>
+
+                    <?php } ?>
 
                 </div>
             </div>

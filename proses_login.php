@@ -38,14 +38,29 @@ $sql = "
 $stmt = mysqli_prepare($koneksi, $sql);
 
 if (!$stmt) {
-    die("Gagal menyiapkan query login: " . mysqli_error($koneksi));
+    error_log("Gagal menyiapkan query login: " . mysqli_error($koneksi));
+
+    $_SESSION['pesan_error'] = "Terjadi kesalahan sistem. Silakan coba lagi.";
+    header("Location: login.php");
+    exit();
 }
 
 mysqli_stmt_bind_param($stmt, "s", $email);
-mysqli_stmt_execute($stmt);
+
+if (!mysqli_stmt_execute($stmt)) {
+    error_log("Gagal menjalankan query login: " . mysqli_stmt_error($stmt));
+
+    mysqli_stmt_close($stmt);
+
+    $_SESSION['pesan_error'] = "Terjadi kesalahan sistem. Silakan coba lagi.";
+    header("Location: login.php");
+    exit();
+}
 
 $result = mysqli_stmt_get_result($stmt);
 $user = mysqli_fetch_assoc($result);
+
+mysqli_stmt_close($stmt);
 
 if ($user) {
 
@@ -53,7 +68,10 @@ if ($user) {
     $password_db = (string) ($user['password'] ?? '');
 
     // Verifikasi password hash
-    $password_valid = password_verify($password, $password_db);
+    $password_valid = (
+        !empty($password_db) &&
+        password_verify($password, $password_db)
+    );
 
     // Pemeriksaan akun guru
     $guru_aktif = true;

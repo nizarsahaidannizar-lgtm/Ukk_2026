@@ -4,20 +4,23 @@
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
+// Hanya admin yang bisa menambahkan wali kelas
+batasi_akses(['admin']);
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: tambah_walikelas.php');
     exit;
 }
 
-$tahun_ajaran_id = (int) ($_POST['tahun_ajaran_id'] ?? 0);
+// Ambil data dari form
 $kelas_id = (int) ($_POST['kelas_id'] ?? 0);
 $guru_id = (int) ($_POST['guru_id'] ?? 0);
 $tanggal_mulai = $_POST['tanggal_mulai'] ?? '';
 $tanggal_selesai = $_POST['tanggal_selesai'] ?? '';
 $status_aktif = $_POST['status_aktif'] ?? '';
 
+// Validasi input
 if (
-    !$tahun_ajaran_id ||
     !$kelas_id ||
     !$guru_id ||
     $tanggal_mulai === '' ||
@@ -39,35 +42,60 @@ if (
     $selesai->format('Y-m-d') !== $tanggal_selesai ||
     $tanggal_selesai < $tanggal_mulai
 ) {
-    $_SESSION['pesan_error'] = 'Tanggal selesai harus sama atau setelah tanggal mulai.';
+    $_SESSION['pesan_error'] =
+        'Tanggal selesai harus sama atau setelah tanggal mulai.';
     header('Location: tambah_walikelas.php');
     exit;
 }
 
-// Periksa tahun ajaran
+// ==================================================
+// AMBIL TAHUN AJARAN YANG SEDANG AKTIF
+// ==================================================
+
 $stmt = mysqli_prepare(
     $koneksi,
     "SELECT id FROM t_tahun_ajaran
-     WHERE id = ? AND status_aktif = 1"
+     WHERE status_aktif = 1
+     ORDER BY tanggal_mulai DESC
+     LIMIT 1"
 );
 
-mysqli_stmt_bind_param($stmt, 'i', $tahun_ajaran_id);
-mysqli_stmt_execute($stmt);
-$result = mysqli_stmt_get_result($stmt);
-$tahun_aktif = mysqli_num_rows($result) > 0;
-mysqli_stmt_close($stmt);
-
-if (!$tahun_aktif) {
-    $_SESSION['pesan_error'] = 'Pilih tahun ajaran yang aktif.';
+if (!$stmt) {
+    error_log(mysqli_error($koneksi));
+    $_SESSION['pesan_error'] = 'Gagal memeriksa tahun ajaran aktif.';
     header('Location: tambah_walikelas.php');
     exit;
 }
 
-// Ambil user_id berdasarkan guru yang dipilih
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+$data_tahun = mysqli_fetch_assoc($result);
+mysqli_stmt_close($stmt);
+
+if (!$data_tahun) {
+    $_SESSION['pesan_error'] =
+        'Tidak ditemukan tahun ajaran yang aktif.';
+    header('Location: tambah_walikelas.php');
+    exit;
+}
+
+$tahun_ajaran_id = (int) $data_tahun['id'];
+
+// ==================================================
+// AMBIL USER ID BERDASARKAN GURU YANG DIPILIH
+// ==================================================
+
 $stmt = mysqli_prepare(
     $koneksi,
     "SELECT user_id FROM t_guru WHERE id = ?"
 );
+
+if (!$stmt) {
+    error_log(mysqli_error($koneksi));
+    $_SESSION['pesan_error'] = 'Gagal memeriksa data guru.';
+    header('Location: tambah_walikelas.php');
+    exit;
+}
 
 mysqli_stmt_bind_param($stmt, 'i', $guru_id);
 mysqli_stmt_execute($stmt);
@@ -84,7 +112,10 @@ if (!$data_guru || empty($data_guru['user_id'])) {
 
 $user_id = (int) $data_guru['user_id'];
 
-// Simpan data wali kelas
+// ==================================================
+// SIMPAN DATA WALI KELAS
+// ==================================================
+
 $sql = "INSERT INTO t_wali_kelas
         (tahun_ajaran_id, kelas_id, guru_id,
          tanggal_mulai, tanggal_selesai, status_aktif, user_id)
@@ -94,7 +125,8 @@ $stmt = mysqli_prepare($koneksi, $sql);
 
 if (!$stmt) {
     error_log(mysqli_error($koneksi));
-    $_SESSION['pesan_error'] = 'Gagal menyiapkan penyimpanan wali kelas.';
+    $_SESSION['pesan_error'] =
+        'Gagal menyiapkan penyimpanan wali kelas.';
     header('Location: kelola_walikelas.php');
     exit;
 }
@@ -112,10 +144,12 @@ mysqli_stmt_bind_param(
 );
 
 if (mysqli_stmt_execute($stmt)) {
-    $_SESSION['pesan_sukses'] = 'Data wali kelas berhasil ditambahkan.';
+    $_SESSION['pesan_sukses'] =
+        'Data wali kelas berhasil ditambahkan menggunakan tahun ajaran aktif.';
 } else {
     error_log(mysqli_stmt_error($stmt));
-    $_SESSION['pesan_error'] = 'Wali kelas gagal ditambahkan.';
+    $_SESSION['pesan_error'] =
+        'Wali kelas gagal ditambahkan.';
 }
 
 mysqli_stmt_close($stmt);

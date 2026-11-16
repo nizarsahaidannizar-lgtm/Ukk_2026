@@ -1,20 +1,42 @@
+
 <?php
 // edit_guru.php
 include '../includes/cek_session.php';
 include '../config/koneksi.php';
 
 // Pastikan parameter ID disaring agar aman
-$id = mysqli_real_escape_string($koneksi, $_GET['id'] ?? '');
+$id = (int)($_GET['id'] ?? 0);
 
-$sql = "SELECT * FROM t_guru WHERE id = '$id'";
-$hasil = mysqli_query($koneksi, $sql);
+$sql = "
+    SELECT
+        g.*,
+        u.role AS role_akun
+    FROM t_guru g
+    LEFT JOIN t_users u ON u.id = g.user_id
+    WHERE g.id = ?
+    LIMIT 1
+";
 
-if (!$hasil || mysqli_num_rows($hasil) == 0) {
+$stmt = mysqli_prepare($koneksi, $sql);
+
+if (!$stmt) {
+    die("Gagal menyiapkan query: " . mysqli_error($koneksi));
+}
+
+mysqli_stmt_bind_param($stmt, "i", $id);
+mysqli_stmt_execute($stmt);
+
+$hasil = mysqli_stmt_get_result($stmt);
+$data = mysqli_fetch_assoc($hasil);
+
+mysqli_stmt_close($stmt);
+
+if (!$data) {
     header("Location: kelola_guru.php");
     exit();
 }
 
-$data = mysqli_fetch_assoc($hasil);
+$role_akun = strtolower(trim($data['role_akun'] ?? 'guru'));
 ?>
 
 <!DOCTYPE html>
@@ -55,23 +77,28 @@ $data = mysqli_fetch_assoc($hasil);
 
             <!-- CARD FORM EDIT GURU -->
             <div class="card shadow-sm border-0 rounded-3 mb-5">
+
                 <div class="card-header bg-white py-3">
                     <h5 class="card-title m-0 fw-bold">Form Edit Data Guru</h5>
                 </div>
+
                 <div class="card-body p-4">
-                    
+
                     <form action="proses_edit_guru.php" method="POST">
-                        <input type="hidden" name="id" value="<?= htmlspecialchars($data['id']); ?>">
+
+                        <input type="hidden" name="id"
+                               value="<?= htmlspecialchars($data['id']); ?>">
 
                         <div class="row g-3">
-                            
+
                             <!-- NIP -->
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">NIP</label>
-                                <input type="text" 
-                                       name="nip" 
-                                       class="form-control" 
-                                       value="<?= htmlspecialchars($data['nip']); ?>" 
+
+                                <input type="text"
+                                       name="nip"
+                                       class="form-control"
+                                       value="<?= htmlspecialchars($data['nip'] ?? ''); ?>"
                                        maxlength="18"
                                        inputmode="numeric"
                                        oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 18);"
@@ -82,10 +109,11 @@ $data = mysqli_fetch_assoc($hasil);
                             <!-- Nama Guru -->
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Nama Guru</label>
-                                <input type="text" 
-                                       name="nama" 
-                                       class="form-control" 
-                                       value="<?= htmlspecialchars($data['nama']); ?>" 
+
+                                <input type="text"
+                                       name="nama"
+                                       class="form-control"
+                                       value="<?= htmlspecialchars($data['nama'] ?? ''); ?>"
                                        maxlength="150"
                                        oninput="this.value = this.value.replace(/[0-9]/g, '');"
                                        title="Nama guru tidak boleh mengandung angka"
@@ -95,47 +123,84 @@ $data = mysqli_fetch_assoc($hasil);
                             <!-- Email -->
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Email</label>
-                                <input type="email" 
-                                       name="email" 
-                                       class="form-control" 
-                                       value="<?= htmlspecialchars($data['email']); ?>" 
+
+                                <input type="email"
+                                       name="email"
+                                       class="form-control"
+                                       value="<?= htmlspecialchars($data['email'] ?? ''); ?>"
                                        required>
                             </div>
 
                             <!-- Status Aktif -->
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Status Aktif</label>
+
                                 <select name="status_aktif" class="form-select" required>
-                                    <option value="1" <?= ($data['status_aktif'] == 1) ? 'selected' : ''; ?>>
+
+                                    <option value="1"
+                                        <?= ($data['status_aktif'] == 1) ? 'selected' : ''; ?>>
                                         Aktif
                                     </option>
-                                    <option value="0" <?= ($data['status_aktif'] == 0) ? 'selected' : ''; ?>>
+
+                                    <option value="0"
+                                        <?= ($data['status_aktif'] == 0) ? 'selected' : ''; ?>>
                                         Tidak Aktif
                                     </option>
+
                                 </select>
+                            </div>
+
+                            <!-- ROLE GURU -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Role Guru</label>
+
+                                <select name="role" class="form-select" required>
+
+                                    <option value="guru"
+                                        <?= ($role_akun === 'guru') ? 'selected' : ''; ?>>
+                                        Guru
+                                    </option>
+
+                                    <option value="guru_wali_kelas"
+                                        <?= ($role_akun === 'guru_wali_kelas') ? 'selected' : ''; ?>>
+                                        Wali Kelas
+                                    </option>
+
+                                </select>
+
+                                <small class="text-muted">
+                                    Pilih Guru atau Wali Kelas sesuai hak akses pengguna.
+                                </small>
                             </div>
 
                             <!-- User ID -->
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">User ID</label>
-                                <input type="number" 
-                                       name="user_id" 
-                                       class="form-control" 
-                                       value="<?= htmlspecialchars($data['user_id'] ?? ''); ?>" 
+
+                                <input type="number"
+                                       name="user_id"
+                                       class="form-control"
+                                       value="<?= htmlspecialchars($data['user_id'] ?? ''); ?>"
                                        placeholder="Opsional">
                             </div>
 
                             <!-- Tombol Aksi -->
                             <div class="col-12 mt-4">
-                                <button type="submit" class="btn btn-warning px-4 fw-semibold text-white">
+
+                                <button type="submit"
+                                        class="btn btn-warning px-4 fw-semibold text-white">
                                     Simpan
                                 </button>
-                                <a href="kelola_guru.php" class="btn btn-outline-secondary px-4 ms-2">
+
+                                <a href="kelola_guru.php"
+                                   class="btn btn-outline-secondary px-4 ms-2">
                                     Kembali
                                 </a>
+
                             </div>
 
                         </div>
+
                     </form>
 
                 </div>

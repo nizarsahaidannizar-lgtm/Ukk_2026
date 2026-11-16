@@ -15,7 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // Ambil data dari form
 $id = (int) ($_POST['id'] ?? 0);
-$tahun_ajaran_id = (int) ($_POST['tahun_ajaran_id'] ?? 0);
 $kelas_id = (int) ($_POST['kelas_id'] ?? 0);
 $guru_id = (int) ($_POST['guru_id'] ?? 0);
 $status_aktif = (int) ($_POST['status_aktif'] ?? 0);
@@ -25,7 +24,6 @@ $tanggal_selesai = $_POST['tanggal_selesai'] ?? '';
 // Validasi data
 if (
     $id <= 0 ||
-    $tahun_ajaran_id <= 0 ||
     $kelas_id <= 0 ||
     $guru_id <= 0 ||
     !in_array($status_aktif, [0, 1], true) ||
@@ -63,25 +61,37 @@ if (!$data_ada) {
     exit;
 }
 
-// Pastikan tahun ajaran tersedia dan aktif
+// Ambil tahun ajaran yang sedang aktif
 $cek_tahun = mysqli_prepare(
     $koneksi,
     "SELECT id FROM t_tahun_ajaran
-     WHERE id = ? AND status_aktif = 1"
+     WHERE status_aktif = 1
+     ORDER BY tanggal_mulai DESC, id DESC
+     LIMIT 1"
 );
 
-mysqli_stmt_bind_param($cek_tahun, "i", $tahun_ajaran_id);
-mysqli_stmt_execute($cek_tahun);
-
-$tahun_valid = mysqli_stmt_get_result($cek_tahun)->num_rows > 0;
-
-mysqli_stmt_close($cek_tahun);
-
-if (!$tahun_valid) {
-    $_SESSION['pesan_error'] = "Tahun ajaran yang dipilih tidak aktif.";
+if (!$cek_tahun) {
+    $_SESSION['pesan_error'] = "Gagal mengambil tahun ajaran aktif.";
     header("Location: kelola_walikelas.php");
     exit;
 }
+
+mysqli_stmt_execute($cek_tahun);
+
+$hasil_tahun = mysqli_stmt_get_result($cek_tahun);
+$data_tahun = mysqli_fetch_assoc($hasil_tahun);
+
+mysqli_stmt_close($cek_tahun);
+
+// Pastikan ada tahun ajaran aktif
+if (!$data_tahun) {
+    $_SESSION['pesan_error'] = "Tidak ada tahun ajaran yang aktif.";
+    header("Location: kelola_walikelas.php");
+    exit;
+}
+
+// Gunakan ID tahun ajaran aktif secara otomatis
+$tahun_ajaran_id = (int) $data_tahun['id'];
 
 // Proses update data
 $sql = "UPDATE t_wali_kelas SET
