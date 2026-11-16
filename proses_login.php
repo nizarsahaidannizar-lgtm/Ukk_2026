@@ -3,6 +3,7 @@
 session_start();
 include "config/koneksi.php";
 
+// Validasi input
 if (
     $_SERVER['REQUEST_METHOD'] !== 'POST' ||
     !isset($_POST['login']) ||
@@ -19,33 +20,54 @@ if (
 $email = trim($_POST['email']);
 $password = $_POST['password'];
 
-$stmt = mysqli_prepare(
-    $koneksi,
-    "SELECT id, name, email, password, role
-     FROM t_users
-     WHERE email = ?
-     LIMIT 1"
-);
+// Ambil akun dan status guru
+$sql = "
+    SELECT
+        u.id,
+        u.name,
+        u.email,
+        u.password,
+        u.role,
+        g.status_aktif
+    FROM t_users u
+    LEFT JOIN t_guru g ON g.user_id = u.id
+    WHERE u.email = ?
+    LIMIT 1
+";
+
+$stmt = mysqli_prepare($koneksi, $sql);
+
+if (!$stmt) {
+    die("Gagal menyiapkan query login: " . mysqli_error($koneksi));
+}
 
 mysqli_stmt_bind_param($stmt, "s", $email);
 mysqli_stmt_execute($stmt);
 
 $result = mysqli_stmt_get_result($stmt);
+$user = mysqli_fetch_assoc($result);
 
-if ($result && mysqli_num_rows($result) === 1) {
-
-    $user = mysqli_fetch_assoc($result);
-
-    $password_db = (string) ($user['password'] ?? '');
-
-    $password_valid =
-        password_verify($password, $password_db) ||
-        hash_equals($password_db, $password);
+if ($user) {
 
     $role = strtolower(trim($user['role'] ?? ''));
+    $password_db = (string) ($user['password'] ?? '');
+
+    // Verifikasi password hash
+    $password_valid = password_verify($password, $password_db);
+
+    // Pemeriksaan akun guru
+    $guru_aktif = true;
+
+    if ($role === 'guru' || $role === 'guru_wali_kelas') {
+        $guru_aktif = (
+            $user['status_aktif'] !== null &&
+            (int)$user['status_aktif'] === 1
+        );
+    }
 
     if (
         $password_valid &&
+        $guru_aktif &&
         in_array($role, ['admin', 'guru', 'guru_wali_kelas'], true)
     ) {
 
@@ -56,10 +78,10 @@ if ($result && mysqli_num_rows($result) === 1) {
         $_SESSION['id_user'] = $user['id'];
         $_SESSION['email'] = $user['email'];
         $_SESSION['nama'] = $user['name'];
+        $_SESSION['nama_user'] = $user['name'];
         $_SESSION['role'] = $role;
         $_SESSION['role_verified'] = true;
 
-        // PENGALIHAN DASHBOARD
         if ($role === 'admin') {
             header("Location: dashboard.php");
         } else {
@@ -67,11 +89,12 @@ if ($result && mysqli_num_rows($result) === 1) {
         }
 
         exit();
-
     }
 }
 
-$_SESSION['pesan_error'] = "Email atau password tidak valid.";
+$_SESSION['pesan_error'] =
+    "Email atau password tidak valid, atau akun guru tidak aktif.";
+
 header("Location: login.php");
 exit();
 ?>
