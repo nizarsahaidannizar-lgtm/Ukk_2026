@@ -9,3 +9,5 @@ REVISI
 Kelola siswa,kelola guru,kelola kelas,kelola tahun ajaran,penempatan siswa,kelola wali kelas,
 kategori pelanggaran,jenis pelanggaran,laporan,riwayat,about me,catat pelanggaran,tindakan,rekap poin,kelas saya,
 
+REVISI
+role wali kelas belum singkron soal nya menu laporan dan saya itu sudah edit guru pa aldi jadi wali kelas nah pas saya masuk lagi jadi berubah lagi ke guru mata pelajaran lagi

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 11, 2026 at 07:06 PM
+-- Generation Time: Nov 16, 2026 at 07:00 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -483,12 +483,12 @@ CREATE TABLE `t_tahun_ajaran` (
 --
 
 INSERT INTO `t_tahun_ajaran` (`id`, `nama`, `tanggal_mulai`, `tanggal_selesai`, `status_aktif`, `created_at`, `updated_at`) VALUES
-(105, '2023/2024', '2023-07-01', '2024-06-30', 1, '2026-11-11 14:21:28', '2026-11-11 18:00:07'),
-(106, '2024/2025', '2024-07-01', '2025-06-30', 1, '2026-11-11 14:21:28', '2026-11-11 18:00:07'),
-(107, '2025/2026', '2025-07-01', '2026-06-30', 1, '2026-11-11 14:21:28', '2026-11-11 18:00:07'),
-(108, '2026/2027', '2026-07-01', '2027-06-30', 1, '2026-11-11 14:21:28', '2026-11-11 18:00:07'),
-(109, '2027/2028', '2027-07-01', '2028-06-30', 1, '2026-11-11 14:21:28', '2026-11-11 18:00:07'),
-(110, '2028/2029', '2028-07-01', '2029-06-30', 1, '2026-11-11 14:21:28', '2026-11-11 18:05:56');
+(105, '2023/2024', '2023-07-01', '2024-06-30', 0, '2026-11-11 14:21:28', '2026-11-16 17:36:58'),
+(106, '2024/2025', '2024-07-01', '2025-06-30', 0, '2026-11-11 14:21:28', '2026-11-16 17:36:58'),
+(107, '2025/2026', '2025-07-01', '2026-06-30', 0, '2026-11-11 14:21:28', '2026-11-16 17:36:58'),
+(108, '2026/2027', '2026-07-01', '2027-06-30', 1, '2026-11-11 14:21:28', '2026-11-16 17:36:58'),
+(109, '2027/2028', '2027-07-01', '2028-06-30', 0, '2026-11-11 14:21:28', '2026-11-16 17:36:58'),
+(110, '2028/2029', '2028-07-01', '2029-06-30', 0, '2026-11-11 14:21:28', '2026-11-11 18:05:56');
 
 -- --------------------------------------------------------
 
@@ -568,67 +568,67 @@ CREATE TABLE `t_users` (
 --
 
 INSERT INTO `t_users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `role`, `created_at`, `updated_at`) VALUES
-(604, 'Administrator', 'admin@gmail.com', '2026-10-22 01:29:01', 'admin123', '', 'admin', '2026-10-22 01:29:01', '2026-10-22 01:29:01'),
-(609, 'Ai Nuryaldah, S.Pd', 'ai@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(610, 'Maya Permata Endah, S.Pd', 'maya@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(611, 'Dody Jaenudin, S.Pd', 'dody@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(612, 'Dedi Kardiman, S.Pd', 'dedi@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(613, 'Uca Musa Yusenda, S.Pd', 'uca@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(614, 'Drs. Ahmad Nur Mukhlis', 'ahmad@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(615, 'Drs. Heri', 'heri@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(617, 'H. Encep Maemun, S.T., M.Pd', 'encep@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(618, 'Opik', 'opik@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(619, 'Ida Farida, S.Pd', 'ida@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(620, 'Idah Mahmudah, S.Pd', 'idah@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(621, 'Drs. Muhamad Ali', 'muhamad@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(622, 'Helmi Ali Akbar, S.Pd.I', 'helmi@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(623, 'Syeni Suswarini, S.Pd', 'syeni@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(624, 'Wiwid Yulianti, S.Pd', 'wiwid@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(625, 'Ansor Muhajir, S.T', 'ansor@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(626, 'Ogi Gaosun Gias, S.Pd.I', 'ogi@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(627, 'Sandi Mulyana, S.Pd', 'sandi@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(628, 'Erna Suryani, S.Pd', 'erna@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(629, 'Ai Wahidah, S.Ag', 'ai.wahidah@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(630, 'Chandra Aditya Yusup, S.Pd', 'chandra@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(632, 'Asep Taufiq Hidayat, S.Kom', 'asep.taufiq@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(633, 'Rendy Ichsan Kusumah, S.T', 'rendy@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(634, 'Feri Rahmawan, S.Pd', 'feri@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(636, 'Yaneu Nurdian, S.Pd, M.Pd', 'yaneu@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(637, 'Ucu Muhammad Khoer N, S.Pd', 'ucu@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(638, 'Mira Dwi Rahmawati, S.Ag', 'mira@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(640, 'Eli Rosliah, S.Pd', 'eli@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(641, 'Isni Nur Fitriani, S.Pd', 'isni@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(642, 'Aanisah Putri Nur Aini, S.Pd', 'aanisah@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(643, 'Yusi Luthfiani, S.Sos.I', 'yusi@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(644, 'Lilis Rustandy Mawardi, S.Pd., M.Pd', 'lilis@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(645, 'Yusrin Noer Sabrina, S.Pd', 'yusrin@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(646, 'Senny Indayani, S.Pd', 'senny@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(647, 'Ilma Amalia, S.Pd', 'ilma@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(648, 'Alvira Sofwatunnisa, S.Pd', 'alvira@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(649, 'Risna Andriyani, S.Pd', 'risna@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(650, 'Dra. Tintin Noerhayati', 'tintin@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(651, 'Rizkia Fahira, S.Pd', 'rizkia@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(652, 'Frasetio', 'frasetio@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(653, 'Ratnaningsih Hati Aeni, S.Pd.', 'ratnaningsih@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(654, 'Dheny Darajatul Hasani, S.Pd.', 'dheny@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(655, 'Fahrullah, S.Pd', 'fahrullah@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(657, 'Fitri Fauziah, S.T', 'fitri@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(658, 'Nida Aulia, S.Pd', 'nida@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(659, 'Sri Nurrizki Putri Krisnadi, S.Pd', 'sri@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(660, 'Riesy Putri Navia, S.Kom', 'riesy@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(661, 'Rurry Febriani Maryadi, S.Pd', 'rurry@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(662, 'Irvan Rizal, S.Pd', 'irvan@gmail.com', '2026-11-04 03:55:33', 'guru123', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
-(671, 'Aan Andriana, S.T', 'aan@gmail.com', '2026-11-04 04:17:18', 'guru123', '', 'guru', '2026-11-04 04:17:18', '2026-11-09 07:17:56'),
-(672, 'Arif Kusmawan, S.Pd', 'arif@gmail.com', '2026-11-04 04:22:24', 'guru123', '', 'guru_wali_kelas', '2026-11-04 04:22:24', '2026-11-11 00:43:47'),
-(673, 'Wawan Kurniawan, S.Pd.I', 'wawan@gmail.com', '2026-11-04 04:23:36', 'guru123', '', 'guru', '2026-11-04 04:23:36', '2026-11-09 07:17:56'),
-(674, 'Ari Sandriana, S.Kom', 'ari@gmail.com', '2026-11-04 04:24:51', 'guru123', '', 'guru', '2026-11-04 04:24:51', '2026-11-09 07:17:56'),
-(675, 'Ansor Muhajir, S.T', 'ansor1@gmail.com', '2026-11-04 05:00:52', 'guru123', '', 'guru', '2026-11-04 05:00:52', '2026-11-09 07:17:56'),
-(676, 'Ansor Muhajir, S.T', 'ansor2@gmail.com', '2026-11-04 05:07:47', 'guru123', '', 'guru', '2026-11-04 05:07:47', '2026-11-09 07:17:56'),
-(677, 'inda Safitri', 'dinda@gmail.com', '2026-11-04 05:11:13', 'guru123', '', 'guru', '2026-11-04 05:11:13', '2026-11-09 07:17:56'),
-(678, 'Asep Bastaman', 'asep@gmail.com', '2026-11-04 05:20:04', 'guru123', '', 'guru', '2026-11-04 05:20:04', '2026-11-09 07:17:56'),
-(679, 'Aldi Maulana, S.Pd', 'aldi@gmail.com', '2026-11-09 07:25:47', 'guru123', '', 'guru_wali_kelas', '2026-11-09 07:25:47', '2026-11-09 07:27:03'),
-(681, 'Administrator', 'admin@gmail.com', '2026-11-07 19:22:20', 'guru123.', '', 'admin', '2026-11-07 19:22:20', '2026-11-07 19:22:20'),
-(682, 'Bella Anggraini', 'jekcunk4@gmail.com', '2026-11-07 19:31:37', 'guru123', '', 'guru', '2026-11-07 19:31:37', '2026-11-07 19:31:37'),
+(604, 'Administrator', 'admin@gmail.com', '2026-10-22 01:29:01', '$2y$10$1GUi89qZgsL4YXwh2ZhuJu.Kl4mqadH6tV9q3z9JhAHa1ErftmiZi', '', 'admin', '2026-10-22 01:29:01', '2026-10-22 01:29:01'),
+(609, 'Ai Nuryaldah, S.Pd', 'ai@gmail.com', '2026-11-04 03:55:33', '$2y$10$pu.FdvP6HHakhdLjZJtGxeYnfxHhihORNzId2K5zcMgvIEgvdKIw.', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(610, 'Maya Permata Endah, S.Pd', 'maya@gmail.com', '2026-11-04 03:55:33', '$2y$10$E0ImXTW7tGXiBiWhhYY4ruXLHoKEpluFY9kknYTdr/nejAt8RUmH6', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(611, 'Dody Jaenudin, S.Pd', 'dody@gmail.com', '2026-11-04 03:55:33', '$2y$10$zm8m4TD1AWwzG9dodEfdCek7AmZl3HZSeDFwDzmLz/GPhTWMfho7S', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(612, 'Dedi Kardiman, S.Pd', 'dedi@gmail.com', '2026-11-04 03:55:33', '$2y$10$Tu/4lf8hb7UkhDgUT.1IWuCX1FgH/jHJJv1VEN/jt8gS9wviaNJSu', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(613, 'Uca Musa Yusenda, S.Pd', 'uca@gmail.com', '2026-11-04 03:55:33', '$2y$10$S1pl2VxIUgGcriUYE/GOKeUy9e1FDMJx/sDTC0gpGQwep/rjfMK.2', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(614, 'Drs. Ahmad Nur Mukhlis', 'ahmad@gmail.com', '2026-11-04 03:55:33', '$2y$10$mCrYLNifSKGCOaOLin4hietNmasmiK/O6dfRs05.oD4lfN0tUu3AG', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(615, 'Drs. Heri', 'heri@gmail.com', '2026-11-04 03:55:33', '$2y$10$4VuGnkK8skMaFy5oQI0XIOyMFG0RpPS1XxFimy9ojUQWY9UpnEOsy', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(617, 'H. Encep Maemun, S.T., M.Pd', 'encep@gmail.com', '2026-11-04 03:55:33', '$2y$10$uxQ3x9xaXSURosQ0kVedRuvpQjtQmqoQuyKe9K.f4dNGVBOkg7Rj6', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(618, 'Opik', 'opik@gmail.com', '2026-11-04 03:55:33', '$2y$10$PlrHqCjrjW8FnN.Caa8z/OPxzJvn6zp0gytaYw9qxlSOhtffFzjWC', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(619, 'Ida Farida, S.Pd', 'ida@gmail.com', '2026-11-04 03:55:33', '$2y$10$JgNX.fpK.3U8aMPLWblko.VydS.zcghjnJEgCKyd.qF2SPobJNbAi', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(620, 'Idah Mahmudah, S.Pd', 'idah@gmail.com', '2026-11-04 03:55:33', '$2y$10$gZAFAMI8D6tKIQN/.4wvt.aOEN5hyaZ9FMvBlKXapp5zrcPJ33hKa', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(621, 'Drs. Muhamad Ali', 'muhamad@gmail.com', '2026-11-04 03:55:33', '$2y$10$t8HTTQKEdvz6T5Ee4DXBfeknY3BWaw1NYLv7fIeGgciy/gCdW26n.', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(622, 'Helmi Ali Akbar, S.Pd.I', 'helmi@gmail.com', '2026-11-04 03:55:33', '$2y$10$aP5CiJUDugNHdjDJ8HD6bejSHQAA5WmMCku6P2tbZzHg1/1c3VSTa', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(623, 'Syeni Suswarini, S.Pd', 'syeni@gmail.com', '2026-11-04 03:55:33', '$2y$10$4UDi6szPNf.5I4sLfK3BGOVuF54TRYDv2Km4hmuzZsOELlW5KlsIW', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(624, 'Wiwid Yulianti, S.Pd', 'wiwid@gmail.com', '2026-11-04 03:55:33', '$2y$10$nrKOEOSh50h.OglSbUlayuDpsEOxmh4YvoU8/wypQh/OpGK3EA9Z2', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(625, 'Ansor Muhajir, S.T', 'ansor@gmail.com', '2026-11-04 03:55:33', '$2y$10$NkZh3TW8vb/WPj1.V6ocqeaG//35DGmGmvaVQYzmOzuSrzu1JxSO2', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(626, 'Ogi Gaosun Gias, S.Pd.I', 'ogi@gmail.com', '2026-11-04 03:55:33', '$2y$10$0YXNaZdaqlha1BtXN8GpXukxgVrieFXlb4gGEZtkgwMlqRT6Yh4cq', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(627, 'Sandi Mulyana, S.Pd', 'sandi@gmail.com', '2026-11-04 03:55:33', '$2y$10$HeOcOQXzoupUBpyiA2rjWuaQOKhfocPfDHGIMyhsWv.8nnYeZh6Ee', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(628, 'Erna Suryani, S.Pd', 'erna@gmail.com', '2026-11-04 03:55:33', '$2y$10$SXZsQOTFBcB17GHxcHCzpesLZnfkpGWnp2OAfTq0PWHzfhxJvo5Om', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(629, 'Ai Wahidah, S.Ag', 'ai.wahidah@gmail.com', '2026-11-04 03:55:33', '$2y$10$pMqBUtV71dsn13ReqgwuxeOunKDxMdmig3ITWnvPHJSKd3v0a/q9i', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(630, 'Chandra Aditya Yusup, S.Pd', 'chandra@gmail.com', '2026-11-04 03:55:33', '$2y$10$dEHIuB8Zo6p6BkorBvKbLuMC0ebI0Jb4CIokiPf9LNg3ScL1JwKam', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(632, 'Asep Taufiq Hidayat, S.Kom', 'asep.taufiq@gmail.com', '2026-11-04 03:55:33', '$2y$10$L46.5xWzb0QDoe5LCsdfTe3kxwT/wI7MWvDoAKn0SAxbBnnDF8x3e', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(633, 'Rendy Ichsan Kusumah, S.T', 'rendy@gmail.com', '2026-11-04 03:55:33', '$2y$10$0iz3lZcsPqI1FShPfLbeIOQM9c4ccPL.ClsMpdZjJrzAP4j.3x6Nu', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(634, 'Feri Rahmawan, S.Pd', 'feri@gmail.com', '2026-11-04 03:55:33', '$2y$10$yQUpMqXyBcoJg6fmhn9/QO5a.sC8GQqkp8xz7KNiV50NdAWIJB3JS', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(636, 'Yaneu Nurdian, S.Pd, M.Pd', 'yaneu@gmail.com', '2026-11-04 03:55:33', '$2y$10$todFYVG45kwlwCSnqZYFyuf4fgtS7hAWmyuOEe42fq341BGR2PGpi', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(637, 'Ucu Muhammad Khoer N, S.Pd', 'ucu@gmail.com', '2026-11-04 03:55:33', '$2y$10$QDO658P3UddXS7WeKRxPo.RLPKnOBy7A51lJUXoECDD18wKh/KUA6', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(638, 'Mira Dwi Rahmawati, S.Ag', 'mira@gmail.com', '2026-11-04 03:55:33', '$2y$10$c6ttVMsJCdBTmCjDNzn.OeaFGv0pzqJlAPJWfjOnaF6ZY73hZthYG', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(640, 'Eli Rosliah, S.Pd', 'eli@gmail.com', '2026-11-04 03:55:33', '$2y$10$aLWcFSwkFr04V7X07R9vDOx6ZcA4jkByPC3hkmoYStqWJsp.hlCJG', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(641, 'Isni Nur Fitriani, S.Pd', 'isni@gmail.com', '2026-11-04 03:55:33', '$2y$10$XiuC6rwGPyAVKZEwC73bP.BFY9D5kyFPi25YHY/NyhDWvrMgOAmUC', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(642, 'Aanisah Putri Nur Aini, S.Pd', 'aanisah@gmail.com', '2026-11-04 03:55:33', '$2y$10$8FaX3jJEN.QL225mrhEIIe9QLHn.oRMHqbBrnnZ9hXT1ZFISJRn7q', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(643, 'Yusi Luthfiani, S.Sos.I', 'yusi@gmail.com', '2026-11-04 03:55:33', '$2y$10$gkeRiSFDZszgS5o7m9BK7eZOk7PA4Sp7Iv49uIp40Q6brOEnw2yly', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(644, 'Lilis Rustandy Mawardi, S.Pd., M.Pd', 'lilis@gmail.com', '2026-11-04 03:55:33', '$2y$10$C7jRPDXsKcrCqTGQ1Z4wnemCYopHdvRAjvv7SKv2oYwM.8/KPxd/K', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(645, 'Yusrin Noer Sabrina, S.Pd', 'yusrin@gmail.com', '2026-11-04 03:55:33', '$2y$10$AFj14FYSmbwWya3irFJQneSJbMNvaGxAOEO4J5ivBQBYyQhEXhnki', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(646, 'Senny Indayani, S.Pd', 'senny@gmail.com', '2026-11-04 03:55:33', '$2y$10$FB0MOmSV/uNgp.qVxhcKXOCJ0UUntHDkDBH9mG77m.Gq2.qztCfuy', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(647, 'Ilma Amalia, S.Pd', 'ilma@gmail.com', '2026-11-04 03:55:33', '$2y$10$xdNibUiMQzFFHduyWg2A2.8i4Z/5RnLw1o/0FFE3lA7UzhMukt35i', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(648, 'Alvira Sofwatunnisa, S.Pd', 'alvira@gmail.com', '2026-11-04 03:55:33', '$2y$10$95LwaAYKPwUcmNykJkRkdOOWkg.QJjDAnIy.9VpfAWHSz.LL1mA.C', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(649, 'Risna Andriyani, S.Pd', 'risna@gmail.com', '2026-11-04 03:55:33', '$2y$10$kt0ZY45VIlDkl6.mPNTF2erxWU3uv5j5vYXFkrDqY6D8h1go20wsK', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(650, 'Dra. Tintin Noerhayati', 'tintin@gmail.com', '2026-11-04 03:55:33', '$2y$10$pD7eIcWzYt9vlu7ouGcMFepgVp7gAHABOWnsvt.t.UgAje2NMXX6C', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(651, 'Rizkia Fahira, S.Pd', 'rizkia@gmail.com', '2026-11-04 03:55:33', '$2y$10$PKpyHfv2JuiVeSOPlvNLw.BQjrimrU8C8.Cfz3qICu4zR/z.P7Tve', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(652, 'Frasetio', 'frasetio@gmail.com', '2026-11-04 03:55:33', '$2y$10$dhHlfjs2AJC1j7utaDxWvORUSI9kMCHiz0b2oz8jDp/G6cZv5gygW', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(653, 'Ratnaningsih Hati Aeni, S.Pd.', 'ratnaningsih@gmail.com', '2026-11-04 03:55:33', '$2y$10$nPP2GLP5piQx/j8OkKgO/.LdwLItIAkdhnFgVFv1cLjsLLUZZijwq', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(654, 'Dheny Darajatul Hasani, S.Pd.', 'dheny@gmail.com', '2026-11-04 03:55:33', '$2y$10$Juypx.igXK96adVMnK3MAeoKiSf3hJDmj3d1MOaJJwkgM.J78/d6y', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(655, 'Fahrullah, S.Pd', 'fahrullah@gmail.com', '2026-11-04 03:55:33', '$2y$10$RY0DfjYS8YKfO.EMpZxW6eIvYVFAjhbgQLiFwUABwQqg5z2WXYSFe', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(657, 'Fitri Fauziah, S.T', 'fitri@gmail.com', '2026-11-04 03:55:33', '$2y$10$3iHX3AjNra9Qa9wiz8zlEuFB1lyD9eoVbq6O2dzdzUpDQ07WH6/NC', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(658, 'Nida Aulia, S.Pd', 'nida@gmail.com', '2026-11-04 03:55:33', '$2y$10$PTR5/ULt9mpNNlX7m0dv1u9qWm/2QinRT/0bxpQhIRBp0018jpXiC', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(659, 'Sri Nurrizki Putri Krisnadi, S.Pd', 'sri@gmail.com', '2026-11-04 03:55:33', '$2y$10$4G.XqHwAdJmCqGXOAT8CkOKHzxyYDRPyMeBZYUXP08hBQMn24um8O', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(660, 'Riesy Putri Navia, S.Kom', 'riesy@gmail.com', '2026-11-04 03:55:33', '$2y$10$4PgUy8xTmx.ppn6WGmk0Ke.ofOTzXEO2MVNWlfkAYcFc/LKW2ZzsO', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(661, 'Rurry Febriani Maryadi, S.Pd', 'rurry@gmail.com', '2026-11-04 03:55:33', '$2y$10$9rckkhnrK/rZAANby5j47ugM41v8JVo6h6GOScxXHBK7wlQtD5HNG', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(662, 'Irvan Rizal, S.Pd', 'irvan@gmail.com', '2026-11-04 03:55:33', '$2y$10$H2wU9gJhDGh6VeRYBs.89uS8r5eJBnZ7MoKe23v9huMlW0elLnmxO', '', 'guru', '2026-11-04 03:55:33', '2026-11-09 07:17:56'),
+(671, 'Aan Andriana, S.T', 'aan@gmail.com', '2026-11-04 04:17:18', '$2y$10$LPvSBhm3lEzDwujsy.Fbk.9Dr2c88azBdLaYBPgDEH1OamoRxlivm', '', 'guru', '2026-11-04 04:17:18', '2026-11-09 07:17:56'),
+(672, 'Arif Kusmawan, S.Pd', 'arif@gmail.com', '2026-11-04 04:22:24', '$2y$10$8H100MELV8IEBfM7b7Cfyey8axFQIbfn9DMsBevA40UT3LrPIXjFa', '', 'guru_wali_kelas', '2026-11-04 04:22:24', '2026-11-11 00:43:47'),
+(673, 'Wawan Kurniawan, S.Pd.I', 'wawan@gmail.com', '2026-11-04 04:23:36', '$2y$10$2cofjZUC2iYrwx1K//OJ6eH1cVkyDD6ArUpTMb7DVZTcHb4wOUgP2', '', 'guru', '2026-11-04 04:23:36', '2026-11-09 07:17:56'),
+(674, 'Ari Sandriana, S.Kom', 'ari@gmail.com', '2026-11-04 04:24:51', '$2y$10$pHTTuCk/k3w9wIgWculnie0ZpXaX75JzNQcOMOpHfu90pn2kJN/Du', '', 'guru_wali_kelas', '2026-11-04 04:24:51', '2026-11-09 07:17:56'),
+(675, 'Ansor Muhajir, S.T', 'ansor1@gmail.com', '2026-11-04 05:00:52', '$2y$10$gVWwVZauik/yODs8xreyJu5x.DBG9cUwbzy97HUoOAYg2X.hv0mNa', '', 'guru', '2026-11-04 05:00:52', '2026-11-09 07:17:56'),
+(676, 'Ansor Muhajir, S.T', 'ansor2@gmail.com', '2026-11-04 05:07:47', '$2y$10$U3wgiJmIYiFbWSUa5Bn2b.2AKojrPHyph5T/QC2oPd3mjjAvUV/Fq', '', 'guru', '2026-11-04 05:07:47', '2026-11-09 07:17:56'),
+(677, 'inda Safitri', 'dinda@gmail.com', '2026-11-04 05:11:13', '$2y$10$h529aFVSnp2/EsYLr8dVm.g2QtnUTMUjSLVOAQCgfvGjYAUw2imGy', '', 'guru', '2026-11-04 05:11:13', '2026-11-09 07:17:56'),
+(678, 'Asep Bastaman', 'asep@gmail.com', '2026-11-04 05:20:04', '$2y$10$39a82EbY7HvNMSk2Y83M6.WldfZgbVdvg26NOVHBuq6.wPvDnf7Nu', '', 'guru', '2026-11-04 05:20:04', '2026-11-09 07:17:56'),
+(679, 'Aldi Maulana, S.Pd', 'aldi@gmail.com', '2026-11-09 07:25:47', '$2y$10$T9zILPJ4PrFxmJaZtwtv7eXhoWwOUg3KEafIRu8J4EcITVrhjelDi', '', 'guru_wali_kelas', '2026-11-09 07:25:47', '2026-11-09 07:27:03'),
+(681, 'Administrator', 'admin@gmail.com', '2026-11-07 19:22:20', '$2y$10$fjXhoIkv6oT2xxfI0Im2JOIcbwav8l103gaVaeipjM8pUbsoELq7e', '', 'admin', '2026-11-07 19:22:20', '2026-11-07 19:22:20'),
+(682, 'Bella Anggraini', 'jekcunk4@gmail.com', '2026-11-07 19:31:37', '$2y$10$26tX3Z/ff2nEgLL7vCZQguU6/y0BXQtkdquGC.2WP6bFCrX00ocqy', '', 'guru', '2026-11-07 19:31:37', '2026-11-07 19:31:37'),
 (683, 'edo', 'edo@gmail.com', '2026-11-11 17:10:29', '$2y$10$s.0IytbYtgQ6XJf5Xnc7u.2etvabdEOZOfV86dpEmWka2r/w0t.QG', '', 'guru', '2026-11-11 17:10:29', '2026-11-11 17:10:29'),
 (684, 'Bella Anggraini-', 'bella@gmail.com', '2026-11-11 17:13:08', '$2y$10$upGThROoKDB2Cu.W/ffjfuFmP9bhWtWxKZM8Zn5HwvAsJouQl5EKq', '', 'guru', '2026-11-11 17:13:08', '2026-11-11 17:13:08');
 
@@ -656,11 +656,12 @@ CREATE TABLE `t_wali_kelas` (
 --
 
 INSERT INTO `t_wali_kelas` (`id`, `tahun_ajaran_id`, `kelas_id`, `guru_id`, `user_id`, `tanggal_mulai`, `tanggal_selesai`, `status_aktif`, `created_at`, `updated_at`) VALUES
-(235, 101, 104, 663, 674, '2026-07-01', '2027-06-30', 1, '2026-11-09 07:49:27', '2026-11-09 07:49:27'),
-(240, 101, 2, 665, 679, '2026-07-01', '2027-06-30', 1, '2026-11-09 07:48:34', '2026-11-09 07:48:34'),
+(240, 110, 2, 665, 679, '2026-07-01', '2027-06-30', 1, '2026-11-16 17:20:42', '2026-11-09 07:48:34'),
 (246, 107, 104, 600, 612, '2026-11-11', '2026-11-11', 1, '2026-11-11 14:55:00', '2026-11-11 14:55:00'),
 (247, 106, 104, 600, 612, '2026-11-11', '2026-11-11', 1, '2026-11-11 14:55:18', '2026-11-11 14:55:18'),
-(249, 105, 104, 599, 611, '2026-11-12', '2026-11-12', 1, '2026-11-11 18:00:10', '2026-11-11 17:55:27');
+(249, 105, 104, 599, 611, '2026-11-12', '2026-11-12', 1, '2026-11-11 18:00:10', '2026-11-11 17:55:27'),
+(251, 108, 104, 663, 674, '2026-11-17', '2026-11-28', 1, '2026-11-16 17:16:50', '2026-11-16 17:16:50'),
+(252, 108, 104, 600, 612, '2026-11-03', '2026-11-27', 1, '2026-11-16 17:41:55', '2026-11-16 17:36:17');
 
 --
 -- Indexes for dumped tables
@@ -866,7 +867,7 @@ ALTER TABLE `t_users`
 -- AUTO_INCREMENT for table `t_wali_kelas`
 --
 ALTER TABLE `t_wali_kelas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=251;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=253;
 
 --
 -- Constraints for dumped tables
@@ -885,38 +886,10 @@ ALTER TABLE `t_jenis_pelanggaran`
   ADD CONSTRAINT `fk_jenis_kategori` FOREIGN KEY (`kategori_id`) REFERENCES `t_pelanggaran_kategori` (`id`) ON UPDATE CASCADE;
 
 --
--- Constraints for table `t_kelas_siswa`
---
-ALTER TABLE `t_kelas_siswa`
-  ADD CONSTRAINT `t_kelas_siswa_ibfk_1` FOREIGN KEY (`tahun_ajaran_id`) REFERENCES `t_tahun_ajaran` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `t_kelas_siswa_ibfk_2` FOREIGN KEY (`kelas_id`) REFERENCES `t_kelas` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `t_kelas_siswa_ibfk_3` FOREIGN KEY (`siswa_id`) REFERENCES `t_siswa` (`id`) ON DELETE CASCADE;
-
---
 -- Constraints for table `t_pelanggaran`
 --
 ALTER TABLE `t_pelanggaran`
   ADD CONSTRAINT `t_pelanggaran_ibfk_1` FOREIGN KEY (`pelanggaran_kategori_id`) REFERENCES `t_pelanggaran_kategori` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `t_pelanggaran_siswa`
---
-ALTER TABLE `t_pelanggaran_siswa`
-  ADD CONSTRAINT `t_pelanggaran_siswa_ibfk_1` FOREIGN KEY (`tahun_ajaran_id`) REFERENCES `t_tahun_ajaran` (`id`),
-  ADD CONSTRAINT `t_pelanggaran_siswa_ibfk_2` FOREIGN KEY (`guru_id`) REFERENCES `t_guru` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `t_pelanggaran_siswa_ibfk_3` FOREIGN KEY (`kelas_id`) REFERENCES `t_kelas` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `t_pelanggaran_siswa_ibfk_4` FOREIGN KEY (`pelanggaran_kategori_id`) REFERENCES `t_pelanggaran_kategori` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `t_pelanggaran_siswa_ibfk_5` FOREIGN KEY (`pelanggaran_id`) REFERENCES `t_pelanggaran` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `t_pelanggaran_siswa_ibfk_6` FOREIGN KEY (`siswa_id`) REFERENCES `t_siswa` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `t_wali_kelas`
---
-ALTER TABLE `t_wali_kelas`
-  ADD CONSTRAINT `fk_wali_kelas_user` FOREIGN KEY (`user_id`) REFERENCES `t_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `t_wali_kelas_ibfk_1` FOREIGN KEY (`guru_id`) REFERENCES `t_guru` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `t_wali_kelas_ibfk_2` FOREIGN KEY (`kelas_id`) REFERENCES `t_kelas` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `t_wali_kelas_ibfk_3` FOREIGN KEY (`tahun_ajaran_id`) REFERENCES `t_tahun_ajaran` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
