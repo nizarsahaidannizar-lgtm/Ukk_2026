@@ -13,6 +13,13 @@ $current_page = strtolower(
 $base_url = '/Ukk_2026/';
 
 // ============================================
+// KONEKSI DAN CEK PENUGASAN WALI KELAS
+// ============================================
+
+require_once __DIR__ . '/../config/koneksi.php';
+require_once __DIR__ . '/../includes/akses_pelanggaran.php';
+
+// ============================================
 // NORMALISASI ROLE
 // ============================================
 
@@ -48,9 +55,37 @@ if (!function_exists('ambil_role_sidebar')) {
 
 $role = ambil_role_sidebar();
 
+// ============================================
+// CEK PENUGASAN WALI KELAS
+// ============================================
+
+$konteks_sidebar = [];
+
+if (
+    isset($koneksi) &&
+    function_exists('konteks_akses_pelanggaran')
+) {
+    $konteks_sidebar = konteks_akses_pelanggaran($koneksi);
+}
+
+// ============================================
+// TENTUKAN ROLE DAN AKSES MENU
+// ============================================
+
 $role_admin = ($role === 'admin');
-$role_guru = ($role === 'guru');
-$role_wali = ($role === 'guru_wali_kelas');
+
+// Wali kelas ditentukan dari role akun
+// ATAU penugasan wali kelas yang aktif
+$role_wali = (
+    $role === 'guru_wali_kelas' ||
+    !empty($konteks_sidebar['is_wali'])
+);
+
+// Guru mata pelajaran yang bukan wali kelas
+$role_guru = (
+    $role === 'guru' &&
+    !$role_wali
+);
 
 // ============================================
 // FUNGSI MENU AKTIF
@@ -77,17 +112,18 @@ if (!function_exists('menu_aktif')) {
                 'dashboard'
             ],
 
-        'kelola_guru' => [
-    'kelola_guru',
-    'tambah_guru',
-    'edit_guru',
-    'hapus_guru',
-    'proses_tambah_guru',
-    'proses_edit_guru',
-    'proses_hapus_guru',
-    'reset_password_guru',
-    'proses_reset_password_guru'
-],
+            'kelola_guru' => [
+                'kelola_guru',
+                'tambah_guru',
+                'edit_guru',
+                'hapus_guru',
+                'proses_tambah_guru',
+                'proses_edit_guru',
+                'proses_hapus_guru',
+                'reset_password_guru',
+                'proses_reset_password_guru'
+            ],
+
             'kelola_siswa' => [
                 'kelola_siswa',
                 'tambah_siswa',
@@ -118,10 +154,7 @@ if (!function_exists('menu_aktif')) {
                 'proses_hapus_tahun_ajaran'
             ],
 
-            // ======================================
             // PENEMPATAN SISWA
-            // ======================================
-
             'penempatan_siswa' => [
                 'penempatan_siswa',
                 'tambah_penempatan_siswa',
@@ -234,10 +267,7 @@ if (!function_exists('menu_aktif')) {
                 'detail_siswa_kelas'
             ],
 
-            // ======================================
             // LAPORAN WALI KELAS
-            // ======================================
-
             'laporan_guru' => [
                 'laporan_guru'
             ]
@@ -248,6 +278,19 @@ if (!function_exists('menu_aktif')) {
         // ======================================
 
         $role = ambil_role_sidebar();
+
+        $is_wali = (
+            $role === 'guru_wali_kelas'
+        );
+
+        if (
+            !$is_wali &&
+            isset($GLOBALS['konteks_sidebar']['is_wali'])
+        ) {
+            $is_wali = !empty(
+                $GLOBALS['konteks_sidebar']['is_wali']
+            );
+        }
 
         if ($role === 'admin') {
             $kelompok_menu = $kelompok_admin;

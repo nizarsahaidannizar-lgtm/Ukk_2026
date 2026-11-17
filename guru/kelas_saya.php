@@ -8,23 +8,29 @@
 
 include __DIR__ . '/../includes/cek_session.php';
 include __DIR__ . '/../config/koneksi.php';
+include __DIR__ . '/../includes/akses_pelanggaran.php';
 
 // ======================================
-// CEK ROLE
+// CEK HAK AKSES WALI KELAS
 // ======================================
 
-$role = normalisasi_role($_SESSION['role'] ?? '');
+$konteks = konteks_akses_pelanggaran($koneksi);
 
-batasi_akses(['guru_wali_kelas']);
+// Guru harus memiliki penempatan wali kelas aktif
+if (empty($konteks['is_wali'])) {
+    tolak_akses_pelanggaran(
+        'Halaman Kelas Saya hanya tersedia untuk guru yang sedang ditugaskan sebagai wali kelas.'
+    );
+}
 
 // ======================================
-// AMBIL ID USER LOGIN
+// AMBIL ID GURU LOGIN
 // ======================================
 
-$id_user = (int)($_SESSION['id_user'] ?? 0);
+$guru_id = (int)($konteks['guru_id'] ?? 0);
 
-if ($id_user <= 0) {
-    die("ID akun tidak ditemukan. Silakan login kembali.");
+if ($guru_id <= 0) {
+    die("Data guru tidak ditemukan. Silakan hubungi administrator.");
 }
 
 // ======================================
@@ -38,14 +44,13 @@ $sql_kelas = "SELECT
                 k.nama AS nama_kelas,
                 ta.nama AS tahun_ajaran
               FROM t_wali_kelas tw
-              INNER JOIN t_guru g
-                ON tw.guru_id = g.id
               INNER JOIN t_kelas k
                 ON tw.kelas_id = k.id
               LEFT JOIN t_tahun_ajaran ta
                 ON tw.tahun_ajaran_id = ta.id
-              WHERE g.user_id = ?
+              WHERE tw.guru_id = ?
                 AND tw.status_aktif = 1
+                AND tw.kelas_id IS NOT NULL
               ORDER BY k.nama ASC";
 
 $stmt_kelas = mysqli_prepare($koneksi, $sql_kelas);
@@ -54,7 +59,7 @@ if (!$stmt_kelas) {
     die("Gagal menyiapkan data kelas: " . mysqli_error($koneksi));
 }
 
-mysqli_stmt_bind_param($stmt_kelas, "i", $id_user);
+mysqli_stmt_bind_param($stmt_kelas, "i", $guru_id);
 mysqli_stmt_execute($stmt_kelas);
 
 $hasil_kelas = mysqli_stmt_get_result($stmt_kelas);
@@ -79,23 +84,23 @@ mysqli_stmt_close($stmt_kelas);
 <head>
 
 <meta charset="UTF-8">
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Kelas Saya - SIP</title>
+<title>Kelas Saya - SIP</title>
 
-    <!-- BOOTSTRAP -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- BOOTSTRAP -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- FONT AWESOME -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- FONT AWESOME -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- DATATABLES -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+<!-- DATATABLES -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
 
-    <!-- CSS UTAMA -->
-    <link rel="stylesheet" href="../layout/style.css">
+<!-- CSS UTAMA -->
+<link rel="stylesheet" href="../layout/style.css">
 
 </head>
 

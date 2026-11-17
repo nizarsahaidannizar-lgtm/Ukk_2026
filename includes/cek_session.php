@@ -252,25 +252,30 @@ $hak_akses_halaman = [
 
     'laporan_guru.php' => [
         'admin',
+        'guru',
         'guru_wali_kelas'
     ],
 
     'laporan_walas.php' => [
+        'guru',
         'guru_wali_kelas'
     ],
 
     'kelas_saya.php' => [
+        'guru',
         'guru_wali_kelas'
     ],
-// ========================================
-// KHUSUS ADMIN
-// ========================================
 
-'laporan.php' => ['admin'],
+    // ========================================
+    // KHUSUS ADMIN
+    // ========================================
 
-// RESET PASSWORD GURU
-'reset_password_guru.php' => ['admin'],
-'proses_reset_password_guru.php' => ['admin'],
+    'laporan.php' => ['admin'],
+
+    // RESET PASSWORD GURU
+    'reset_password_guru.php' => ['admin'],
+    'proses_reset_password_guru.php' => ['admin'],
+
     // ========================================
     // ADMIN, GURU, DAN WALI KELAS
     // ========================================
@@ -353,15 +358,6 @@ $aturan_batas_angka = [
     ],
 
     'edit_kelas.php' => [
-        'id' => ['min' => 1, 'max' => 2147483647],
-        'status_aktif' => ['min' => 0, 'max' => 1]
-    ],
-
-    'proses_tambah_kelas.php' => [
-        'status_aktif' => ['min' => 0, 'max' => 1]
-    ],
-
-    'proses_edit_kelas.php' => [
         'id' => ['min' => 1, 'max' => 2147483647],
         'status_aktif' => ['min' => 0, 'max' => 1]
     ],

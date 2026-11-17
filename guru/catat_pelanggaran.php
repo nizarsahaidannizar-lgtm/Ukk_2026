@@ -157,15 +157,6 @@ mysqli_stmt_close($stmt_guru);
 
 if ($is_wali) {
 
-    /*
-     * BAGIAN 1:
-     * Ambil semua catatan pelanggaran yang
-     * kelasnya menjadi tanggung jawab wali.
-     *
-     * Tidak lagi bergantung pada kecocokan
-     * data t_kelas_siswa.
-     */
-
     $sql = "
         SELECT
             ps.id,
@@ -203,13 +194,6 @@ if ($is_wali) {
         WHERE ps.kelas_id IN ($daftar_kelas)
 
         UNION ALL
-
-        /*
-         * BAGIAN 2:
-         * Tampilkan siswa yang belum mempunyai
-         * catatan pelanggaran pada kelas dan
-         * tahun ajaran tersebut.
-         */
 
         SELECT
             NULL AS id,
@@ -319,26 +303,26 @@ if (!$hasil) {
 
 <head>
 
-
 <meta charset="UTF-8">
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="preconnect" href="https://code.jquery.com" crossorigin>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://code.jquery.com" crossorigin>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Catat Pelanggaran Siswa - SIP</title>
+<title>Catat Pelanggaran Siswa - SIP</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet">
 
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <link rel="stylesheet"
-          href="../layout/style.css">
+<link rel="stylesheet"
+      href="../layout/style.css">
 
-    <link rel="stylesheet"
-          href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+
 </head>
 
 <body class="bg-light">
@@ -674,16 +658,8 @@ if (!$hasil) {
 
                                 <?php
                                     }
-                                } else {
+                                }
                                 ?>
-
-                                    <tr>
-                                        <td colspan="10" class="text-center text-muted py-4">
-                                            Tidak ada data siswa.
-                                        </td>
-                                    </tr>
-
-                                <?php } ?>
 
                             </tbody>
                         </table>
@@ -729,7 +705,9 @@ if (pilihPelanggaran) {
 // ============================================
 
 $(document).ready(function () {
+
     $('#tabelPelanggaran').DataTable({
+
         autoWidth: false,
 
         columnDefs: [
@@ -748,6 +726,7 @@ $(document).ready(function () {
         language: {
             lengthMenu: "Tampilkan _MENU_ data",
             zeroRecords: "Data tidak ditemukan",
+            emptyTable: "Tidak ada data siswa.",
             info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
             infoEmpty: "Menampilkan 0 sampai 0 dari 0 data",
             infoFiltered: "(disaring dari total _MAX_ data)",
@@ -763,6 +742,7 @@ $(document).ready(function () {
 
         pageLength: 10
     });
+
 });
 </script>
 

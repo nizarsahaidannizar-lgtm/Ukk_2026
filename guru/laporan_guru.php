@@ -6,14 +6,27 @@ include '../includes/cek_session.php';
 include '../config/koneksi.php';
 include '../includes/akses_pelanggaran.php';
 
-// KHUSUS ADMIN DAN WALI KELAS
-batasi_akses(['admin', 'guru_wali_kelas']);
+// ========================================
+// CEK AKSES ADMIN DAN WALI KELAS
+// ========================================
+
+$konteks = konteks_akses_pelanggaran($koneksi);
+
+// ADMIN BOLEH MELIHAT SEMUA DATA
+// GURU HANYA BOLEH JIKA MEMILIKI PENUGASAN WALI KELAS AKTIF
+
+if (
+    ($konteks['role'] ?? '') !== 'admin' &&
+    empty($konteks['is_wali'])
+) {
+    tolak_akses_pelanggaran(
+        'Halaman laporan hanya tersedia untuk admin dan guru yang sedang ditugaskan sebagai wali kelas.'
+    );
+}
 
 // ========================================
 // MENGAMBIL HAK AKSES ADMIN DAN WALI KELAS
 // ========================================
-
-$konteks = konteks_akses_pelanggaran($koneksi);
 
 $where = [];
 
@@ -190,11 +203,12 @@ if ($hasil) {
 
 <head>
 
+    <meta charset="UTF-8">
 
-<meta charset="UTF-8">
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="preconnect" href="https://code.jquery.com" crossorigin>
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Laporan Guru - SIP</title>
@@ -569,6 +583,8 @@ $(document).ready(function() {
         autoWidth: false,
 
         language: {
+
+            emptyTable: "Belum ada data laporan pelanggaran",
 
             lengthMenu: "Tampilkan _MENU_ data",
 

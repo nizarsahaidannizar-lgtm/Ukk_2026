@@ -53,7 +53,6 @@ function konteks_akses_pelanggaran(mysqli $koneksi, bool $wali_saja = false): ar
 
     // ==================================================
     // ID USER LOGIN
-    // MENDUKUNG BEBERAPA NAMA SESSION
     // ==================================================
 
     $user_id = (int)(
@@ -106,6 +105,7 @@ function konteks_akses_pelanggaran(mysqli $koneksi, bool $wali_saja = false): ar
 
     // ==================================================
     // AMBIL KELAS YANG DIWALIKAN
+    // BERDASARKAN PENUGASAN AKTIF
     // ==================================================
 
     $stmt = mysqli_prepare(
@@ -141,13 +141,17 @@ function konteks_akses_pelanggaran(mysqli $koneksi, bool $wali_saja = false): ar
     $kelas_ids = array_values(array_unique($kelas_ids));
 
     // ==================================================
+    // TENTUKAN STATUS WALI KELAS
+    // BERDASARKAN PENUGASAN AKTIF
+    // ==================================================
+
+    $is_wali = !empty($kelas_ids);
+
+    // ==================================================
     // HALAMAN KHUSUS WALI KELAS
     // ==================================================
 
-    if (
-        $wali_saja &&
-        ($role !== 'guru_wali_kelas' || empty($kelas_ids))
-    ) {
+    if ($wali_saja && !$is_wali) {
         tolak_akses_pelanggaran(
             'Halaman ini hanya tersedia untuk guru yang ditugaskan sebagai wali kelas.'
         );
@@ -161,7 +165,7 @@ function konteks_akses_pelanggaran(mysqli $koneksi, bool $wali_saja = false): ar
         'role' => $role,
         'guru_id' => $guru_id,
         'kelas_ids' => $kelas_ids,
-        'is_wali' => ($role === 'guru_wali_kelas'),
+        'is_wali' => $is_wali,
     ];
 }
 
@@ -206,10 +210,8 @@ function lingkup_sql_pelanggaran(
     }
 
     // WALI KELAS MELIHAT DATA DI KELASNYA
-    if (
-        ($konteks['role'] ?? '') === 'guru_wali_kelas' &&
-        ($kelas_wali || !empty($konteks['is_wali']))
-    ) {
+    // TIDAK HANYA BERDASARKAN ROLE AKUN
+    if (!empty($konteks['is_wali']) || $kelas_wali) {
 
         $kelas_ids = array_map(
             'intval',
