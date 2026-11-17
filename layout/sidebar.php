@@ -74,12 +74,76 @@ if (
 
 $role_admin = ($role === 'admin');
 
-// Wali kelas ditentukan dari role akun
-// ATAU penugasan wali kelas yang aktif
-$role_wali = (
-    $role === 'guru_wali_kelas' ||
-    !empty($konteks_sidebar['is_wali'])
+$role_wali = false;
+$role_guru = false;
+
+// Ambil ID akun yang sedang login
+$user_id = (int) (
+    $_SESSION['id_user']
+    ?? $_SESSION['user_id']
+    ?? $_SESSION['id']
+    ?? 0
 );
+
+// Role guru wali kelas tetap mendapatkan akses menu wali kelas
+if ($role === 'guru_wali_kelas') {
+    $role_wali = true;
+}
+
+// ============================================
+// CEK PENUGASAN WALI KELAS UNTUK ROLE GURU
+// ============================================
+
+if (
+    $role === 'guru' &&
+    $user_id > 0 &&
+    isset($koneksi) &&
+    $koneksi instanceof mysqli
+) {
+
+    $sql_cek_wali = "
+        SELECT tw.id
+        FROM t_guru g
+        INNER JOIN t_wali_kelas tw
+            ON tw.guru_id = g.id
+        INNER JOIN t_tahun_ajaran ta
+            ON ta.id = tw.tahun_ajaran_id
+        WHERE g.user_id = ?
+          AND g.status_aktif = 1
+          AND tw.status_aktif = 1
+          AND ta.status_aktif = 1
+        LIMIT 1
+    ";
+
+    $stmt_cek_wali = mysqli_prepare(
+        $koneksi,
+        $sql_cek_wali
+    );
+
+    if ($stmt_cek_wali) {
+
+        mysqli_stmt_bind_param(
+            $stmt_cek_wali,
+            "i",
+            $user_id
+        );
+
+        mysqli_stmt_execute($stmt_cek_wali);
+
+        $hasil_cek_wali = mysqli_stmt_get_result(
+            $stmt_cek_wali
+        );
+
+        if (
+            $hasil_cek_wali &&
+            mysqli_num_rows($hasil_cek_wali) > 0
+        ) {
+            $role_wali = true;
+        }
+
+        mysqli_stmt_close($stmt_cek_wali);
+    }
+}
 
 // Guru mata pelajaran yang bukan wali kelas
 $role_guru = (

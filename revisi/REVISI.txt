@@ -11,3 +11,7 @@ kategori pelanggaran,jenis pelanggaran,laporan,riwayat,about me,catat pelanggara
 
 REVISI
 role wali kelas belum singkron soal nya menu laporan dan saya itu sudah edit guru pa aldi jadi wali kelas nah pas saya masuk lagi jadi berubah lagi ke guru mata pelajaran lagi
+sekarang belum singkron nih ketika saya guru di tempatkan jadi wali kelas tapi tidak ada menu laporan
+pas saya edit di menu Kelola wali kelas dan saya edit jadi di non aktif kan nah harus nya ga bisa masuk lah harus nya juga saat aktif bisa masuk nya
+belum singkron menu  kelassaya padahal sudah di tempatkan kelas nya
+terus kok sekarang data kelassaya jadi tidak ada

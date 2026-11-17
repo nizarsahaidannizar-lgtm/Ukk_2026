@@ -29,7 +29,7 @@ function konteks_akses_pelanggaran(mysqli $koneksi, bool $wali_saja = false): ar
     }
 
     // ==================================================
-    // ADMIN BISA MELIHAT SEMUA DATA
+    // ADMIN
     // ==================================================
 
     if ($role === 'admin') {
@@ -42,12 +42,12 @@ function konteks_akses_pelanggaran(mysqli $koneksi, bool $wali_saja = false): ar
     }
 
     // ==================================================
-    // IZINKAN GURU DAN WALI KELAS
+    // IZINKAN AKUN GURU
     // ==================================================
 
     if (!in_array($role, ['guru', 'guru_wali_kelas'], true)) {
         tolak_akses_pelanggaran(
-            'Halaman ini hanya untuk admin, guru, atau wali kelas.'
+            'Halaman ini hanya untuk admin dan guru.'
         );
     }
 
@@ -69,7 +69,7 @@ function konteks_akses_pelanggaran(mysqli $koneksi, bool $wali_saja = false): ar
     }
 
     // ==================================================
-    // CARI ID GURU BERDASARKAN USER LOGIN
+    // CARI DATA GURU BERDASARKAN USER LOGIN
     // ==================================================
 
     $stmt = mysqli_prepare(
@@ -83,7 +83,7 @@ function konteks_akses_pelanggaran(mysqli $koneksi, bool $wali_saja = false): ar
 
     if (!$stmt) {
         tolak_akses_pelanggaran(
-            'Terjadi kesalahan saat mencari data guru.'
+            'Gagal memeriksa hubungan akun dengan data guru.'
         );
     }
 
@@ -97,15 +97,14 @@ function konteks_akses_pelanggaran(mysqli $koneksi, bool $wali_saja = false): ar
 
     if (!$guru) {
         tolak_akses_pelanggaran(
-            'Akun ini belum terhubung dengan data guru aktif.'
+            'Data guru tidak ditemukan atau belum aktif.'
         );
     }
 
     $guru_id = (int)$guru['id'];
 
     // ==================================================
-    // AMBIL KELAS YANG DIWALIKAN
-    // BERDASARKAN PENUGASAN AKTIF
+    // AMBIL SEMUA PENUGASAN WALI KELAS YANG AKTIF
     // ==================================================
 
     $stmt = mysqli_prepare(
@@ -119,7 +118,7 @@ function konteks_akses_pelanggaran(mysqli $koneksi, bool $wali_saja = false): ar
 
     if (!$stmt) {
         tolak_akses_pelanggaran(
-            'Terjadi kesalahan saat mengambil data kelas.'
+            'Gagal memeriksa penugasan wali kelas.'
         );
     }
 
@@ -141,8 +140,7 @@ function konteks_akses_pelanggaran(mysqli $koneksi, bool $wali_saja = false): ar
     $kelas_ids = array_values(array_unique($kelas_ids));
 
     // ==================================================
-    // TENTUKAN STATUS WALI KELAS
-    // BERDASARKAN PENUGASAN AKTIF
+    // STATUS WALI KELAS DITENTUKAN DARI DATABASE
     // ==================================================
 
     $is_wali = !empty($kelas_ids);
@@ -153,12 +151,12 @@ function konteks_akses_pelanggaran(mysqli $koneksi, bool $wali_saja = false): ar
 
     if ($wali_saja && !$is_wali) {
         tolak_akses_pelanggaran(
-            'Halaman ini hanya tersedia untuk guru yang ditugaskan sebagai wali kelas.'
+            'Akses ditolak. Akun ini tidak memiliki penugasan wali kelas aktif.'
         );
     }
 
     // ==================================================
-    // HASIL KONTEKS AKSES
+    // HASIL KONTEKS
     // ==================================================
 
     return [
@@ -209,8 +207,7 @@ function lingkup_sql_pelanggaran(
         return '1 = 1';
     }
 
-    // WALI KELAS MELIHAT DATA DI KELASNYA
-    // TIDAK HANYA BERDASARKAN ROLE AKUN
+    // WALI KELAS MELIHAT DATA KELASNYA
     if (!empty($konteks['is_wali']) || $kelas_wali) {
 
         $kelas_ids = array_map(
@@ -263,7 +260,7 @@ function tolak_akses_pelanggaran(string $pesan): void
     echo htmlspecialchars($pesan, ENT_QUOTES, 'UTF-8');
     echo '</p>';
 
-    echo '<a href="../login.php">Kembali ke Login</a>';
+    echo '<a href="../guru/dashboard_guru.php">Kembali ke Dashboard</a>';
 
     echo '</body>';
     echo '</html>';

@@ -2,263 +2,294 @@
 <?php
 // guru/kelas_saya.php
 
-// ======================================
-// INCLUDE FILE
-// ======================================
+require_once __DIR__ . '/../includes/cek_session.php';
+require_once __DIR__ . '/../config/koneksi.php';
 
-include __DIR__ . '/../includes/cek_session.php';
-include __DIR__ . '/../config/koneksi.php';
-include __DIR__ . '/../includes/akses_pelanggaran.php';
+// ========================================
+// CEK ROLE GURU WALI KELAS
+// ========================================
 
-// ======================================
-// CEK HAK AKSES WALI KELAS
-// ======================================
+$role = strtolower(trim($_SESSION['role'] ?? ''));
 
-$konteks = konteks_akses_pelanggaran($koneksi);
-
-// Guru harus memiliki penempatan wali kelas aktif
-if (empty($konteks['is_wali'])) {
-    tolak_akses_pelanggaran(
-        'Halaman Kelas Saya hanya tersedia untuk guru yang sedang ditugaskan sebagai wali kelas.'
-    );
+if (function_exists('normalisasi_role')) {
+    $role = normalisasi_role($role);
 }
 
-// ======================================
-// AMBIL ID GURU LOGIN
-// ======================================
-
-$guru_id = (int)($konteks['guru_id'] ?? 0);
-
-if ($guru_id <= 0) {
-    die("Data guru tidak ditemukan. Silakan hubungi administrator.");
+if ($role !== 'guru_wali_kelas') {
+    if ($role === 'admin') {
+        header('Location: ../dashboard.php');
+    } else {
+        header('Location: dashboard_guru.php');
+    }
+    exit;
 }
 
-// ======================================
-// AMBIL DATA KELAS WALI
-// ======================================
+// ========================================
+// AMBIL USER ID LOGIN
+// ========================================
 
-$sql_kelas = "SELECT
-                tw.id,
+$user_id = (int) (
+    $_SESSION['id_user']
+    ?? $_SESSION['user_id']
+    ?? $_SESSION['id']
+    ?? 0
+);
+
+if ($user_id <= 0) {
+    die('ID pengguna tidak ditemukan. Silakan login kembali.');
+}
+
+// ========================================
+// AMBIL DATA GURU
+// ========================================
+
+$sql_guru = "SELECT id, nama
+             FROM t_guru
+             WHERE user_id = ?
+             LIMIT 1";
+
+$stmt_guru = mysqli_prepare($koneksi, $sql_guru);
+
+if (!$stmt_guru) {
+    die('Query guru gagal: ' . mysqli_error($koneksi));
+}
+
+mysqli_stmt_bind_param($stmt_guru, "i", $user_id);
+mysqli_stmt_execute($stmt_guru);
+
+$result_guru = mysqli_stmt_get_result($stmt_guru);
+$data_guru = mysqli_fetch_assoc($result_guru);
+
+mysqli_stmt_close($stmt_guru);
+
+if (!$data_guru) {
+    die('Data guru tidak ditemukan untuk akun ini. Hubungi administrator.');
+}
+
+$guru_id = (int) $data_guru['id'];
+$nama_guru = $data_guru['nama'];
+
+// ========================================
+// AMBIL PENUGASAN WALI KELAS
+// COCOKKAN USER ID DAN GURU ID
+// ========================================
+
+$sql_kelas = "SELECT DISTINCT
+                tw.id AS penugasan_id,
                 tw.kelas_id,
                 tw.tahun_ajaran_id,
                 k.nama AS nama_kelas,
                 ta.nama AS tahun_ajaran
               FROM t_wali_kelas tw
               INNER JOIN t_kelas k
-                ON tw.kelas_id = k.id
+                ON k.id = tw.kelas_id
               LEFT JOIN t_tahun_ajaran ta
-                ON tw.tahun_ajaran_id = ta.id
-              WHERE tw.guru_id = ?
-                AND tw.status_aktif = 1
+                ON ta.id = tw.tahun_ajaran_id
+              WHERE tw.status_aktif = 1
                 AND tw.kelas_id IS NOT NULL
+                AND tw.tahun_ajaran_id IS NOT NULL
+                AND (
+                    tw.user_id = ?
+                    OR tw.guru_id = ?
+                )
               ORDER BY k.nama ASC";
 
 $stmt_kelas = mysqli_prepare($koneksi, $sql_kelas);
 
 if (!$stmt_kelas) {
-    die("Gagal menyiapkan data kelas: " . mysqli_error($koneksi));
+    die('Query kelas gagal: ' . mysqli_error($koneksi));
 }
 
-mysqli_stmt_bind_param($stmt_kelas, "i", $guru_id);
+mysqli_stmt_bind_param(
+    $stmt_kelas,
+    "ii",
+    $user_id,
+    $guru_id
+);
+
 mysqli_stmt_execute($stmt_kelas);
 
-$hasil_kelas = mysqli_stmt_get_result($stmt_kelas);
+$result_kelas = mysqli_stmt_get_result($stmt_kelas);
 
-if (!$hasil_kelas) {
-    die("Gagal mengambil data kelas: " . mysqli_error($koneksi));
-}
+$data_kelas = [];
 
-$daftar_kelas = [];
+while ($kelas = mysqli_fetch_assoc($result_kelas)) {
 
-while ($kelas = mysqli_fetch_assoc($hasil_kelas)) {
-    $daftar_kelas[] = $kelas;
+    // ========================================
+    // AMBIL SISWA BERDASARKAN KELAS
+    // DAN TAHUN AJARAN
+    // ========================================
+
+    $sql_siswa = "SELECT
+                    s.id,
+                    s.nisn,
+                    s.nama
+                  FROM t_kelas_siswa ks
+                  INNER JOIN t_siswa s
+                    ON s.id = ks.siswa_id
+                  WHERE ks.kelas_id = ?
+                    AND ks.tahun_ajaran_id = ?
+                    AND ks.status_aktif = 1
+                  ORDER BY s.nama ASC";
+
+    $stmt_siswa = mysqli_prepare($koneksi, $sql_siswa);
+
+    if (!$stmt_siswa) {
+        die('Query siswa gagal: ' . mysqli_error($koneksi));
+    }
+
+    $kelas_id = (int) $kelas['kelas_id'];
+    $tahun_ajaran_id = (int) $kelas['tahun_ajaran_id'];
+
+    mysqli_stmt_bind_param(
+        $stmt_siswa,
+        "ii",
+        $kelas_id,
+        $tahun_ajaran_id
+    );
+
+    mysqli_stmt_execute($stmt_siswa);
+
+    $result_siswa = mysqli_stmt_get_result($stmt_siswa);
+
+    $siswa = [];
+
+    while ($row = mysqli_fetch_assoc($result_siswa)) {
+        $siswa[] = $row;
+    }
+
+    mysqli_stmt_close($stmt_siswa);
+
+    $kelas['siswa'] = $siswa;
+    $kelas['jumlah_siswa'] = count($siswa);
+
+    $data_kelas[] = $kelas;
 }
 
 mysqli_stmt_close($stmt_kelas);
-
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kelas Saya</title>
 
-<title>Kelas Saya - SIP</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<!-- BOOTSTRAP -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-<!-- FONT AWESOME -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<!-- DATATABLES -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
-
-<!-- CSS UTAMA -->
-<link rel="stylesheet" href="../layout/style.css">
-
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 
-<body class="bg-light">
+<body>
 
-<div class="container-fluid">
+<?php include __DIR__ . '/../layout/sidebar.php'; ?>
 
-    <div class="row">
+<div class="main-content">
+    <div class="container-fluid py-4">
 
-        <!-- SIDEBAR -->
-        <?php include __DIR__ . '/../layout/sidebar.php'; ?>
+        <div class="mb-4">
+            <h3 class="fw-bold mb-1">
+                <i class="fas fa-chalkboard-teacher me-2"></i>
+                Kelas Saya
+            </h3>
 
-        <!-- KONTEN UTAMA -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 p-4 guru-content">
+            <p class="text-muted mb-0">
+                Daftar kelas dan siswa yang menjadi tanggung jawab Anda.
+            </p>
+        </div>
 
-            <!-- HEADER -->
-            <header class="admin-page-header mb-4">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+                <h6 class="text-muted mb-1">Wali Kelas</h6>
 
-                <h1>Kelas Saya</h1>
+                <h5 class="fw-bold mb-0">
+                    <?= htmlspecialchars($nama_guru); ?>
+                </h5>
+            </div>
+        </div>
 
-                <p class="text-muted">
-                    Informasi kelas dan daftar siswa yang menjadi tanggung jawab Anda.
-                </p>
+        <?php if (empty($data_kelas)): ?>
 
-            </header>
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Anda belum memiliki penugasan wali kelas yang aktif.
+            </div>
 
-            <?php if (count($daftar_kelas) > 0): ?>
+        <?php else: ?>
 
-                <?php foreach ($daftar_kelas as $kelas): ?>
+            <?php foreach ($data_kelas as $kelas): ?>
 
-                    <?php
+                <div class="card shadow-sm border-0 mb-4">
 
-                    // ======================================
-                    // AMBIL SISWA DALAM KELAS
-                    // ======================================
+                    <div class="card-header bg-primary text-white py-3">
 
-                    $sql_siswa = "SELECT
-                                    s.id,
-                                    s.nisn,
-                                    s.nama
-                                  FROM t_kelas_siswa ks
-                                  INNER JOIN t_siswa s
-                                    ON ks.siswa_id = s.id
-                                  WHERE ks.kelas_id = ?
-                                    AND ks.tahun_ajaran_id = ?
-                                    AND ks.status_aktif = 1
-                                  ORDER BY s.nama ASC";
+                        <div class="d-flex justify-content-between align-items-center">
 
-                    $stmt_siswa = mysqli_prepare($koneksi, $sql_siswa);
+                            <div>
+                                <h5 class="mb-1 fw-bold">
+                                    <i class="fas fa-school me-2"></i>
+                                    <?= htmlspecialchars($kelas['nama_kelas']); ?>
+                                </h5>
 
-                    if (!$stmt_siswa) {
-                        die("Gagal menyiapkan data siswa: " . mysqli_error($koneksi));
-                    }
-
-                    $kelas_id = (int)$kelas['kelas_id'];
-                    $tahun_ajaran_id = (int)$kelas['tahun_ajaran_id'];
-
-                    mysqli_stmt_bind_param(
-                        $stmt_siswa,
-                        "ii",
-                        $kelas_id,
-                        $tahun_ajaran_id
-                    );
-
-                    mysqli_stmt_execute($stmt_siswa);
-
-                    $hasil_siswa = mysqli_stmt_get_result($stmt_siswa);
-
-                    if (!$hasil_siswa) {
-                        die("Gagal mengambil data siswa: " . mysqli_error($koneksi));
-                    }
-
-                    $jumlah_siswa = mysqli_num_rows($hasil_siswa);
-
-                    ?>
-
-                    <!-- CARD KELAS -->
-                    <div class="card border-0 shadow-sm rounded-3 mb-4">
-
-                        <div class="card-header bg-white py-3">
-
-                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-
-                                <div>
-
-                                    <h5 class="fw-bold mb-1">
-                                        <i class="fas fa-school me-2 text-primary"></i>
-                                        <?= htmlspecialchars($kelas['nama_kelas']) ?>
-                                    </h5>
-
-                                    <small class="text-muted">
-                                        Tahun Ajaran:
-                                        <?= htmlspecialchars($kelas['tahun_ajaran'] ?? '-') ?>
-                                    </small>
-
-                                </div>
-
-                                <span class="badge bg-primary px-3 py-2">
-                                    <?= $jumlah_siswa ?> Siswa
-                                </span>
-
+                                <small>
+                                    Tahun Ajaran:
+                                    <?= htmlspecialchars($kelas['tahun_ajaran'] ?? '-'); ?>
+                                </small>
                             </div>
+
+                            <span class="badge bg-light text-primary">
+                                <?= (int) $kelas['jumlah_siswa']; ?> Siswa
+                            </span>
 
                         </div>
 
-                        <div class="card-body">
+                    </div>
+
+                    <div class="card-body">
+
+                        <?php if (empty($kelas['siswa'])): ?>
+
+                            <div class="alert alert-info mb-0">
+                                Belum ada siswa yang ditempatkan di kelas ini.
+                            </div>
+
+                        <?php else: ?>
 
                             <div class="table-responsive">
 
-                                <table class="table table-striped table-hover align-middle">
+                                <table class="table table-bordered table-striped align-middle">
 
-                                    <thead class="table-dark">
-
+                                    <thead class="table-light">
                                         <tr>
-                                            <th class="text-center" width="60">No.</th>
+                                            <th width="60">No</th>
                                             <th>NISN</th>
                                             <th>Nama Siswa</th>
                                         </tr>
-
                                     </thead>
 
                                     <tbody>
 
-                                        <?php if ($jumlah_siswa > 0): ?>
+                                        <?php $no = 1; ?>
 
-                                            <?php
-                                            $no = 1;
-
-                                            while ($siswa = mysqli_fetch_assoc($hasil_siswa)):
-                                            ?>
-
-                                                <tr>
-
-                                                    <td class="text-center">
-                                                        <?= $no++ ?>
-                                                    </td>
-
-                                                    <td>
-                                                        <?= htmlspecialchars($siswa['nisn'] ?? '-') ?>
-                                                    </td>
-
-                                                    <td class="fw-semibold">
-                                                        <?= htmlspecialchars($siswa['nama'] ?? '-') ?>
-                                                    </td>
-
-                                                </tr>
-
-                                            <?php endwhile; ?>
-
-                                        <?php else: ?>
+                                        <?php foreach ($kelas['siswa'] as $siswa): ?>
 
                                             <tr>
-                                                <td colspan="3" class="text-center text-muted py-3">
-                                                    Belum ada siswa dalam kelas ini.
+                                                <td><?= $no++; ?></td>
+
+                                                <td>
+                                                    <?= htmlspecialchars($siswa['nisn'] ?? '-'); ?>
+                                                </td>
+
+                                                <td>
+                                                    <?= htmlspecialchars($siswa['nama']); ?>
                                                 </td>
                                             </tr>
 
-                                        <?php endif; ?>
+                                        <?php endforeach; ?>
 
                                     </tbody>
 
@@ -266,30 +297,16 @@ mysqli_stmt_close($stmt_kelas);
 
                             </div>
 
-                        </div>
+                        <?php endif; ?>
 
                     </div>
-
-                    <?php mysqli_stmt_close($stmt_siswa); ?>
-
-                <?php endforeach; ?>
-
-            <?php else: ?>
-
-                <div class="alert alert-warning border-0 shadow-sm">
-
-                    <i class="fas fa-exclamation-circle me-2"></i>
-
-                    Anda belum memiliki penempatan sebagai wali kelas yang aktif.
-
                 </div>
 
-            <?php endif; ?>
+            <?php endforeach; ?>
 
-        </main>
+        <?php endif; ?>
 
     </div>
-
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

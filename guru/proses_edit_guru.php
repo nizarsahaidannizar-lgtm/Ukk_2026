@@ -176,7 +176,6 @@ try {
     mysqli_stmt_close($stmt_guru);
 
     // 6. SINKRONISASI TABEL T_USERS
-    // Role otomatis mengikuti pilihan pada Edit Guru.
 
     $stmt_user = mysqli_prepare(
         $koneksi,
@@ -202,7 +201,50 @@ try {
 
     mysqli_stmt_close($stmt_user);
 
-    // 7. SIMPAN SELURUH PERUBAHAN
+    // ========================================
+    // 7. SINKRONISASI STATUS WALI KELAS
+    // ========================================
+
+    // Status penugasan Wali Kelas pada tahun
+    // ajaran aktif mengikuti status Guru.
+
+    $stmt_wali = mysqli_prepare(
+        $koneksi,
+        'UPDATE t_wali_kelas
+         SET status_aktif = ?
+         WHERE guru_id = ?
+           AND tahun_ajaran_id = (
+               SELECT id
+               FROM t_tahun_ajaran
+               WHERE status_aktif = 1
+               LIMIT 1
+           )'
+    );
+
+    if (!$stmt_wali) {
+        throw new Exception(
+            'Gagal menyiapkan sinkronisasi status Wali Kelas.'
+        );
+    }
+
+    mysqli_stmt_bind_param(
+        $stmt_wali,
+        'ii',
+        $status_aktif,
+        $id
+    );
+
+    if (!mysqli_stmt_execute($stmt_wali)) {
+        throw new Exception(
+            'Gagal menyinkronkan status Guru dan Wali Kelas.'
+        );
+    }
+
+    mysqli_stmt_close($stmt_wali);
+
+    // ========================================
+    // 8. SIMPAN SELURUH PERUBAHAN
+    // ========================================
 
     mysqli_commit($koneksi);
 
@@ -210,15 +252,15 @@ try {
     // PESAN BERHASIL
     // ========================================
 
-    if ($role === 'guru_wali_kelas') {
+    if ($status_aktif === 0) {
 
         $_SESSION['pesan_sukses'] =
-            'Data guru berhasil diperbarui. Role akun berhasil diubah menjadi Wali Kelas.';
+            'Data guru berhasil dinonaktifkan. Status penugasan Wali Kelas pada tahun ajaran aktif juga berhasil dinonaktifkan.';
 
     } else {
 
         $_SESSION['pesan_sukses'] =
-            'Data guru berhasil diperbarui. Role akun berhasil diubah menjadi Guru biasa.';
+            'Data guru berhasil diaktifkan. Status penugasan Wali Kelas pada tahun ajaran aktif juga berhasil diaktifkan.';
     }
 
     header('Location: kelola_guru.php');

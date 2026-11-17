@@ -4,32 +4,35 @@
 // includes/cek_session.php
 // ==================================================
 
+// ========================================
 // MULAI SESSION
+// ========================================
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// ==================================================
+// ========================================
 // BASE URL PROJECT
-// ==================================================
+// ========================================
 
 $base_url_path = '/Ukk_2026/';
 
-// ==================================================
+// ========================================
 // CEK LOGIN
-// ==================================================
+// ========================================
 
 if (
     !isset($_SESSION['status']) ||
     $_SESSION['status'] !== 'login'
 ) {
     header('Location: ' . $base_url_path . 'login.php');
-    exit();
+    exit;
 }
 
-// ==================================================
+// ========================================
 // NORMALISASI ROLE
-// ==================================================
+// ========================================
 
 if (!function_exists('normalisasi_role')) {
 
@@ -55,9 +58,9 @@ if (!function_exists('normalisasi_role')) {
     }
 }
 
-// ==================================================
+// ========================================
 // FUNGSI BATASI AKSES
-// ==================================================
+// ========================================
 
 if (!function_exists('batasi_akses')) {
 
@@ -65,7 +68,9 @@ if (!function_exists('batasi_akses')) {
     {
         global $base_url_path;
 
-        $role_aktif = normalisasi_role($_SESSION['role'] ?? '');
+        $role_aktif = normalisasi_role(
+            $_SESSION['role'] ?? ''
+        );
 
         $roles_diizinkan = array_map(
             'normalisasi_role',
@@ -81,13 +86,11 @@ if (!function_exists('batasi_akses')) {
 
                 header('Location: ' . $base_url_path . 'dashboard.php');
 
-            } elseif (
-                in_array(
-                    $role_aktif,
-                    ['guru', 'guru_wali_kelas'],
-                    true
-                )
-            ) {
+            } elseif (in_array(
+                $role_aktif,
+                ['guru', 'guru_wali_kelas'],
+                true
+            )) {
 
                 header('Location: ' . $base_url_path . 'guru/dashboard_guru.php');
 
@@ -97,29 +100,22 @@ if (!function_exists('batasi_akses')) {
 
             }
 
-            exit();
+            exit;
         }
 
-        // HAPUS PESAN AKSES DITOLAK LAMA
-        if (
-            isset($_SESSION['pesan_error']) &&
-            $_SESSION['pesan_error'] ===
-            'Akses ditolak. Anda tidak memiliki izin ke halaman ini.'
-        ) {
-            unset($_SESSION['pesan_error']);
-        }
+        unset($_SESSION['pesan_error']);
     }
 }
 
-// ==================================================
+// ========================================
 // INFORMASI HALAMAN
-// ==================================================
+// ========================================
 
 $halaman = basename($_SERVER['PHP_SELF'] ?? '');
 
-// ==================================================
+// ========================================
 // DAFTAR HAK AKSES HALAMAN
-// ==================================================
+// ========================================
 
 $hak_akses_halaman = [
 
@@ -136,15 +132,15 @@ $hak_akses_halaman = [
     'proses_tambah_siswa.php' => ['admin'],
     'proses_edit_siswa.php' => ['admin'],
 
-    // ========================================
     // PENEMPATAN SISWA
-    // ========================================
 
     'penempatan_siswa.php' => ['admin'],
     'edit_penempatan.php' => ['admin'],
     'proses_simpan_penempatan.php' => ['admin'],
     'proses_edit_penempatan.php' => ['admin'],
     'proses_hapus_penempatan.php' => ['admin'],
+
+    // KELAS
 
     'kelola_kelas.php' => ['admin'],
     'tambah_kelas.php' => ['admin'],
@@ -153,12 +149,16 @@ $hak_akses_halaman = [
     'proses_tambah_kelas.php' => ['admin'],
     'proses_edit_kelas.php' => ['admin'],
 
+    // TAHUN AJARAN
+
     'kelola_tahun_ajaran.php' => ['admin'],
     'tambah_tahun_ajaran.php' => ['admin'],
     'edit_tahun_ajaran.php' => ['admin'],
     'hapus_tahun_ajaran.php' => ['admin'],
     'proses_tambah_tahun_ajaran.php' => ['admin'],
     'proses_edit_tahun_ajaran.php' => ['admin'],
+
+    // WALI KELAS
 
     'kelola_walikelas.php' => ['admin'],
     'tambah_walikelas.php' => ['admin'],
@@ -167,6 +167,8 @@ $hak_akses_halaman = [
     'proses_tambah_walikelas.php' => ['admin'],
     'proses_edit_walikelas.php' => ['admin'],
 
+    // GURU
+
     'kelola_guru.php' => ['admin'],
     'tambah_guru.php' => ['admin'],
     'edit_guru.php' => ['admin'],
@@ -174,12 +176,16 @@ $hak_akses_halaman = [
     'proses_tambah_guru.php' => ['admin'],
     'proses_edit_guru.php' => ['admin'],
 
+    // KATEGORI PELANGGARAN
+
     'kelola_pelanggaran_kategori.php' => ['admin'],
     'tambah_pelanggaran_kategori.php' => ['admin'],
     'edit_pelanggaran_kategori.php' => ['admin'],
     'hapus_pelanggaran_kategori.php' => ['admin'],
     'proses_tambah_pelanggaran_kategori.php' => ['admin'],
     'proses_edit_pelanggaran.php' => ['admin'],
+
+    // JENIS PELANGGARAN
 
     'kelola_jenis_pelanggaran.php' => ['admin'],
     'tambah_jenis_pelanggaran.php' => ['admin'],
@@ -247,7 +253,7 @@ $hak_akses_halaman = [
     ],
 
     // ========================================
-    // KHUSUS WALI KELAS
+    // LAPORAN
     // ========================================
 
     'laporan_guru.php' => [
@@ -257,12 +263,14 @@ $hak_akses_halaman = [
     ],
 
     'laporan_walas.php' => [
-        'guru',
         'guru_wali_kelas'
     ],
 
+    // ========================================
+    // KHUSUS WALI KELAS
+    // ========================================
+
     'kelas_saya.php' => [
-        'guru',
         'guru_wali_kelas'
     ],
 
@@ -272,12 +280,11 @@ $hak_akses_halaman = [
 
     'laporan.php' => ['admin'],
 
-    // RESET PASSWORD GURU
     'reset_password_guru.php' => ['admin'],
     'proses_reset_password_guru.php' => ['admin'],
 
     // ========================================
-    // ADMIN, GURU, DAN WALI KELAS
+    // ADMIN, GURU, WALI KELAS
     // ========================================
 
     'cetak_laporan.php' => [
@@ -293,27 +300,23 @@ $hak_akses_halaman = [
     ]
 ];
 
-// ==================================================
-// MENENTUKAN IZIN HALAMAN
-// ==================================================
+// ========================================
+// PEMERIKSAAN HAK AKSES
+// ========================================
 
 $izin_halaman = $hak_akses_halaman[$halaman] ?? [];
 
-// ==================================================
-// PEMERIKSAAN HAK AKSES
-// ==================================================
-
 batasi_akses($izin_halaman);
 
-// ==================================================
+// ========================================
 // BATAS INPUT TEKS
-// ==================================================
+// ========================================
 
 $aturan_batas_input = [];
 
-// ==================================================
+// ========================================
 // BATAS INPUT ANGKA
-// ==================================================
+// ========================================
 
 $aturan_batas_angka = [
 
@@ -397,18 +400,14 @@ $aturan_batas_angka = [
         'status_aktif' => ['min' => 0, 'max' => 1]
     ],
 
-    'proses_tambah_kategori.php' => [
+    'proses_tambah_jenis_pelanggaran.php' => [
+        'pelanggaran_kategori_id' => ['min' => 1, 'max' => 2147483647],
+        'poin' => ['min' => 0, 'max' => 2147483647],
         'status_aktif' => ['min' => 0, 'max' => 1]
     ],
 
     'edit_jenis_pelanggaran.php' => [
         'id' => ['min' => 1, 'max' => 2147483647]
-    ],
-
-    'proses_tambah_jenis_pelanggaran.php' => [
-        'pelanggaran_kategori_id' => ['min' => 1, 'max' => 2147483647],
-        'poin' => ['min' => 0, 'max' => 2147483647],
-        'status_aktif' => ['min' => 0, 'max' => 1]
     ],
 
     'proses_edit_jenis_pelanggaran.php' => [
@@ -451,15 +450,13 @@ $aturan_batas_angka = [
         'status_aktif' => ['min' => 0, 'max' => 1]
     ],
 
-    // ========================================
     // PENEMPATAN SISWA
-    // ========================================
 
     'penempatan_siswa.php' => [
         'siswa_id' => ['min' => 1, 'max' => 2147483647],
         'tahun_ajaran_id' => ['min' => 1, 'max' => 2147483647],
         'kelas_id' => ['min' => 1, 'max' => 2147483647],
-        'status_aktif' => ['min' => 0, 'max' => 1],
+        'status_aktif' => ['min' => 0, 'max' => 1]
     ],
 
     'edit_penempatan.php' => [
@@ -484,6 +481,8 @@ $aturan_batas_angka = [
     'proses_hapus_penempatan.php' => [
         'id' => ['min' => 1, 'max' => 2147483647]
     ],
+
+    // PELANGGARAN
 
     'catat_pelanggaran.php' => [
         'siswa_id' => ['min' => 1, 'max' => 2147483647],
@@ -524,9 +523,9 @@ $aturan_batas_angka = [
     ]
 ];
 
-// ==================================================
+// ========================================
 // VALIDASI INPUT POST
-// ==================================================
+// ========================================
 
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 
@@ -534,10 +533,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     $batas_angka_halaman = $aturan_batas_angka[$halaman] ?? [];
 
     $pesan_batas = '';
-
-    // ------------------------------------------
-    // VALIDASI TEKS
-    // ------------------------------------------
 
     foreach ($batas_halaman as $field => $rule) {
 
@@ -560,8 +555,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             isset($rule['min']) &&
             $character_count < $rule['min']
         ) {
-            $pesan_batas = 'Kolom ' . $field . ' minimal ' .
-                $rule['min'] . ' karakter.';
+            $pesan_batas = 'Kolom ' . $field . ' minimal ' . $rule['min'] . ' karakter.';
             break;
         }
 
@@ -569,8 +563,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             isset($rule['max']) &&
             $character_count > $rule['max']
         ) {
-            $pesan_batas = 'Kolom ' . $field . ' maksimal ' .
-                $rule['max'] . ' karakter.';
+            $pesan_batas = 'Kolom ' . $field . ' maksimal ' . $rule['max'] . ' karakter.';
             break;
         }
 
@@ -599,10 +592,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             break;
         }
     }
-
-    // ------------------------------------------
-    // VALIDASI ANGKA
-    // ------------------------------------------
 
     if ($pesan_batas === '') {
 
@@ -637,10 +626,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         }
     }
 
-    // ------------------------------------------
-    // TAMPILKAN PESAN ERROR
-    // ------------------------------------------
-
     if ($pesan_batas !== '') {
 
         http_response_code(422);
@@ -654,21 +639,14 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
         echo '<title>Input Tidak Valid</title>';
         echo '</head>';
-
         echo '<body style="font-family:Arial,sans-serif;padding:2rem">';
-
         echo '<h2>Input Tidak Valid</h2>';
-
-        echo '<p>' .
-            htmlspecialchars($pesan_batas, ENT_QUOTES, 'UTF-8') .
-            '</p>';
-
+        echo '<p>' . htmlspecialchars($pesan_batas, ENT_QUOTES, 'UTF-8') . '</p>';
         echo '<button type="button" onclick="history.back()">Kembali</button>';
-
         echo '</body>';
         echo '</html>';
 
-        exit();
+        exit;
     }
 }
 
