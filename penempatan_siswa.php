@@ -7,36 +7,30 @@ include 'config/koneksi.php';
 
 batasi_akses(['admin']);
 
+// ========================================
 // AMBIL NOTIFIKASI
+// ========================================
+
 $pesan_sukses = $_SESSION['pesan_sukses'] ?? '';
 $pesan_error = $_SESSION['pesan_error'] ?? '';
 
-// NOTIFIKASI DARI PROSES EDIT
 if (isset($_SESSION['pesan'])) {
-
     if (($_SESSION['tipe'] ?? '') === 'success') {
         $pesan_sukses = $_SESSION['pesan'];
     } else {
         $pesan_error = $_SESSION['pesan'];
     }
 
-    unset($_SESSION['pesan']);
-    unset($_SESSION['tipe']);
+    unset($_SESSION['pesan'], $_SESSION['tipe']);
 }
 
-unset($_SESSION['pesan_sukses']);
-unset($_SESSION['pesan_error']);
+unset($_SESSION['pesan_sukses'], $_SESSION['pesan_error']);
 
-// AMBIL DAFTAR SISWA
-$siswa = mysqli_query($koneksi, "
-    SELECT id, nis, nama
-    FROM t_siswa
-    WHERE status_aktif = 1
-    ORDER BY nama ASC
-");
+// ========================================
+// AMBIL TAHUN AJARAN AKTIF
+// ========================================
 
-// AMBIL TAHUN AJARAN
-$tahun = mysqli_query($koneksi, "
+$query_tahun_aktif = mysqli_query($koneksi, "
     SELECT id, nama
     FROM t_tahun_ajaran
     WHERE status_aktif = 1
@@ -44,7 +38,33 @@ $tahun = mysqli_query($koneksi, "
     LIMIT 1
 ");
 
-// AMBIL KELAS
+if (!$query_tahun_aktif) {
+    die('Gagal mengambil tahun ajaran: ' . mysqli_error($koneksi));
+}
+
+$tahun_aktif = mysqli_fetch_assoc($query_tahun_aktif);
+
+$tahun_ajaran_aktif_id = (int)($tahun_aktif['id'] ?? 0);
+$nama_tahun_aktif = $tahun_aktif['nama'] ?? 'Belum ada tahun ajaran aktif';
+
+// ========================================
+// AMBIL SEMUA DAFTAR SISWA
+// ========================================
+
+$siswa = mysqli_query($koneksi, "
+    SELECT id, nis, nama
+    FROM t_siswa
+    ORDER BY nama ASC
+");
+
+if (!$siswa) {
+    die('Gagal mengambil data siswa: ' . mysqli_error($koneksi));
+}
+
+// ========================================
+// AMBIL DAFTAR KELAS
+// ========================================
+
 $kelas = mysqli_query($koneksi, "
     SELECT id, nama, tingkat, jurusan
     FROM t_kelas
@@ -52,62 +72,80 @@ $kelas = mysqli_query($koneksi, "
     ORDER BY nama ASC
 ");
 
-// AMBIL DATA PENEMPATAN
-$sql = "
-    SELECT
-        ks.id,
-        ks.siswa_id,
-        ks.tahun_ajaran_id,
-        ks.kelas_id,
-        ks.tanggal_mulai,
-        ks.tanggal_selesai,
-        s.nis,
-        s.nama AS nama_siswa,
-        ta.nama AS tahun_ajaran,
-        k.nama AS nama_kelas,
-        k.tingkat,
-        k.jurusan,
-        CASE WHEN s.status_aktif = 1 AND ks.status_aktif = 1 THEN 1 ELSE 0 END AS status_aktif
-    FROM t_kelas_siswa ks
-    LEFT JOIN t_siswa s
-        ON ks.siswa_id = s.id
-    LEFT JOIN t_tahun_ajaran ta
-        ON ks.tahun_ajaran_id = ta.id
-    LEFT JOIN t_kelas k
-        ON ks.kelas_id = k.id
-    ORDER BY ks.id DESC
-";
-
-$hasil = mysqli_query($koneksi, $sql);
-
-if (!$hasil) {
-    die("Query penempatan gagal: " . mysqli_error($koneksi));
+if (!$kelas) {
+    die('Gagal mengambil data kelas: ' . mysqli_error($koneksi));
 }
+
+// ========================================
+// AMBIL SEMUA SISWA DAN PENEMPATANNYA
+// BERDASARKAN TAHUN AJARAN AKTIF
+// ========================================
+
+$hasil = false;
+
+if ($tahun_ajaran_aktif_id > 0) {
+
+    $sql = "
+        SELECT
+            s.id AS siswa_id,
+            s.nis,
+            s.nama AS nama_siswa,
+            s.status_aktif AS status_siswa,
+
+            ks.id AS id_penempatan,
+            ks.tanggal_mulai,
+            ks.tanggal_selesai,
+            ks.status_aktif AS status_penempatan,
+
+            ta.nama AS tahun_ajaran,
+            k.nama AS nama_kelas,
+            k.tingkat,
+            k.jurusan
+
+        FROM t_siswa s
+
+        LEFT JOIN t_kelas_siswa ks
+            ON s.id = ks.siswa_id
+            AND ks.tahun_ajaran_id = $tahun_ajaran_aktif_id
+
+        LEFT JOIN t_tahun_ajaran ta
+            ON ks.tahun_ajaran_id = ta.id
+
+        LEFT JOIN t_kelas k
+            ON ks.kelas_id = k.id
+
+        ORDER BY s.nama ASC
+    ";
+
+    $hasil = mysqli_query($koneksi, $sql);
+
+    if (!$hasil) {
+        die('Query penempatan gagal: ' . mysqli_error($koneksi));
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
 
 <head>
+    <meta charset="UTF-8">
 
-
-<meta charset="UTF-8">
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="preconnect" href="https://code.jquery.com" crossorigin>
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Penempatan Siswa - SIP</title>
 
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 
-    <!-- DataTables Bootstrap 5 -->
     <link href="https://cdn.datatables.net/2.3.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="layout/style.css">
@@ -122,11 +160,10 @@ if (!$hasil) {
 
         <main class="col-md-9 ms-sm-auto col-lg-10 p-4">
 
-            <!-- HEADER -->
             <header class="mb-4">
                 <h2 class="fw-normal">Penempatan Siswa</h2>
                 <p class="text-muted">
-                    Tetapkan siswa ke kelas sesuai tahun ajaran.
+                    Tetapkan siswa ke kelas sesuai tahun ajaran aktif.
                 </p>
             </header>
 
@@ -135,7 +172,6 @@ if (!$hasil) {
                 <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
                     <i class="fas fa-check-circle me-2"></i>
                     <?= htmlspecialchars($pesan_sukses); ?>
-
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             <?php endif; ?>
@@ -145,7 +181,6 @@ if (!$hasil) {
                 <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
                     <i class="fas fa-exclamation-circle me-2"></i>
                     <?= htmlspecialchars($pesan_error); ?>
-
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             <?php endif; ?>
@@ -184,21 +219,22 @@ if (!$hasil) {
                                 </select>
                             </div>
 
-                            <!-- TAHUN AJARAN -->
+                            <!-- TAHUN AJARAN AKTIF -->
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Tahun Ajaran</label>
 
-                                <select name="tahun_ajaran_id" class="form-select" required>
-                                    <?php if ($tahun && mysqli_num_rows($tahun) > 0): ?>
-                                        <?php $ta_aktif = mysqli_fetch_assoc($tahun); ?>
-                                        <option value="<?= (int)$ta_aktif['id']; ?>" selected>
-                                            <?= htmlspecialchars($ta_aktif['nama']); ?> (Aktif)
-                                        </option>
-                                    <?php else: ?>
-                                        <option value="" selected disabled>Belum ada tahun ajaran aktif</option>
-                                    <?php endif; ?>
-                                </select>
-                                <small class="text-muted">Otomatis menggunakan tahun ajaran yang berstatus aktif.</small>
+                                <input type="text"
+                                       class="form-control"
+                                       value="<?= htmlspecialchars($nama_tahun_aktif); ?> (Aktif)"
+                                       readonly>
+
+                                <input type="hidden"
+                                       name="tahun_ajaran_id"
+                                       value="<?= $tahun_ajaran_aktif_id; ?>">
+
+                                <small class="text-muted">
+                                    Tahun ajaran otomatis mengikuti tahun ajaran aktif.
+                                </small>
                             </div>
 
                             <!-- KELAS -->
@@ -254,7 +290,9 @@ if (!$hasil) {
 
                             <!-- SIMPAN -->
                             <div class="col-12 mt-4">
-                                <button type="submit" class="btn btn-primary px-4">
+                                <button type="submit"
+                                        class="btn btn-primary px-4"
+                                        <?= $tahun_ajaran_aktif_id <= 0 ? 'disabled' : ''; ?>>
                                     <i class="fas fa-save me-1"></i>
                                     Simpan Penempatan
                                 </button>
@@ -275,6 +313,10 @@ if (!$hasil) {
                         <i class="fas fa-table me-2"></i>
                         Data Penempatan Siswa
                     </h5>
+
+                    <small class="text-muted">
+                        Tahun Ajaran: <?= htmlspecialchars($nama_tahun_aktif); ?>
+                    </small>
                 </div>
 
                 <div class="card-body">
@@ -302,15 +344,12 @@ if (!$hasil) {
                                 <?php
                                 $no = 1;
 
-                                if (mysqli_num_rows($hasil) > 0):
+                                if ($hasil && mysqli_num_rows($hasil) > 0):
                                     while ($row = mysqli_fetch_assoc($hasil)):
                                 ?>
 
                                     <tr>
-
-                                        <td class="text-center">
-                                            <?= $no++; ?>
-                                        </td>
+                                        <td class="text-center"><?= $no++; ?></td>
 
                                         <td>
                                             <?= htmlspecialchars($row['nis'] ?? '-'); ?>
@@ -332,51 +371,69 @@ if (!$hasil) {
                                             <?= htmlspecialchars($row['jurusan'] ?? '-'); ?>
                                         </td>
 
-                                        
-
                                         <td class="text-center">
 
+                                            <?php if (empty($row['id_penempatan'])): ?>
 
-                                            <?php if ((int)$row['status_aktif'] === 1): ?>
-                                                <span class="badge bg-success px-2 py-1 rounded">
+                                                <span class="badge bg-warning text-dark">
+                                                    Belum ditempatkan
+                                                </span>
+
+                                            <?php elseif (
+                                                (int)$row['status_siswa'] === 1 &&
+                                                (int)$row['status_penempatan'] === 1
+                                            ): ?>
+
+                                                <span class="badge bg-success">
                                                     Aktif
                                                 </span>
+
                                             <?php else: ?>
-                                                <span class="badge bg-danger px-2 py-1 rounded">
+
+                                                <span class="badge bg-danger">
                                                     Tidak Aktif
                                                 </span>
+
                                             <?php endif; ?>
 
                                         </td>
 
-                                        <!-- AKSI -->
                                         <td class="text-center text-nowrap">
 
-                                            <a href="edit_penempatan.php?id=<?= (int)$row['id']; ?>"
-                                               class="btn btn-warning btn-sm"
-                                               title="Edit">
-                                                <i class="fas fa-edit text-white"></i>
-                                            </a>
+                                            <?php if (!empty($row['id_penempatan'])): ?>
 
-                                            <form action="proses_hapus_penempatan.php"
-                                                  method="POST"
-                                                  class="d-inline"
-                                                  onsubmit="return confirm('Yakin ingin menghapus data penempatan siswa ini?');">
+                                                <a href="edit_penempatan.php?id=<?= (int)$row['id_penempatan']; ?>"
+                                                   class="btn btn-warning btn-sm"
+                                                   title="Edit">
+                                                    <i class="fas fa-edit text-white"></i>
+                                                </a>
 
-                                                <input type="hidden"
-                                                       name="id"
-                                                       value="<?= (int)$row['id']; ?>">
+                                                <form action="proses_hapus_penempatan.php"
+                                                      method="POST"
+                                                      class="d-inline"
+                                                      onsubmit="return confirm('Yakin ingin menghapus data penempatan siswa ini?');">
 
-                                                <button type="submit"
-                                                        class="btn btn-danger btn-sm"
-                                                        title="Hapus">
-                                                    <i class="fas fa-trash text-white"></i>
-                                                </button>
+                                                    <input type="hidden"
+                                                           name="id"
+                                                           value="<?= (int)$row['id_penempatan']; ?>">
 
-                                            </form>
+                                                    <button type="submit"
+                                                            class="btn btn-danger btn-sm"
+                                                            title="Hapus">
+                                                        <i class="fas fa-trash text-white"></i>
+                                                    </button>
+
+                                                </form>
+
+                                            <?php else: ?>
+
+                                                <span class="text-muted">
+                                                    Belum ada penempatan
+                                                </span>
+
+                                            <?php endif; ?>
 
                                         </td>
-
                                     </tr>
 
                                 <?php
@@ -386,7 +443,11 @@ if (!$hasil) {
 
                                     <tr>
                                         <td colspan="8" class="text-center text-muted">
-                                            Belum ada data penempatan siswa.
+                                            <?php if ($tahun_ajaran_aktif_id <= 0): ?>
+                                                Belum ada tahun ajaran aktif.
+                                            <?php else: ?>
+                                                Belum ada data siswa.
+                                            <?php endif; ?>
                                         </td>
                                     </tr>
 
@@ -412,6 +473,7 @@ if (!$hasil) {
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.bootstrap5.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>

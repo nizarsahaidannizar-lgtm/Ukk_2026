@@ -66,7 +66,10 @@ $sql = "
         (
             SELECT COUNT(*)
             FROM t_wali_kelas w
+            INNER JOIN t_tahun_ajaran ta
+                ON ta.id = w.tahun_ajaran_id
             WHERE w.status_aktif = 1
+              AND ta.status_aktif = 1
               AND (
                     w.guru_id = g.id
                     OR w.user_id = u.id
@@ -118,6 +121,16 @@ if ($user) {
 
     $role = normalisasi_role_login($user['role'] ?? '');
 
+    // Sinkronisasi role berdasarkan penugasan wali kelas aktif
+    // pada tahun ajaran yang sedang aktif.
+    $wali_kelas_aktif = (
+        (int) ($user['wali_kelas_aktif'] ?? 0) > 0
+    );
+
+    if ($role === 'guru' && $wali_kelas_aktif) {
+        $role = 'guru_wali_kelas';
+    }
+
     $password_db = (string) ($user['password'] ?? '');
 
     // ====================================
@@ -146,10 +159,6 @@ if ($user) {
     // ====================================
     // CEK PENUGASAN WALI KELAS
     // ====================================
-
-    $wali_kelas_aktif = (
-        (int) ($user['wali_kelas_aktif'] ?? 0) > 0
-    );
 
     // ====================================
     // TENTUKAN HAK LOGIN
@@ -206,6 +215,20 @@ if ($user) {
         // ROLE
         $_SESSION['role'] = $role;
         $_SESSION['role_verified'] = true;
+
+        // Simpan sinkronisasi role jika guru memiliki penugasan aktif.
+        if ($role === 'guru_wali_kelas' && normalisasi_role_login($user['role'] ?? '') === 'guru') {
+            $stmt_role = mysqli_prepare(
+                $koneksi,
+                "UPDATE t_users SET role = 'guru_wali_kelas' WHERE id = ?"
+            );
+            if ($stmt_role) {
+                $id_user_role = (int)$user['id'];
+                mysqli_stmt_bind_param($stmt_role, 'i', $id_user_role);
+                mysqli_stmt_execute($stmt_role);
+                mysqli_stmt_close($stmt_role);
+            }
+        }
 
         // ID GURU
         if ($user['guru_id'] !== null) {
