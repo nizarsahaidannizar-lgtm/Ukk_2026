@@ -5,6 +5,8 @@ REVISI
 4.ketika siswa sudah di tindak maka di menu Tindakan siswa harus tidak ada dan pindah ke Riwayat
 5.cetak laporan untuk mengcetak file nya itu kurang rapih
 6.pas di edit data siswa status di non aktif kan nah pas di penempatan siswa itu masih aktif harus nya engga aktif juga
+-perbaiki cetak laporan nya belum singkron dan saaat di cetak belum bisa ke cetak di file nya dan tampilan nya kurang rapih saat di cetak
+database siswa ada dua t_siswa dan siswa jadi perbaiki jadi table siswa hanya satu
 
 Kelola siswa,kelola guru,kelola kelas,kelola tahun ajaran,penempatan siswa,kelola wali kelas,
 kategori pelanggaran,jenis pelanggaran,laporan,riwayat,about me,catat pelanggaran,tindakan,rekap poin,kelas saya,
